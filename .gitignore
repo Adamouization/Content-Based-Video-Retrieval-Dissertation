@@ -1,3 +1,7 @@
+# don't upload the pdf file for now
+# TODO - enable the pdf to be uploaded at the very end
+.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
