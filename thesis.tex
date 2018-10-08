@@ -1,12 +1,238 @@
-\documentclass{article}
+\documentclass[11pt,openright,twoside,a4paper]{report}
+%%
+%% This document template assumes you will use pdflatex.  If you are using
+%% latex and dvipdfm to translate to pdf, insert dvipdfm into the options.
+%%
 
-\title{My first document}
-\date{2013-09-01}
-\author{John Doe}
+\include{DissertationDefs}    %% These are the includes required for the doc
+
+
+\title{Your Dissertation title}
+\author{Adam Jaamour}
+\date{Bachelor of Science in Computer Science with Honours\\The University of Bath\\May 2019}
+
 
 \begin{document}
-  \maketitle
-  \newpage
 
-  Hello World!
+
+% Set this to the language you want to use in your code listings (if any)
+\lstset{language=Java,breaklines,breakatwhitespace,basicstyle=\small}
+
+
+\setcounter{page}{0}
+\pagenumbering{roman}
+
+
+\maketitle
+\newpage
+
+
+% Set this to the number of years consultation prohibition, or 0 if no limit
+\consultation{0}
+\newpage
+
+
+\declaration{Dissertation title}{Adam Jaamour}
+\newpage
+
+
+\abstract
+Your abstract should appear here.  An abstract is a short
+paragraph describing the aims of the project, what was
+achieved and what contributions it has made.
+\newpage
+
+
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+
+\chapter*{Acknowledgements}
+Add any acknowledgements here.
+\newpage
+
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+
+
+\chapter{Introduction}
+%% Uncomment this to include a separate tex file wih the introduction contents
+%\include{introduction.tex}
+
+This is the introductory chapter.
+
+\section{Example Section}
+Like all chapters, it will have a number of sections
+
+\subsection{Example Subsection}
+\ldots and sub-sections
+
+\subsubsection{Example sub-subsection}
+\ldots and sub-subsections.
+
+\begin{table}[htb]
+\begin{center}
+\caption{An example table}
+\label{Example-Table}
+\begin{tabular}{|l|l|}
+\hline
+Items & Values \\
+\hline
+\hline
+Item 1 & Value 1 \\
+Item 2 & Value 2 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\section[short section title]{Another section}
+Another section, just for good measure.
+You can reference a table, figure or equation using \verb|\ref|, just
+like this reference to table \ref{Example-Table}.
+
+\section{Example lists}
+
+\subsection{Enumerated}
+
+\begin{enumerate}
+\item Example enumerated list
+  \begin{itemize}
+  \item a nested enumerated list item
+  \end{itemize}
+\item Second item in the list
+\end{enumerate}
+
+\subsection{Itemized}
+
+\begin{itemize}
+\item Example itemized list
+  \begin{itemize}
+  \item a nested itemized list item
+  \end{itemize}
+\item Second item in the list
+\end{itemize}
+
+\subsection{Description}
+
+\begin{description}
+\item[Item 1] Example description list
+\item[Item 2] Second item in the list
+\end{description}
+
+
+\chapter{Literature Survey}
+%% Uncomment this to include a separate tex file wih the introduction contents
+%\include{litsurvey.tex}
+This is the chapter for your Literature Survey.
+
+You will wish to cite authors like \cite{latex} or \cite{btxdoc}.  Alternate
+commands are used to cite \citeasnoun{latex} as a noun, or cite
+\possessivecite{latex} work possessively, or add text to the citation,
+\citeaffixed{latex}{e.g.}.
+
+If these citations do not compile correctly, ensure you have the Harvard
+package installed.  You can pick up the Harvard package in the zip file
+of the dissertation template files you downloaded.
+
+
+%%
+%% NOTE: Replace the following with chapters that are appropriate for your
+%%       style of project.  It is unlikely these will fit your project perfectly.
+%%
+
+\chapter{Requirements}
+If you are doing a primarily software development project, this is the
+chapter in which you review the requirements decisions and
+critique the requirements process.
+
+
+\chapter{Design}
+This is the chapter in which you review your design decisions at various
+levels and critique the design process.
+
+
+\chapter{Implementation and Testing}
+This is the chapter in which you review the implementation and testing
+decisions and issues, and critique these processes.
+
+Code can be output inline using \verb@\lstinline|some code|@.  For example,
+this code is inline: \lstinline|public static int example = 0;|  (I have
+used the character \verb@|@ as a delimiter, but any non-reserved character
+not in the code text can be used.)
+
+Code snippets can be output using the \verb|\begin{lstlisting} ... \end{lstlisting}|
+environment with the code given in the environment.  For
+example, consider listing \ref{Example-Code}, below.
+
+\begin{lstlisting}[breaklines,breakatwhitespace,caption={Example code},label=Example-Code]
+public static void main() {
+
+  System.out.println("Hello World");
+
+}
+\end{lstlisting}
+
+Code listings are produced using the package ``Listings''.  This has many
+useful options, so have a look at the package documentation for further
+ideas.
+
+
+\chapter{Results}
+This is the chapter in which you review the outcomes, and
+critique the outcomes process.  You may include user evaluation here
+too.
+
+
+%%
+%% Now we are back to the standard project contents that you should include
+%%
+
+\chapter{Conclusions}
+%% Uncomment this to include a separate tex file wih the conclusion contents
+%\include{conclusion.tex}
+
+This is the chapter in which you review the major achievements in the
+light of your original objectives, critique the process, critique your
+own learning and identify possible future work.
+
+
+\bibliography{Bibliography}
+
+
+\appendix
+
+%%
+%% Use the appendix for major chunks of detailed work, such as these. Tailor
+%% these to your own requirements
+%%
+
+\chapter{Design Diagrams}
+
+\chapter{User Documentation}
+
+\chapter{Raw results output}
+
+\chapter{Code}
+
+%%
+%% NOTE that for this to typeset correctly, ensure you use the pdflatex
+%%      command in preference to the latex command.  If you do not have
+%%      the pdflatex command, you will need to remExample-TableExample-Tableove the landscape and
+%%      multicols tags and just make do with single column listing output
+%%
+
+\begin{landscape}
+\begin{multicols}{2}
+\section{File: main.py}
+\lstinputlisting[basicstyle=\scriptsize]{main.py}
+\end{multicols}
+\end{landscape}
+
 \end{document}
