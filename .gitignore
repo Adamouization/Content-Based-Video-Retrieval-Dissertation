@@ -1,6 +1,6 @@
 # don't upload the pdf file for now
 # TODO - enable the pdf to be uploaded at the very end
-thesis.pdf
+main.pdf
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
@@ -243,4 +243,34 @@ TSWLatexianTemp*
 *.sta
 
 # generated if using elsarticle.cls
-*.spl
+*.sp
+
+
+# macOS files
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Itemsl
