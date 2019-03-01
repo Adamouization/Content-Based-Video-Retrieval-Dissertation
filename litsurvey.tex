@@ -1,40 +1,3 @@
-\documentclass[11pt,openany,a4paper]{article}
-\usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage{graphicx}   	% Permits import of various graphics formats
-\usepackage{hyperref}   	% Provides hyperlinks to sections and citations automatically
-\usepackage{float}      		% Suppresses floating for tables and figures when using "H"
-\usepackage{etoolbox}   	% enable bibliography to be added to the table of contents
-\usepackage{comment}    	% enable block of comments
-
-% Set some page size changes from the standard article class
-\usepackage[inner=4cm,outer=4cm]{geometry}
-
-% remove page number from toc
-\addtocontents{toc}{\protect\thispagestyle{empty}} 
-
-% add bibliography to table of contents
-\apptocmd{\thebibliography}{\csname phantomsection\endcsname\addcontentsline{toc}{section}{\bibname}}{}{}
-
-\title{
-    Content-based Video Retrieval for Pattern Matching Video Clips\\
-}
-\author{Adam Jaamour}
-\date{Bachelor of Science in Computer Science with Honours\\The University of Bath\\07 May 2019}
-
-\begin{document}
-
-\maketitle
-\thispagestyle{empty}
-\newpage
-
-\tableofcontents
-\newpage
-
-\setcounter{page}{1}
-\pagenumbering{arabic}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1 - CONTENT-BASED VIDEO RETRIEVAL 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,7 +47,7 @@ The most important difference between content-based image retrieval and video re
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=0.75\textwidth]{figures/temporal_structure_videos.png}}
-\caption{\label{fig:temporal_structure}Temporal structure of videos, including the different terms used to describe video temporal units. Figure courtesy of A. Araujo et al. \cite{araujo2017i2v}.}
+%\caption{\label{fig:temporal_structure}Temporal structure of videos, including the different terms used to describe video temporal units. Figure courtesy of A. Araujo et al. \cite{araujo2017i2v}.}
 \end{figure}
 
 Because this project will attempt to provide a CBVR solution targeting databases of feature-length movies, a fourth video temporal structure category relevant to this project can be added to Araujo et al.'s list:
@@ -158,7 +121,7 @@ A challenge also lies within the computational power needed to process all the d
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 2 - FEATURE EXTRACTION AND DATABASE PRE-ANALYSIS FOR PATTERN MATCHING
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage \section{Visual Content Extraction}
+\section{Visual Content Extraction}
 
 Good matches when comparing low-level visual content can still produce poor results (60\% green and 40\% blue example) \cite{petkovic2000}
 
@@ -244,7 +207,7 @@ TODO:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 3 - DATABASE VIDEOS PRE-PROCESSING
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\clearpage \section{Database Videos Pre-Processing}
+\section{Database Videos Pre-Processing}
 
 The database of videos can be pre-processed to later optimise the pattern matching phase, enabling the overall system to operate more efficiently.
 
@@ -314,14 +277,3 @@ TODO:
     \item Similar trajectories: if the dynamic features of a video are used to find similarities, then the database of videos can be pre-analysed to detect trajectories \cite{lai2015trajectory}
     \item Use of optical flow in this particular case
 \end{itemize}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BIBLIOGRAPHY
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\clearpage
-\bibliographystyle{acm}
-\bibliography{Bibliography}
-
-\end{document}
