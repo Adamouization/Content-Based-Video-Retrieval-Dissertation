@@ -1,6 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 1 - CONTENT-BASED VIDEO RETRIEVAL 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1 - CONTENT-BASED RETRIEVAL 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Content-Based Retrieval}
 
 Content-based retrieval is a type of visual search technique where large databases of either images or videos are queried to find the closest match to a query image or video. Although this project focuses on content-based video retrieval, also known as CBVR\footnote{Content-Based Video Retrieval}, image retrieval techniques, also known as CBIR\footnote{Content-Based Image Retrieval}, will be discussed as well due to their relevance in video retrieval.\\
@@ -29,7 +29,6 @@ Content-based retrieval techniques quickly replaced text-based retrieval techniq
 \end{itemize}
 
 In comparison to raw data, low-level visual content provides more relevant information to extract from a video. Additionally, semantic content extraction adds an unnecessary layer of complexity compared to low-level visual content extraction as it requires domain knowledge and user interaction \cite{petkovic2000}. Therefore, this project will focus on using low-level visual content to extract information about the video and compute the similarities between the query video and database videos. It is important to note that this project's goal differs from classic CBVR systems where a list of videos is returned (see in Figure \ref{fig:text_vs_content_retrieval} \emph{b}), as it must return a specific video that corresponds to the query video (see Figure \ref{fig:text_vs_content_retrieval} \emph{c}). To improve the pattern matching accuracy phase, raw data (e.g. audio) and metadata (e.g. captions) may be used to improve the pattern matching accuracy \cite{patel2012}.\\
-
 
 % ----------------------------------------------------
 
@@ -68,9 +67,9 @@ Multiple challenges can arise in CBVR in contrast to image retrieval. The tempor
 Because videos are made up of numerous frames, usually around 24 per second, there are almost no differences between two consecutive frames. Bradski et al. \cite{bradski2008opencv} clearly points out how the pixels describing an object in one frame will remain the same in the next frame, except for the edge pixels perpendicular to the motion trajectory. Figure \ref{fig:forrest_gump_frames} shows six frames from Forrest Gump's famous running shot, which lasts 44 seconds, making up a total of 1056 frames. Each frame in the figure was captured with 10-second intervals, meaning 240 frames separate each. In the first three frames, the group of people running in the background barely moves in 20 seconds (480 frames). The pixels that form the group in the shot remain the same for all of the frames between the 3 samples, with a few new pixels describing the group rather than the road as it advances towards the camera. The same can be said about the red cap in the last two frames. Most of the pixels making up the cap in the fifth frame remain the same in the sixth frame. This example betrays the reason why analysing a video frame by frame would be extremely inefficient when it comes to CBVR. Due to the similarities between consecutive frames, frames should be aggregated \cite{araujo2017i2v} to describe a shot by using a selection of frames, such as taking the six frames in Figure \ref{fig:forrest_gump_frames} to describe the entire 44 seconds of video.
 
 \begin{comment}
-On top project aim mobile device using a database of feature-length movies.\\
-\cite{araujo2017i2v}One of the problems regarding video retrieval is the temporal aspect of the data. A solution to overcome the temporal aspect of the data is to aggregate each video into a compact signature to allow quicker and more efficient matching (when matching the query video to a video in the database).\\ 
-temporal aggregation problem of videos compared to images
+    On top project aim mobile device using a database of feature-length movies.\\
+    \cite{araujo2017i2v}One of the problems regarding video retrieval is the temporal aspect of the data. A solution to overcome the temporal aspect of the data is to aggregate each video into a compact signature to allow quicker and more efficient matching (when matching the query video to a video in the database).\\ 
+    temporal aggregation problem of videos compared to images
 \end{comment}
 
 % ----------------------------------------------------
@@ -103,32 +102,33 @@ These low-quality conditions add difficulty to the pattern matching phase where 
 
 According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile device users expect a polished product with quick video query and instant or progressive results, meaning that the searching algorithms must be efficient. However, one of the downsides of mobile devices is the computation power constraints. Despite the improvements of mobile processors, desktop devices still remain more powerful than mobile ones. A solution that Liu et al. suggest is to retrieve the low-level visual content locally on the mobile device, and send the query to a server where the pattern matching will take place \cite{liu2014mobilevideosearch}. This allows heavy computations to be off-loaded from the mobile device. Once a match is found, the result is returned to the user on his mobile device. A downside to this approach is the new constraint on network bandwidth rather than computational power.
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{comment}
-% todo - spread in sections above
-\subsubsection{Computational efficiency and database size}
-
-At the early stages of the development phase of the project, the database of videos for the system will be made up of shots only, lasting on average ten seconds. Longer videos will be used progressively based on the system's progress with shorter videos.\\
-mention \cite{hanjalic1999moviesegmentation}
-
-\cite{wang2016actionregonition}
-A challenge also lies within the computational power needed to process all the data in a database efficiently.\\
+    % todo - spread in sections above
+    \subsubsection{Computational efficiency and database size}
+    
+    At the early stages of the development phase of the project, the database of videos for the system will be made up of shots only, lasting on average ten seconds. Longer videos will be used progressively based on the system's progress with shorter videos.\\
+    mention \cite{hanjalic1999moviesegmentation}
+    
+    \cite{wang2016actionregonition}
+    A challenge also lies within the computational power needed to process all the data in a database efficiently.\\
 \end{comment}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 2 - FEATURE EXTRACTION AND DATABASE PRE-ANALYSIS FOR PATTERN MATCHING
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2 - VISUAL CONTENT EXTRACTION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Visual Content Extraction}
 
-Good matches when comparing low-level visual content can still produce poor results (60\% green and 40\% blue example) \cite{petkovic2000}
+% ----------------------------------------------------
 
 \subsection{Static Content}
 \label{sec:static-content}
 
 Corresponds to content that can be extracted from a single frame from the video.
+histograms
+region-based content
+
+% ----------------------------------------------------
 
 \subsection{Dynamic Content}
 
@@ -136,9 +136,6 @@ Corresponds to content that requires the continuity between consecutive frames t
 
 \subsubsection{Features}
 \label{sec:features}
-
-\subsubsection{Definition}
-\label{sec:feature-definition}
 
 Features correspond to specific visual objects or patterns in an image (or video frame). The low-level visual content aforementioned in Section \ref{sec:cbvr-methods} can be extracted into features, which store the visual descriptors of the video such as the colours and shapes \cite{petkovic2000} that make an object or a pattern unique. However, only good features features should be extracted from the image. It is therefore important to make the difference between good and poor features to only extract the useful ones. Figure \ref{fig:features_cube} shows an image of a 3D-shaped cube, along with coloured patches that make out potential features:
 \begin{itemize}
@@ -160,36 +157,12 @@ Once good features like corners are extracted, they are used to compute visual s
 
 Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database. This section will focus on Fisher Vectors, including the Bag-of-Words model that is necessary to understand Fisher Vectors.
 
-\subsubsection{Detection}
+\subsubsection{Finding features}
 \label{sec:corner-detection}
 
 TODO: Explain corner detection to find good features e.g. Harris Corner Detection
 
-% ----------------------------------------------------
-
-\subsection{Bag-of-Words Model}
-\label{sec:BoW}
-
-TODO:
-\begin{itemize}
-    \item Explain how Bag-of-Words model works
-    \item H. Wang's implementation of BoW histogram \cite{wang2016actionregonition}
-    \item State that Fisher Vectors are an improvement on BoW
-\end{itemize}
-
-% ----------------------------------------------------
-
-\subsection{Fisher Vectors}
-\label{sec:fisher-vectors}
-
-TODO:
-\begin{itemize}
-    \item Fisher Vectors can be used to generate a compact signature for videos, which will then be used for computing similarities between the query video's FV and the database videos' FVs \cite{araujo2017i2v}
-\end{itemize}
-
-% ----------------------------------------------------
-
-\subsection{Optical Flow}
+\subsubsection{Optical Flow}
 \label{sec:optical-flow}
 
 TODO:
@@ -203,11 +176,40 @@ TODO:
     \item Can calculate optical flow to prune camera movement caused by unstable recording e.g. hand shaking \cite{wang2016actionregonition}
 \end{itemize} movements.
 
+\begin{comment}
+    Good matches when comparing low-level visual content can still produce poor results (60\% green and 40\% blue example) \cite{petkovic2000}
+\end{comment}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 3 - DATABASE VIDEOS PRE-PROCESSING
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Database Videos Pre-Processing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3 - PATTERN MATCHING METHODS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pattern Matching Methods}
+
+Retrace evolution of pattern matching methods: BoW to CNN (and before? --> find surveys)
+
+% ----------------------------------------------------
+
+\subsection{Bag-of-Words Model}
+
+TODO:
+\begin{itemize}
+    \item Explain how Bag-of-Words model works
+    \item H. Wang's implementation of BoW histogram \cite{wang2016actionregonition}
+    \item State that Fisher Vectors are an improvement on BoW
+\end{itemize}
+
+% ----------------------------------------------------
+
+\subsection{CNN}
+
+CNNs
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 4 - DATABASE VIDEO PRE-PROCESSING
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Database Video Pre-Processing}
 
 The database of videos can be pre-processed to later optimise the pattern matching phase, enabling the overall system to operate more efficiently.
 
@@ -276,4 +278,14 @@ TODO:
 \begin{itemize}
     \item Similar trajectories: if the dynamic features of a video are used to find similarities, then the database of videos can be pre-analysed to detect trajectories \cite{lai2015trajectory}
     \item Use of optical flow in this particular case
+\end{itemize}
+
+% ----------------------------------------------------
+
+\subsection{Fisher Vectors}
+\label{sec:fisher-vectors}
+
+TODO:
+\begin{itemize}
+    \item Fisher Vectors can be used to generate a compact signature for videos, which will then be used for computing similarities between the query video's FV and the database videos' FVs \cite{araujo2017i2v}
 \end{itemize}
