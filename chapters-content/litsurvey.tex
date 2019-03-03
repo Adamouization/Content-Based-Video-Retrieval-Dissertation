@@ -56,7 +56,6 @@ Because this project will explore possible solutions to create a CBVR system tar
 \end{itemize}
 
 \subsubsection{Challenges of Temporality}
-\label{sec:cbvr-challenges}
 
 Multiple challenges arise when dealing with CBVR systems in contrast to CBIR systems as the videos' temporal aspect adds a new dimension of complexity when extracting visual information. While the low-level visual content describing images remains mostly the same for videos (see Section ref-section), some new information that did not exist in images can be extracted, such motion. As mentioned previously, videos are a made up of frames, which make up shots when a combination of similar frames are played in succession. This means that videos carry information about motion, such as the trajectory of objects. This introduces unique challenges to the algorithms used to extract motion.\\
 
@@ -78,7 +77,6 @@ Figure \ref{fig:forrest_gump_frames} shows six frames from Forrest Gump's famous
 % ----------------------------------------------------
 
 \subsection{CBVR for Mobile Devices}
-\label{sec:mobile-cbvr-challenges}
 
 The aforementioned project aim is for the system to work on mobile devices for two reasons. The first reason, as shown in Figure \ref{fig:wireframe} is to allow users to directly use their mobile phone to record the query video by pointing their camera to a screen displaying a movie, which will in turn tell them which movie is being played. Additional information retrieved from IMDb\footnote{Internet Movie Database}, such as cast, crew, ratings, runtime and synopsis could also be displayed. The second reason is the popularity of mobile devices, which may be due to the improvements made on mobile phones' processing power, allowing more tasks to be carried out through this medium. However, such a system on a mobile device causes many problems regarding the query video recording method and the computational power available on mobile devices.\\
 
@@ -88,7 +86,6 @@ The aforementioned project aim is for the system to work on mobile devices for t
 \end{figure}
 
 \subsubsection{Query Video Quality}
-\label{sec:query-video-challenges}
 
 Large visual differences are caused between the query clip and the actual clip stored in the database due to the capture conditions \cite{liu2014mobilevideosearch} \cite{wang2016actionregonition} such as:
 \begin{itemize}
@@ -101,7 +98,6 @@ Large visual differences are caused between the query clip and the actual clip s
 These low-quality conditions add difficulty to the pattern matching phase where the similarities between the query video and database videos have to be computed. Indeed, if the query video is very different to the actual video, then the noisy elements of the video query must filtered out. For example, if the recorded video is shaky, then this shaking motion has to be pruned before analysing the recorded clip's motion. However, processing power must be used from the actual visual content extraction and pattern matching phases to be used for video noise filtering.
 
 \subsubsection{User Experience}
-\label{sec:user-experience}
 
 According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile device users expect a polished product with quick video query and instant or progressive results, meaning that the searching algorithms must be efficient. However, one of the downsides of mobile devices is the computation power constraints. Despite the improvements of mobile processors, desktop devices still remain more powerful than mobile ones. A solution that Liu et al. suggest is to retrieve the low-level visual content locally on the mobile device, and send the query to a server where the pattern matching will take place \cite{liu2014mobilevideosearch}. This allows heavy computations to be off-loaded from the mobile device. Once a match is found, the result is returned to the user on his mobile device. A downside to this approach is the new constraint on network bandwidth rather than computational power.
 
@@ -127,7 +123,6 @@ Extracting the visual content from a video allows this content to be used to des
 % ----------------------------------------------------
 
 \subsection{Static Content}
-\label{sec:static-content}
 
 Corresponds to content that can be extracted from a single frame from the video.
 histograms
@@ -163,12 +158,10 @@ Once good features like corners are extracted, they are used to compute visual s
 Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database. This section will focus on Fisher Vectors, including the Bag-of-Words model that is necessary to understand Fisher Vectors.
 
 \subsubsection{Finding features}
-\label{sec:corner-detection}
 
 TODO: Explain corner detection to find good features e.g. Harris Corner Detection
 
 \subsubsection{Optical Flow}
-\label{sec:optical-flow}
 
 TODO:
 \begin{itemize}
@@ -221,7 +214,6 @@ The database of videos can be pre-processed to later optimise the pattern matchi
 % ----------------------------------------------------
 
 \subsection{Key Frames}
-\label{sec:key-frames}
 
 Y. S. Heo et al. \cite{heo2016colortransfer} suggests only considering key frames in videos to operate on. These key frames would be used for the feature extraction, database pre-processing and pattern matching phases. Key frames are determined based on the difference between two consecutive frames using the histogram chi-square distribution approach (See Equation \ref{eq:chisquare}).\\
 
@@ -248,7 +240,6 @@ To illustrate the advantage of using key frames, let's use a 3-seconds long shot
 % ----------------------------------------------------
 
 \subsection{Thumbnails}
-\label{sec:thumbnails}
 
 In their work, M. Okabe et al. \cite{okabe2018animating} generate thumbnails for each video in their database, which are stored as additional data along with the origin video file. The thumbnails for the query video and for the database videos would be generated using the same algorithm in order to create similar results. This technique can be used in parallel to A. Araujo et al.'s \cite{araujo2017i2v}, who states that an initial shortlist of potentially matching videos can be generated before the main pattern matching phase. This shortlist can be created by computing the similarities between the query video's thumbnail and the database video's thumbnails. Many advantages can be gained from this small initial step which could be extremely important in the overall system's speed and efficiency:
 \begin{itemize}
@@ -267,7 +258,6 @@ For quicker pattern matching and feature extraction, 16 pixels separate two feat
 % ----------------------------------------------------
 
 \subsection{Movie Segmentation}
-\label{sec:movie-segmentation}
 
 TODO:
 \begin{itemize}
@@ -277,7 +267,6 @@ TODO:
 % ----------------------------------------------------
 
 \subsection{Trajectory Analysis}
-\label{sec:trajectory-analysis}
 
 TODO:
 \begin{itemize}
@@ -288,7 +277,6 @@ TODO:
 % ----------------------------------------------------
 
 \subsection{Fisher Vectors}
-\label{sec:fisher-vectors}
 
 TODO:
 \begin{itemize}
