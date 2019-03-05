@@ -126,31 +126,42 @@ These features can be divided into two categories: static features and dynamic f
 
 \subsection{Static Features}
 
-Corresponds to content that can be extracted from a single frame from the video.
+Methods to extract static features operate on stills, which can correspond to individual video frames, thumbnails or key frames. This means that traditional image techniques can be applied on those stills \cite{hu2011survey}. They are organised in three different categories: colour-based features, texture-based features and shape-based features.
 
 \subsubsection{Colour-based Features}
 
-colour histograms
+The main colour-based features model are colour histograms. In general, a histogram consists of counts of some underlying data that is organised into predetermined bins to a statistical representation of the distribution of that data. Figure \ref{fig:histogram-general-example} depicts an example of a histogram where a collection of points is organised into specific ore-defined bins based on their location relative to a vertical grid.
 
-colour moments
+\begin{figure}[h]
+\centerline{\includegraphics[width=0.70\textwidth]{figures/histogram_general_example.png}}
+\caption{\label{fig:histogram-general-example}Example of a histogram counting the location of points relative to a vertical grid. Image courtesy of Bradski and Kaehler.}
+\end{figure}
 
-colour correlograms
+In the case of a colour histogram, the underlying data that the histogram is trying to represent is the distribution of the colour pixels throughout an image or a video frame. Different kinds of colour histograms exist as they depend on the chosen colour space, which include RGB\footnote{Red Green Blue}, HSV\footnote{Hue Saturation Value}, HSL\footnote{Hue Saturation Light} or YPbPr colour spaces to name a few. These may vary based on the applications of the colour histograms.\\
 
-depends on colour space used (RGB, HSV, ...)
+Typically, for a RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which aren then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represented the distribution efficiently. If the range of pixels that defined the bins is wider, meaning there are less overall bins, then the histogram's distribution would be too coarse-grained and the general structure of the histogram would be lost, as pointed out by the left half of Figure \ref{fig:histogram-bin-size}. On the other hand, if the range of the bins is too narrow, meaning there are more overall bins, then the histogram's distribution would not be represented accurately and there would be many spiky cells, as betrayed in the right half of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.
 
-global content VS region-based content. Good matches when comparing low-level visual content can still produce poor results (60\% green and 40\% blue example) \cite{petkovic2000}
+\begin{figure}[h]
+\centerline{\includegraphics[width=0.80\textwidth]{figures/histogram_bin_size.png}}
+\caption{\label{fig:histogram-bin-size}If the range of the bins is too large, then the distribution is coarse (left). If the range of the bins is too small, then the distribution is not accurately represented and spikes cells appear (right). Image courtesy of Bradski and Kaehler.}
+\end{figure}
+
+One of the inaccuracies with colour histograms lies within the scope of the distribution. If the histogram represents the global distribution of all the pixels in the still, then two images might have very similar histograms \cite{petkovic2000}. For example, a histogram containing 60\% white pixels and 40\% blue pixels could either describe both a blue sky with white clouds, or a snowy landscape with a blue sky. Despite both histograms being good colour-based features, the actual result is still poor when it will be used for matching the histograms. A solution consists in segmenting the still into multiple local images, and extract the local colour-based features for each segment. For example, the still could be partitioned into a 5x5 grid, and a colour histogram could then be computed for each grid \cite{yan2007review}. This would enable colour-based features to represent specific regions of the still rather than globally describing an image. However, the same problem mentioned earlier could occur if the still is segmented into too many regions, causing the overall histogram to be coarse.\\
+
+Other types of colour-based features can be extracted from images and videos such as colour moments, colour correlograms \cite{huang1997correlograms} and Gaussian models. However, colour-based features have their limitations as they cannot describe textures and shapes, rendering them inefficient in certain applications \cite{hu2011survey}.
 
 \subsubsection{Texture-based Features}
 
-todo
+Texture-based features are often used in parallel with colour-based features. The aforesaid problem where two different objects might share a similar histogram e.g. green tree leaves and green grass, can be solved by using texture-based features to differentiate them. These can be differentiated by using a variety of features such as Tamura features, which extract information including coarseness, contrast, and directionality of the objects \cite{amir2003ibm}. 
 
 \subsubsection{Shape-based Features}
 
-detect edges, plot distribution of edges in a histogram (EHD)
+Shape-based features are used to describe the overall shape of objects present in the image. The most common approach consists in computing a EHD\footnote{Edge Histogram Descriptor}, which consists in detecting the edges present in the image (see Section edges) and then plot their spatial distribution in an histogram by counting the number of pixels for each edge \cite{hauptmann2004informedia}. The same image segmentation technique can be used to localise the EHD. These shape-based features have many applications, but are harder to extract and require more computing power than colour-based features and texture-based features.
 
 % ----------------------------------------------------
 
 \subsection{Dynamic Features}
+\label{sec:features}
 
 % define features (corners and edges)
 
