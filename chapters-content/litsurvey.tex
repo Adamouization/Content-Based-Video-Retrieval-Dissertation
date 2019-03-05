@@ -24,7 +24,7 @@ Throughout the years, video retrieval has improved in parallel with the breakthr
 Content-based retrieval techniques quickly replaced text-based retrieval techniques towards the end of the 20th century by making use of the visual content to compute similarities between videos \cite{lai2015trajectory}. Instead of accepting a text string, the system takes a video as input to extract its visual contents, as shown in Figure \ref{fig:text_vs_content_retrieval}.\emph{b}. According to Petković et al. \cite{petkovic2000}, this visual content can be broken down into three different categories:
 \begin{itemize}
     \item \textit{Raw data}, which corresponds to individual raw video frames and the video file's attributes such as the frame rate per seconds, the number of bits per pixel or the colour model used.
-    \item \textit{Low-level visual content}  consists of the visual features that describe a video. This content includes colours, shapes, textures and motion. Low-level visual content can be extracted into histograms (see Section add-section) or features (see Section \ref{sec:features}) using a wide variety of existing techniques. Once the content has been extracted, it can be used to first compute similarities between videos \cite{lai2015trajectory} and later pattern match them.
+    \item \textit{Low-level visual content}  consists of the visual features that describe a video. This content includes colours, shapes, textures and motion. Low-level visual content can be extracted into static features such as histograms (see Section \ref{sec:color-based-features}) or dynamic features such as objects or motion (see Section \ref{sec:dynamic-features}) using a wide variety of existing techniques. Once the content has been extracted, it can be used to first compute similarities between videos \cite{lai2015trajectory} and later pattern match them.
     \item \textit{Semantic content} contains the high-level concepts that are present in a video. These high-level concepts can be described as objects or events using the features. To extract semantic content from a video, a grammar of rules for objects must be provided. An example of an object rule could be "if the shape is round, the colour is orange and the object is moving, then that object is a basketball".
 \end{itemize}
 
@@ -114,9 +114,9 @@ According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 2 - VISUAL CONTENT EXTRACTION
+% 2 - VISUAL CONTENT EXTRACTION FOR PATTERN MATCHING VIDEOS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Visual Content Extraction}
+\section{Visual Content Extraction for Pattern Matching Videos}
 
 Extracting the visual content from a video allows this content to be used to describe videos and compute similarities between them. This visual content is extracted from the aforementioned low-level visual content (see Section \ref{sec:cbvr-methods}) \cite{petkovic2000} and stored in the form features, also referred to as visual descriptors. The term ``features'' is very broad and can be used to describe many different visual aspects in an image or in a video, ranging from colours, shapes and textures to points, edges, objects and motion.\\
 
@@ -129,6 +129,7 @@ These features can be divided into two categories: static features and dynamic f
 Methods to extract static features operate on stills, which can correspond to individual video frames, thumbnails or key frames. This means that traditional image techniques can be applied on those stills \cite{hu2011survey}. They are organised in three different categories: colour-based features, texture-based features and shape-based features.
 
 \subsubsection{Colour-based Features}
+\label{sec:color-based-features}
 
 The main colour-based features model are colour histograms. In general, a histogram consists of counts of some underlying data that is organised into predetermined bins to a statistical representation of the distribution of that data. Figure \ref{fig:histogram-general-example} depicts an example of a histogram where a collection of points is organised into specific ore-defined bins based on their location relative to a vertical grid.
 
@@ -161,7 +162,7 @@ Shape-based features are used to describe the overall shape of objects present i
 % ----------------------------------------------------
 
 \subsection{Dynamic Features}
-\label{sec:features}
+\label{sec:dynamic-features}
 
 In contrast to static features, which can be extracted from individual video frames, dynamic features require the continuity between consecutive frames to extract relevant visual descriptors, making use of the temporal aspect of the video (See Section \ref{sec:temporal-aspect-videos}). These features can be divided into two subcategories: object features and motion features. However, before reviewing the techniques used to extract these features, it is important to specify what defines a good visual feature.
 
@@ -189,22 +190,18 @@ Object features correspond to objects that are detected using the colour, textur
 
 \subsubsection{Motion Features}
 
-TODO:
-\begin{itemize}
-    \item Optical flow algorithms \cite{bradski2008opencv}:
-    \begin{itemize}
-        \item Dense Optical Flow
-        \item Farneback Polynomial Expression Algorithms
-        \item Lucas-Kanade Algorithm
-    \end{itemize}
-    \item Can calculate optical flow to prune camera movement caused by unstable recording e.g. hand shaking \cite{wang2016actionregonition}
-\end{itemize} movements.
+camera-based motion features
+
+object-based motion features
+
+Example algorithms: optical flow (Dense Optical Flow, Farneback Polynomial Expression Algorithms, Lucas-Kanade Algorithm.
+Can calculate optical flow to prune camera movement caused by unstable recording e.g. hand shaking movement \cite{wang2016actionregonition}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 3 - PATTERN MATCHING METHODS
+% 3 - LEARNING MODELS & FEATURE MATCHING
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Pattern Matching Methods}
+\section{Learning Models and Feature Matching}
 
 Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database.
 Retrace evolution of pattern matching methods: BoW to CNN (and before? --> find surveys)
