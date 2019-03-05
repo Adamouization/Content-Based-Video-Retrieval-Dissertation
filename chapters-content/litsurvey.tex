@@ -81,7 +81,7 @@ Figure \ref{fig:forrest_gump_frames} shows six frames from Forrest Gump's famous
 The aforementioned project aim is for the system to work on mobile devices for two reasons. The first reason, as shown in Figure \ref{fig:wireframe} is to allow users to directly use their mobile phone to record the query video by pointing their camera to a screen displaying a movie, which will in turn tell them which movie is being played. Additional information retrieved from IMDb\footnote{Internet Movie Database}, such as cast, crew, ratings, runtime and synopsis could also be displayed. The second reason is the popularity of mobile devices, which may be due to the improvements made on mobile phones' processing power, allowing more tasks to be carried out through this medium. However, such a system on a mobile device causes many problems regarding the query video recording method and the computational power available on mobile devices.\\
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=1.25\textwidth]{figures/system_wireframe.png}}
+\centerline{\includegraphics[width=1.15\textwidth]{figures/system_wireframe.png}}
 \caption{\label{fig:wireframe}Wireframe showing the basic high-level concept of the system.}
 \end{figure}
 
@@ -120,7 +120,7 @@ According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile 
 
 Extracting the visual content from a video allows this content to be used to describe videos and compute similarities between them. This visual content is extracted from the aforementioned low-level visual content (see Section \ref{sec:cbvr-methods}) \cite{petkovic2000} and stored in the form features, also referred to as visual descriptors. The term ``features'' is very broad and can be used to describe many different visual aspects in an image or in a video, ranging from colours, shapes and textures to points, edges, objects and motion.\\
 
-These features can be divided into two categories: static features and dynamic features. This section will first survey examples of static visual descriptors and methods to extract them from videos, and will then focus on examples and methods of extracting dynamic visual descriptors from videos.
+These features can be divided into two categories: static features and dynamic features \cite{petkovic2000}. This section will first survey examples of static visual descriptors and methods to extract them from videos, and will then focus on examples and methods of extracting dynamic visual descriptors from videos.
 
 % ----------------------------------------------------
 
@@ -139,7 +139,7 @@ The main colour-based features model are colour histograms. In general, a histog
 
 In the case of a colour histogram, the underlying data that the histogram is trying to represent is the distribution of the colour pixels throughout an image or a video frame. Different kinds of colour histograms exist as they depend on the chosen colour space, which include RGB\footnote{Red Green Blue}, HSV\footnote{Hue Saturation Value}, HSL\footnote{Hue Saturation Light} or YPbPr colour spaces to name a few. These may vary based on the applications of the colour histograms.\\
 
-Typically, for a RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which aren then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represented the distribution efficiently. If the range of pixels that defined the bins is wider, meaning there are less overall bins, then the histogram's distribution would be too coarse-grained and the general structure of the histogram would be lost, as pointed out by the left half of Figure \ref{fig:histogram-bin-size}. On the other hand, if the range of the bins is too narrow, meaning there are more overall bins, then the histogram's distribution would not be represented accurately and there would be many spiky cells, as betrayed in the right half of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.
+Typically, for a RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which are then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represented the distribution efficiently. If the range of pixels that defined the bins is wider, meaning there are less overall bins, then the histogram's distribution would be too coarse-grained and the general structure of the histogram would be lost, as pointed out by the left half of Figure \ref{fig:histogram-bin-size}. On the other hand, if the range of the bins is too narrow, meaning there are more overall bins, then the histogram's distribution would not be represented accurately and there would be many spiky cells, as betrayed in the right half of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=0.80\textwidth]{figures/histogram_bin_size.png}}
@@ -163,15 +163,15 @@ Shape-based features are used to describe the overall shape of objects present i
 \subsection{Dynamic Features}
 \label{sec:features}
 
-% define features (corners and edges)
+In contrast to static features, which can be extracted from individual video frames, dynamic features require the continuity between consecutive frames to extract relevant visual descriptors, making use of the temporal aspect of the video (See Section \ref{sec:temporal-aspect-videos}). These features can be divided into two subcategories: object features and motion features. However, before reviewing the techniques used to extract these features, it is important to specify what defines a good visual feature.
 
-Corresponds to content that requires the continuity between consecutive frames to be analysed.
+\subsubsection{Corner Detection}
 
-However, only good features features should be extracted from the image. It is therefore important to make the difference between good and poor features to only extract the useful ones. Figure \ref{fig:features_cube} shows an image of a 3D-shaped cube, along with coloured patches that make out potential features:
+Figure \ref{fig:features_cube} shows an image of a 3D-shaped cube, along with coloured patches that make out potential features:
 \begin{itemize}
-	\item Blue features
-	\item Green features
-	\item Red features
+	\item Flat region (blue). Moving the blue patch along the image in any direction will result in the same content being described. Flat regions are the worst structures as they do not contain any useful information.
+	\item Edge (green). These are more informative as an edge can localised in one direction, however moving the green patch along the object's edge will again result in the same content being described. Edges are therefore efficient to describe object boundaries only.
+	\item Corner (red. These are the most interesting points as they can be localised in two directions, and are unique in the image. They are therefore the ideal candidate for matching and detecting objects.
 \end{itemize}
 
 \begin{figure}[h]
@@ -179,23 +179,13 @@ However, only good features features should be extracted from the image. It is t
 \caption{\label{fig:features_cube}A 3D-shaped cube with coloured patches representing potential features.}
 \end{figure}
 
-Once good features like corners are extracted, they are used to compute visual similarities between the query video and the videos in the database. According to Petković et al., two types features can be extracted from a video: 
-\begin{itemize}
-    \item \textit{Static features} are used to characterise a frame from the video such as colours, shapes or textures. They can be used to describe images and videos.
-    \item \textit{Dynamic features} describe a sequence of frames and therefore store the information regarding the temporal aspect of the video (See Section \ref{sec:temporal-aspect-videos}) such as objects' motions and trajectories.
-\end{itemize}
-
-Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database. This section will focus on Fisher Vectors, including the Bag-of-Words model that is necessary to understand Fisher Vectors.
-
-% detecting features
+Once expressive and unique descriptors like corners are detected, they can be used to extract object features and motion features, and to compute similarities between the query video and the videos in the database.
 
 TODO: Explain corner detection to find good features e.g. Harris Corner Detection
 
 \subsubsection{Object Features}
 
-faces
-
-texts
+Object features correspond to objects that are detected using the colour, texture and size of image regions. Some of the most common objects usually detected in videos are faces, as many CBVR systems use them to compute similarities between videos \cite{sivic2005face}. However, extracting object features is time-consuming and expensive in terms of required processing power, which is why CBVR algorithms either focus on detecting specific sets of objects rather than general objects that may be present in a scene, or on static features.
 
 \subsubsection{Motion Features}
 
@@ -216,6 +206,7 @@ TODO:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Pattern Matching Methods}
 
+Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database.
 Retrace evolution of pattern matching methods: BoW to CNN (and before? --> find surveys)
 
 % ----------------------------------------------------
