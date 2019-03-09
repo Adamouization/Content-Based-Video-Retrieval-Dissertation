@@ -164,25 +164,29 @@ Shape-based features are used to describe the overall shape of objects present i
 \subsection{Dynamic Features}
 \label{sec:dynamic-features}
 
-In contrast to static features, which can be extracted from individual video frames, dynamic features require the continuity between consecutive frames to extract relevant visual descriptors, making use of the temporal aspect of the video (See Section \ref{sec:temporal-aspect-videos}). These features can be divided into two subcategories: object features and motion features. However, before reviewing the techniques used to extract these features, it is important to specify what defines a good visual feature.
+In contrast to static features, which can be extracted from individual video frames, dynamic features require the continuity between consecutive frames to extract relevant visual descriptors, making use of the temporal aspect of the video mentioned in section \ref{sec:temporal-aspect-videos}). These features can be divided into two subcategories: object features and motion features. However, before reviewing the techniques used to extract these features, it is important to specify what defines a good visual feature.
 
 \subsubsection{Corner Detection}
 
-Figure \ref{fig:features_cube} shows an image of a 3D-shaped cube, along with coloured patches that make out potential features:
+Figure \ref{fig:monaco_palace_features} shows an image with coloured windows used to make the difference between poor and good potential features that could be used for object and motion features:
 \begin{itemize}
-	\item Flat region (blue). Moving the blue patch along the image in any direction will result in the same content being described. Flat regions are the worst structures as they do not contain any useful information.
-	\item Edge (green). These are more informative as an edge can localised in one direction, however moving the green patch along the object's edge will again result in the same content being described. Edges are therefore efficient to describe object boundaries only.
-	\item Corner (red. These are the most interesting points as they can be localised in two directions, and are unique in the image. They are therefore the ideal candidate for matching and detecting objects.
+	\item \textit{Flat surfaces} are portrayed in blue in Figure \ref{fig:monaco_palace_features}. These blue windows are spread over large areas of the image, meaning it is difficult to find their specific location. Moving the blue window along the image in any direction will result in the same visual content being represented in the window. Therefore, these flat regions are the worst structures as they do not contain any useful information.
+	\item \textit{Edges} are characterised in green in Figure \ref{fig:monaco_palace_features}. These are more informative than flat surfaces as they can be more accurately localised, but pinpointing an exact location is still hard as the patch can be moved in the direction parallel to the edge's. Moving the green window along the edge will again result in the same visual content being represented in the window. Edges are efficient to detect object boundaries, but not for tracking specific points.
+	\item \textit{Corner} are characterised in red in Figure \ref{fig:monaco_palace_features}. These are the most descriptive points as they are often unique and can be precisely located in an image. Moving the red window in any direction will cause it to look different. Corners are therefore the ideal candidate for features used in object matching and tracking.
 \end{itemize}
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=0.5\textwidth]{figures/features_cube.png}}
-\caption{\label{fig:features_cube}A 3D-shaped cube with coloured patches representing potential features.}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/monaco_palace_features.jpg}}
+\caption{\label{fig:monaco_palace_features}An image of the Palace of Monaco with coloured windows representing poor features in blue (flat), edges in green, and good features in red (corners).}
 \end{figure}
 
-Once expressive and unique descriptors like corners are detected, they can be used to extract object features and motion features, and to compute similarities between the query video and the videos in the database.
+Once expressive and unique descriptors like corners are detected, they can be used to extract object features and motion features, and to compute similarities between the query video and the videos in the database.\\
 
 TODO: Explain corner detection to find good features e.g. Harris Corner Detection
+
+\begin{comment}
+    detect edges and then use that to detect corners
+\end{comment}
 
 \subsubsection{Object Features}
 
@@ -232,6 +236,10 @@ TODO:
 
 CNNs
 
+\subsection{Feature Matching}
+
+intensity-based template matching
+SIFT matching
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 4 - DATABASE VIDEO PRE-PROCESSING
