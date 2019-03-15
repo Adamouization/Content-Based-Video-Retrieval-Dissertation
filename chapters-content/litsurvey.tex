@@ -175,14 +175,14 @@ Figure \ref{fig:monaco_palace_features} shows an image with coloured windows use
 	\item \textit{Corner} are characterised in red in Figure \ref{fig:monaco_palace_features}. These are the most descriptive points as they are often unique and can be precisely located in an image. Moving the red window in any direction will cause it to look different. Corners are therefore the ideal candidate for features used in object matching and tracking.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[h] 
 \centerline{\includegraphics[width=0.75\textwidth]{figures/monaco_palace_features.jpg}}
 \caption{\label{fig:monaco_palace_features}An image of the Palace of Monaco with coloured windows representing poor features in blue (flat), edges in green, and good features in red (corners).}
 \end{figure}
 
 Once expressive and unique descriptors like corners are detected, they can be used to extract object features and motion features, and to compute similarities between the query video and the videos in the database.\\
 
-TODO: Explain corner detection to find good features e.g. Harris Corner Detection
+Many different techniques exist to find robust features and interest points: Harris Corner Detection, SIFT, SURF.
 
 \begin{comment}
     detect edges and then use that to detect corners
@@ -203,25 +203,23 @@ Can calculate optical flow to prune camera movement caused by unstable recording
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 3 - LEARNING MODELS & FEATURE MATCHING
+% 3 - LEARNING MODELS FOR FEATURE MATCHING
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Learning Models and Feature Matching}
+\section{Learning Models for Classification}
 
 Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database.
 Retrace evolution of pattern matching methods: BoW to CNN (and before? --> find surveys)
 
 % ----------------------------------------------------
 
-\subsection{Histogram Matching}
+\subsection{Bag-of-Visual-Words}
 
-chi-square
-alternative chi-square
-intersection
-bhattacharyya
+\subsubsection{BoW}
+BoW for documents
 
-% ----------------------------------------------------
+\subsubsection{BoVW}
 
-\subsection{Bag-of-Words Model}
+BoVW
 
 TODO:
 \begin{itemize}
@@ -230,27 +228,47 @@ TODO:
     \item State that Fisher Vectors are an improvement on BoW
 \end{itemize}
 
-% ----------------------------------------------------
+\subsubsection{Histogram Comparison}
 
-\subsection{CNN}
-
-CNNs
-
-\subsection{Feature Matching}
-
-intensity-based template matching
-SIFT matching
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 4 - DATABASE VIDEO PRE-PROCESSING
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Database Video Pre-Processing}
-
-The database of videos can be pre-processed to later optimise the pattern matching phase, enabling the overall system to operate more efficiently.
+chi-square
+alternative chi-square
+intersection
+bhattacharyya
 
 % ----------------------------------------------------
 
-\subsection{Key Frames}
+\subsection{Deep Learning}
+
+\subsubsection{Classical Neural Networks}
+
+nn
+
+\subsubsection{Convolutional Neural Networks}
+
+cnn
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 4 - STRUCTURAL MOVIE PRE-PROCESSING
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Structural Movie Pre-Processing}
+
+The database of videos can be pre-processed to optimise the visual content extraction and pattern matching phases. As stated in Section \ref{sec:temporal-aspect-videos} on the temporal aspects of videos, movies are arrays of scenes, which contain different shots that are made up of individual frames. Pre-processing the database of movies by segmenting it into a list of shots and representing each shot with a single key frame is a profitable solution that will exponentially improve a CBVR system's efficiency. However, a line must be drawn between the efficiency of the CBVR system and its accuracy.
+
+% ----------------------------------------------------
+
+\subsection{Segmentation Using Shot Boundary Detection}
+
+TODO:
+\begin{itemize}
+    \item A. Hanjalic et al. \cite{hanjalic1999moviesegmentation}
+\end{itemize}
+
+Improvements: consider the semantic aspects of movies, since people relate to the story, such as a marking dialogue, when they remember a movie. A. Hanjalic et al. \cite{hanjalic1999moviesegmentation}
+
+% ----------------------------------------------------
+
+\subsection{Key Frame Extraction}
 
 Y. S. Heo et al. \cite{heo2016colortransfer} suggests only considering key frames in videos to operate on. These key frames would be used for the feature extraction, database pre-processing and pattern matching phases. Key frames are determined based on the difference between two consecutive frames using the histogram chi-square distribution approach (See Equation \ref{eq:chisquare}).\\
 
@@ -291,25 +309,6 @@ This solution works well for shots, but work less well for scenes and movies (Se
 \cite{okabe2018animating}
 For quicker pattern matching and feature extraction, 16 pixels separate two feature points, allowing for rough pattern matching rather than exact pattern matching. This could be used when using feature-length movies as database videos to pattern match.
 \end{comment}
-
-% ----------------------------------------------------
-
-\subsection{Movie Segmentation}
-
-TODO:
-\begin{itemize}
-    \item A. Hanjalic et al. \cite{hanjalic1999moviesegmentation}
-\end{itemize}
-
-% ----------------------------------------------------
-
-\subsection{Trajectory Analysis}
-
-TODO:
-\begin{itemize}
-    \item Similar trajectories: if the dynamic features of a video are used to find similarities, then the database of videos can be pre-analysed to detect trajectories \cite{lai2015trajectory}
-    \item Use of optical flow in this particular case
-\end{itemize}
 
 % ----------------------------------------------------
 
