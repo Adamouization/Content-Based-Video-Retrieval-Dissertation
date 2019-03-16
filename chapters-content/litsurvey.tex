@@ -117,6 +117,7 @@ According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile 
 % 2 - VISUAL CONTENT EXTRACTION FOR PATTERN MATCHING VIDEOS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Visual Content Extraction for Pattern Matching Videos}
+\label{sec:visual-content-extraction}
 
 Extracting the visual content from a video allows this content to be used to describe videos and compute similarities between them. This visual content is extracted from the aforementioned low-level visual content (see Section \ref{sec:cbvr-methods}) \cite{petkovic2000} and stored in the form features, also referred to as visual descriptors. The term ``features'' is very broad and can be used to describe many different visual aspects in an image or in a video, ranging from colours, shapes and textures to points, edges, objects and motion.\\
 
@@ -253,11 +254,19 @@ cnn
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Structural Movie Pre-Processing}
 
-The database of videos can be pre-processed to optimise the visual content extraction and pattern matching phases. As stated in Section \ref{sec:temporal-aspect-videos} on the temporal aspects of videos, movies are arrays of scenes, which contain different shots that are made up of individual frames. Pre-processing the database of movies by segmenting it into a list of shots and representing each shot with a single key frame is a profitable solution that will exponentially improve a CBVR system's efficiency. However, a line must be drawn between the efficiency of the CBVR system and its accuracy.
+The database of videos can be pre-processed to optimise the visual content extraction and pattern matching phases. As stated in Section \ref{sec:temporal-aspect-videos} on the temporal aspects of videos, movies can be defined as logically ordered collection of scenes, which may contain different shots that are made up of individual frames. Pre-processing the database of movies by segmenting it into a list of shots and representing each shot with a single key frame is a profitable solution that will exponentially improve a CBVR system's efficiency. However, a line must be drawn between the efficiency of the CBVR system and its accuracy.
 
 % ----------------------------------------------------
 
 \subsection{Segmentation Using Shot Boundary Detection}
+
+The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be extremely similar in another frame from the same shot.\\
+
+The first step in shot boundary detection consists in extracting features. These features include all the types mentioned in Section \ref{sec:visual-content-extraction}, ranging from static features such as colour-based features e.g. colour histograms, to dynamic features such as corner points and SIFT\footnote{Scale Invariant Feature Transform}. The most common technique used is the colour-histogram approach as it is the simplest and quickest to computer. Although histograms work well with shots with minor camera movement, they are inefficient when the shots contain major camera movements.\\
+
+Dynamic features are more efficient for shot boundary detection than histograms due to their robustness. Edge features are more vigorous than histograms when dealing with major camera movement and can handle changes in luminosity. Corner and motion features can additionally handle camera motion and the impact of objects in the shot. However, these are more complicated features that do not always outperform colour histograms and their simplicity, which remain the favoured choice of feature used.
+
+
 
 TODO:
 \begin{itemize}
