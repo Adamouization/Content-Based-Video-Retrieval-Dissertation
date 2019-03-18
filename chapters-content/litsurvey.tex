@@ -254,17 +254,33 @@ cnn
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Structural Movie Pre-Processing}
 
-The database of videos can be pre-processed to optimise the visual content extraction and pattern matching phases. As stated in Section \ref{sec:temporal-aspect-videos} on the temporal aspects of videos, movies can be defined as logically ordered collection of scenes, which may contain different shots that are made up of individual frames. Pre-processing the database of movies by segmenting it into a list of shots and representing each shot with a single key frame is a profitable solution that will exponentially improve a CBVR system's efficiency. However, a line must be drawn between the efficiency of the CBVR system and its accuracy.
+The database of videos can be pre-processed to optimise the visual content extraction and pattern matching phases. As stated in Section \ref{sec:temporal-aspect-videos} on the temporal aspects of videos, movies can be defined as a logically ordered collection of scenes, which may contain different shots, all made up of individual frames. Pre-processing the database of movies by segmenting it into a list of shots and representing each shot with a single key frame is a profitable solution that will exponentially improve a CBVR system's efficiency. However, a limit must be set on the amount of data that is segmented to balance the efficiency and the accuracy of the CBVR system.
 
 % ----------------------------------------------------
 
 \subsection{Segmentation Using Shot Boundary Detection}
 
-The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be extremely similar in another frame from the same shot.\\
+The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be extremely similar in another frame from the same shot. Detecting shot boundaries requires three steps:
+\begin{enumerate}
+    \item feature extraction
+    \item similarity measurements
+    \item shot boundary detection
+\end{enumerate}
 
-The first step in shot boundary detection consists in extracting features. These features include all the types mentioned in Section \ref{sec:visual-content-extraction}, ranging from static features such as colour-based features e.g. colour histograms, to dynamic features such as corner points and SIFT\footnote{Scale Invariant Feature Transform}. The most common technique used is the colour-histogram approach as it is the simplest and quickest to computer. Although histograms work well with shots with minor camera movement, they are inefficient when the shots contain major camera movements.\\
+\subsubsection{Feature Extraction}
+The first step in shot boundary detection consists in extracting features. These features include all the diverse types mentioned in Section \ref{sec:visual-content-extraction}, ranging from static features such as colour-based features e.g. colour histograms, to dynamic features such as corner points and SIFT\footnote{Scale Invariant Feature Transform}. Although colour histograms are simple to compute and work well with most shots as long as there is at most minor camera movement, they are inefficient when the shots contain major camera movements. For example, if in the shot the camera moves from the inside a house towards the outside by going through the window, the frames retrieved from the beginning of the shot will be extremely different to frames from the end of the shot.\\
 
-Dynamic features are more efficient for shot boundary detection than histograms due to their robustness. Edge features are more vigorous than histograms when dealing with major camera movement and can handle changes in luminosity. Corner and motion features can additionally handle camera motion and the impact of objects in the shot. However, these are more complicated features that do not always outperform colour histograms and their simplicity, which remain the favoured choice of feature used.
+Dynamic features are therefore more efficient for shot boundary detection than histograms due to their robustness. On the one hand, edge features are more vigorous than histograms when dealing with major camera movement and can handle changes in luminosity. On the other hand, corner and motion features can additionally handle camera motion and the impact of objects in the shot. However, these dynamic features are much more complicated to extract and do not always outperform colour histograms. Due to their simplicity, colour histograms remain the most common feature extraction technique for shot boundary detection.\\
+
+\subsubsection{Similarity Measurements}
+The second step in shot boundary detection consists in using these extracted features to compute the similarities between frames. Many metrics exist to compute the similarities between two the extracted features. The most simple method consists in computing the Euclidean distance between features. More advanced methods can be used based on the type of feature that was extracted. For instance, histogram intersection and chi-square similarity can be used to compute the relationship between colour histograms.\\
+
+These similarities can either be calculated in pairs or in 
+
+Either consecutive frames can be compared, or a window of multiple of frames. 
+
+\subsubsection{Detection}
+
 
 TODO:
 \begin{itemize}
