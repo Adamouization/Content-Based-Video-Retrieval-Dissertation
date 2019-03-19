@@ -258,9 +258,9 @@ The database of videos can be pre-processed to optimise the visual content extra
 
 % ----------------------------------------------------
 
-\subsection{Segmentation Using Shot Boundary Detection}
+\subsection{Temporal Movie Segmentation}
 
-The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be extremely similar in another frame from the same shot. Detecting shot boundaries requires three steps:
+The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be extremely similar in another frame from the same shot. Detecting shot boundaries would allow the movie to be segmented and organized by shots. These boundaries are defined by the type of transition between two different shots, which can either be defined as a cut when it is quick, or as gradual when it is a fading transition \cite{yuan2007shotboundary}. Detecting shot boundaries to segment a video requires three steps:
 \begin{enumerate}
     \item feature extraction
     \item similarity measurements
@@ -268,19 +268,21 @@ The frames that make up a shot usually show strong content correlation. This mea
 \end{enumerate}
 
 \subsubsection{Feature Extraction}
-The first step in shot boundary detection consists in extracting features. These features include all the diverse types mentioned in Section \ref{sec:visual-content-extraction}, ranging from static features such as colour-based features e.g. colour histograms, to dynamic features such as corner points and SIFT\footnote{Scale Invariant Feature Transform}. Although colour histograms are simple to compute and work well with most shots as long as there is at most minor camera movement, they are inefficient when the shots contain major camera movements. For example, if in the shot the camera moves from the inside a house towards the outside by going through the window, the frames retrieved from the beginning of the shot will be extremely different to frames from the end of the shot.\\
+The first step in video segmentation consists in extracting features. These features include all the diverse types mentioned in Section \ref{sec:visual-content-extraction}, ranging from static features such as colour-based features (e.g. colour histograms) to dynamic features such as corner points and SIFT\footnote{Scale Invariant Feature Transform}. Although colour histograms are simple to compute and work well with most shots as long as there is at most minor camera movement, they are inefficient when the shots contain major camera movements. For example, if in the shot the camera moves from the inside a house towards the outside by going through the window, the frames retrieved from the beginning of the shot will be extremely different to frames from the end of the shot.\\
 
-Dynamic features are therefore more efficient for shot boundary detection than histograms due to their robustness. On the one hand, edge features are more vigorous than histograms when dealing with major camera movement and can handle changes in luminosity. On the other hand, corner and motion features can additionally handle camera motion and the impact of objects in the shot. However, these dynamic features are much more complicated to extract and do not always outperform colour histograms. Due to their simplicity, colour histograms remain the most common feature extraction technique for shot boundary detection.\\
+Dynamic features are therefore more efficient for shot boundary detection than histograms due to their robustness. On the one hand, edge features are more vigorous than histograms when dealing with major camera movement and can handle changes in luminosity. On the other hand, corner and motion features can additionally handle camera motion and the impact of objects in the shot such rapid motion e.g. people walking in front of the camera. However, these dynamic features are much more complicated to extract and do not always outperform colour histograms. Due to their simplicity, colour histograms remain the most common feature extraction technique for shot boundary detection.\\
 
 \subsubsection{Similarity Measurements}
-The second step in shot boundary detection consists in using these extracted features to compute the similarities between frames. Many metrics exist to compute the similarities between two the extracted features. The most simple method consists in computing the Euclidean distance between features. More advanced methods can be used based on the type of feature that was extracted. For instance, histogram intersection and chi-square similarity can be used to compute the relationship between colour histograms.\\
+The second step in video segmentation is to use these extracted features to compute the similarities between frames. Many metrics exist to compute the similarities between two the extracted features. The most basic method consists in computing the Euclidean distance between features. More advanced methods can be used based on the type of feature that was extracted. For instance, histogram intersection and chi-square similarity can be used to compute the relationship between colour histograms. During the 2006 TRECVID conference, \cite[p. 2]{hoi2006trecvid06} used gray scale histograms for their extracted features and calculated the colour differences between frames using the EMD\footnote{Earth Mover's Distance}. EMD is used to calculate the distance between two probability distributions, which are represented by the two histograms that represent each frame in \cite{hoi2006trecvid06}'s case. These similarities can be measured using two techniques.\\
 
-These similarities can either be calculated in pairs or in 
-
-Either consecutive frames can be compared, or a window of multiple of frames. 
+The first technique rests on using pairs of frames to compute the similarities between them. The similarities between two consecutive frames $I_1$ and $I_2$ are compared, before comparing the pair of frames $1$ and $2$, and so on and so forth until frames $I_{n-1}$ and $I_n$ are compared. This straightforward technique easily detects rough changes between the visual content in a shot, such as quick cuts between two shots, but is more susceptible to noise and disturbance. The second technique is the window-based similarity measure, that measures the similarities between multiple frames specified within a range. This helps counter the effects of noise and disturbances captured by the pair-based approach but is more expensive to compute, therefore less used.
 
 \subsubsection{Detection}
+The final step in segmenting a video is the detection of the frames to cut, which is achieved by using the measured similarities between the frames. Two methods exist for this step: a threshold-based approach and a statistical learning-based approach.\\
 
+TODO: threshold\\
+
+TODO: supervised and unsupervised learning\\
 
 TODO:
 \begin{itemize}
