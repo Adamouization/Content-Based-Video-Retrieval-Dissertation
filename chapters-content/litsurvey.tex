@@ -294,7 +294,14 @@ The second technique is the window-based similarity measure, that measures the s
 \subsubsection{Detection}
 The final step in segmenting a video is the detection of the frames to cut, which is achieved by using the measured similarities between the frames. Two methods exist for this step: a threshold-based approach and a statistical learning-based approach.\\
 
-The threshold-based approach compares the measured similarities between a pair of frames with a threshold. Whenever the similarity measure is smaller than the threshold, a shot boundary is detected and the shot can be cut. Either global thresholds, adaptive thresholds, or combinations of both can be used:
+The threshold-based approach compares the measured similarities between a pair of frames with a threshold. Whenever the similarity measure is smaller than the threshold, a shot boundary is detected and the shot can be cut. Figure \ref{fig:shot_boundary_detection_threshold} betrays an example of a threshold-based approach for different types of transitions, with a correct detection (\emph{A}), a missed detection (\emph{B}) and a misinterpreted detection (\emph{C}).\\
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=0.75\textwidth]{figures/shot_boundary_detection_threshold.png}}
+\caption{\label{fig:shot_boundary_detection_threshold}Threshold-based approach for shot boundary detection. In this example, the shot boundary is detected at \emph{A}, it is missed at \emph{B}, and it is misinterpreted at \emph{C} as two cuts rather than a single one.}
+\end{figure}
+
+Either global thresholds, adaptive thresholds, or combinations of both can be used:
 \begin{itemize}
     \item \textit{Global thresholds} are set empirically and predefined for the entire video. They are therefore inefficient when trying to detect local variations as these are not integrated into the initial global threshold calculations.
     \item \textit{Adaptive thresholds} are local thresholds that are continuously calculated for windows of frames. As the window slides across the video, the threshold is re-estimated accordingly to account for local variations. These are more accurate than global thresholds but are harder to estimate and require some knowledge about the video to set variables such as the window's size.
@@ -307,7 +314,7 @@ The statistical learning-based approach is two-class classification task where e
     \item \textit{Unsupervised learning-based classifiers} are divided into frame similarity-based and frame-based algorithms. \textit{Frame similarity-based classifiers} groups the similarity measurements between a pair of frames into two clusters. The first cluster holds the similarity measurements with low values, which correspond to the ``shot change'' class, while the second cluster holds the similarity measurements with high values, which correspond to the ``no shot change'' class. Alternatively, \textit{frame-based classifiers} consider each shot as a cluster of frames with similar features. The advantage of unsupervised learning-based classifiers over supervised ones is that no training is required, but the logical temporal order of the shots in scenes is not preserved.
 \end{itemize}
 
-The techniques used in the three steps required in the process of segmenting a video can be applied to feature-length movies but require some improvements to work efficiently with these large videos. For instance, \cite{hanjalic1999moviesegmentation} suggests considering the semantic aspects of movies, since people relate to the story, such as a marking dialogue, when they remember a movie.
+All the aforementioned techniques in this section that are used in the three steps required in the process of segmenting a video can be applied to feature-length movies but require some improvements to work efficiently with these large videos. For instance, \cite{hanjalic1999moviesegmentation} suggests considering the semantic aspects of movies, since people relate to the story, such as a marking dialogue, when they remember a movie.
 
 % ----------------------------------------------------
 
