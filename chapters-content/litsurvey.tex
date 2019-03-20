@@ -114,9 +114,9 @@ According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 2 - VISUAL CONTENT EXTRACTION FOR PATTERN MATCHING VIDEOS
+% 2 - VISUAL CONTENT EXTRACTION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Visual Content Extraction for Pattern Matching Videos}
+\section{Visual Content Extraction}
 \label{sec:visual-content-extraction}
 
 Extracting the visual content from a video allows this content to be used to describe videos and compute similarities between them. This visual content is extracted from the aforementioned low-level visual content (see Section \ref{sec:cbvr-methods}) \cite{petkovic2000} and stored in the form features, also referred to as visual descriptors. The term ``features'' is very broad and can be used to describe many different visual aspects in an image or in a video, ranging from colours, shapes and textures to points, edges, objects and motion.\\
@@ -204,9 +204,9 @@ Can calculate optical flow to prune camera movement caused by unstable recording
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 3 - LEARNING MODELS FOR FEATURE MATCHING
+% 3 - LEARNING MODELS FOR PATTERN MATCHING
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Learning Models for Classification}
+\section{Learning Models for Pattern Matching}
 
 Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database.
 Retrace evolution of pattern matching methods: BoW to CNN (and before? --> find surveys)
@@ -280,11 +280,13 @@ The goal of SBD\footnote{Shot Boundary Detection} is to detect the discontinuity
 \end{enumerate}
 
 \subsubsection{Feature Extraction}
+\label{sec:feature-extraction-sbd}
 The first step in video segmentation consists in extracting features. These features include all the diverse types mentioned in Section \ref{sec:visual-content-extraction}, ranging from static features such as colour-based features (e.g. colour histograms) \cite{hoi2006trecvid06} to dynamic features such as corner points and SIFT\footnote{Scale Invariant Feature Transform}. Although colour histograms are simple to compute and work well with most shots as long as there is at most minor camera movement, they are inefficient when the shots contain major camera movements \cite{hu2011survey}. For example, if in the shot the camera moves from the inside a house towards the outside by going through the window, the frames retrieved from the beginning of the shot will be extremely different to frames from the end of the shot.\\
 
 Dynamic features are therefore more efficient for shot boundary detection than histograms due to their robustness. On the one hand, edge features are more vigorous than histograms when dealing with major camera movement and can handle changes in luminosity. On the other hand, corner and motion features can additionally handle camera motion and the impact of objects in the shot such rapid motion e.g. people walking in front of the camera. However, these dynamic features are more complicated to extract and do not always outperform simple features like colour histograms. Due to their simplicity, colour histograms remain the most common feature extraction technique for shot boundary detection \cite{yuan2007shotboundary}.\\
 
 \subsubsection{Similarity Measurements}
+\label{sec:similarity-measurements-sbd}
 The second step in video segmentation is to use these extracted features to compute the similarities between frames. Many metrics exist to compute the similarities between two the extracted features. The most basic method consists in computing the Euclidean distance or the absolute distance $g(n,n+k)$ between a pair of frames \cite[p.476]{janwe2013video}, as shown in Equation \ref{eq:absolutevalue}, where $n$ and $n+k$ represent the two frames being compared, and $I_n(x,y)$ the intensity level of frame $n$ at pixels locations $(x,y)$:
 
 \begin{equation}
@@ -328,24 +330,17 @@ All the aforementioned techniques in this section that are used in the three ste
 
 \subsection{Key Frame and Thumbnail Extraction}
 
+Frames from the same shot usually describe the same visual content, meaning there is a lot of redundancy amongst the frames that make up a shot. It is therefore more efficient to deal with a single frame that represents the entire shot or the entire video rather than dealing with an entire video.
+
 \subsubsection{Key Frames}
 
-Y. S. Heo et al. \cite{heo2016colortransfer} suggests only considering key frames in videos to operate on. These key frames would be used for the feature extraction, database pre-processing and pattern matching phases. Key frames are determined based on the difference between two consecutive frames using the histogram chi-square distribution approach (See Equation \ref{eq:chisquare}).\\
+Once shot boundaries have been detected and the video has been divided into a series of shots, a single frame, named the ``key frame'', can be selected to represent the entire shot. \cite{heo2016colortransfer} suggests only considering key frames in videos to operate on. These key frames would be used for all the sections mentioned in this Literature Survey, including the visual content extraction phases, the pattern matching phases, and database videos pre-processing phase. A wide variety of approaches exist to extract a key frame from a video.\\
 
-\cite{heo2016colortransfer}
-This approach only considers key frames from the query video clip. Key frames are determined based on the difference between two consecutive frames using the histogram chi-square distribution approach (See Equation \ref{eq:chisquare}).\\
+The most simple approach is \textit{Sequential Comparison Between Frames} where frames are sequentially compared until a frame very different to the previous key frame is found, at which point that frame is set as a new key frame \cite{heo2016colortransfer}. Frames are compared using the features mentioned in Section \ref{sec:feature-extraction-sbd} e.g. histograms, and similarities are calculated using the same distance functions mentioned in Section \ref{sec:similarity-measurements-sbd} e.g. chi-square distance \cite{hu2011survey}.\\
 
-TODO:
-\begin{itemize}
-    \item Explain histogram chi square distribution technique.
-    \item When the amount of differences $\theta$ between two frames exceeds a threshold, usually set at the empirical value $\theta = 0.005$, then the current frame is set as a key frame.
-\end{itemize}
+More advanced approaches can be used: global comparison between frames, reference frame, clustering.
 
-\begingroup \Large \begin{equation} \label{eq:chisquare}
-    C(h^{t-1}, h^{t}) = \sum_{i=0}^{255} \frac{(h_{i}^{t-1} - h_{i}^{t})^2}{h_{i}^{t-1} + h_{i}^{t}}
-\end{equation} \endgroup \\
-
-To illustrate the advantage of using key frames, let's use a 3-seconds long shot recorded at 30 fps\footnote{Frames Per Second} of a ball rolling on the ground, which would consist of a total of 90 frames. Analysing all the frames individually as stills would be highly inefficient. However, selecting key frames to work on, as depicted in Figure \ref{fig:rolling_ball} where a single frame is chosen for each second, would means that 3 key frames can be used for feature extraction and pattern matching instead of using all of the 90 frames that make up the video.\\
+To illustrate the advantage of using key frames, a 3-seconds long shot recorded at 30 fps\footnote{Frames Per Second} of a ball rolling on the ground can be used (90 frames in total). Analysing all the frames individually as stills would obviously be highly inefficient. However, selecting key frames to work on, as depicted in Figure \ref{fig:rolling_ball} where a single frame is chosen for each second, would means that 3 key frames can be used for feature extraction and pattern matching instead of using all of the 90 frames that make up the video.\\
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=\textwidth]{figures/ball_rolling.jpg}}
@@ -354,25 +349,19 @@ To illustrate the advantage of using key frames, let's use a 3-seconds long shot
 
 \subsubsection{Thumbnails for Initial Shortlisting}
 
-In their work, M. Okabe et al. \cite{okabe2018animating} generate thumbnails for each video in their database, which are stored as additional data along with the original video file. The thumbnails for the query video and for the database videos would be generated using the same algorithm in order to create similar results. This technique can be used in parallel to A. Araujo et al.'s \cite{araujo2017i2v}, who states that an initial shortlist of potentially matching videos can be generated before the main pattern matching phase. This shortlist can be created by computing the similarities between the query video's thumbnail and the thumbnails of the database videos.\\
+Thumbnails can be generated for each video in a database, which are stored as additional data along with the original video file \cite{okabe2018animating}. In a CBVR system, the thumbnails for the query video and for the database videos would be generated using the same algorithm in order to create similar outputs. This technique can be used in parallel to \cite{araujo2017i2v}, who states that an initial shortlist of potentially matching videos can be generated before the main pattern matching phase. This shortlist can be created by computing the similarities between the query video's thumbnail and the thumbnails of the database videos.\\
 
 Many advantages can be gained from this small initial step which could have an important impact on the system's overall speed and efficiency performance. Indeed, database videos that share no similarities to the query video will not be considered at all during the main pattern matching phase e.g. if the query video corresponds to a colourful sunset, then database videos of cloudy environments will be immediately filtered out as it is unlikely that they will match with the query video in the main pattern matching phase. This step diminishes the number of the videos to compare to the query.\\
 
-This initial step is extremely speedy as it only uses a single frame that describes the entire video. Therefore the entire process will not be noticeably slowed down. However this concept could only be applied on relatively small databases where the videos contain a single scene with multiple similar shots. Indeed, shots can be characterised by a single still as they are made up of frames with similar visual content, whereas scenes can be made up of shots that change a lot and describe different visual content. Using thumbnails to shortlist a database of feature-length movies would greatly diminish the accuracy of the system due to the high number of scenes that make up a movie that cannot be resumed to a single thumbnail. The database videos' thumbnails will have already been generated during the database's pre-processing phase, which only occurs a single time. A possible solution could be to create a thumbnail for each shot in a scene, and store each thumbnail in a list. For example, if a scene contains six different shots, then six thumbnails will be generated to describe that scene.\\
-
-\begin{comment}
-\cite{okabe2018animating}
-For quicker pattern matching and feature extraction, 16 pixels separate two feature points, allowing for rough pattern matching rather than exact pattern matching. This could be used when using feature-length movies as database videos to pattern match.
-\end{comment}
+This initial step of generating thumbnails for the query video and each video in the database is extremely speedy as it only uses a single frame that describes the entire video. Therefore the entire process will not be noticeably slowed down. However this concept could only be applied on relatively small databases where the videos contain a single scene with multiple similar shots. Indeed, shots can be characterised by a single still as they are made up of frames with similar visual content, whereas scenes can be made up of shots that change a lot and describe different visual content. Using thumbnails to shortlist a database of feature-length movies would greatly diminish the accuracy of the system due to the high number of scenes that make up a movie that cannot be resumed to a single thumbnail. The database videos' thumbnails will have already been generated during the database's pre-processing phase, which only occurs a single time. A possible solution could be to create a thumbnail for each shot in a scene, and store each thumbnail in a list. For example, if a scene contains six different shots, then six thumbnails will be generated to describe that scene.
 
 % ----------------------------------------------------
 
-\subsection{Fisher Vectors}
+\subsection{Feature-Length Movie Optimisation}
 
-TODO:
-\begin{itemize}
-    \item Fisher Vectors can be used to generate a compact signature for videos, which will then be used for computing similarities between the query video's FV and the database videos' FVs \cite{araujo2017i2v}
-\end{itemize}
+For quicker pattern matching and feature extraction, 16 pixels separate two feature points, allowing for rough pattern matching rather than exact pattern matching. This could be used when using feature-length movies as database videos to pattern match \cite{okabe2018animating}.\\
+
+Fisher Vectors can be used to generate a compact signature for videos, which will then be used for computing similarities between the query video's FV and the database videos' FVs \cite{araujo2017i2v}.\\
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
