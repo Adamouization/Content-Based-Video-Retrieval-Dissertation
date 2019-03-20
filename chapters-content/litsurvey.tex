@@ -116,7 +116,7 @@ According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 2 - VISUAL CONTENT EXTRACTION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Visual Content Extraction}
+\section{Visual Content Extraction for Pattern Matching}
 \label{sec:visual-content-extraction}
 
 Extracting the visual content from a video allows this content to be used to describe videos and compute similarities between them. This visual content is extracted from the aforementioned low-level visual content (see Section \ref{sec:cbvr-methods}) \cite{petkovic2000} and stored in the form features, also referred to as visual descriptors. The term ``features'' is very broad and can be used to describe many different visual aspects in an image or in a video, ranging from colours, shapes and textures to points, edges, objects and motion.\\
@@ -195,31 +195,30 @@ Object features correspond to objects that are detected using the colour, textur
 
 \subsubsection{Motion Features}
 
-camera-based motion features
+Motion features is the unique characteristics of videos that is absent from images. All of the above-mentioned features can be extracted from imaged, apart from motion features. These can originate from two sources: either background camera movement or foreground object movement. Motion features can therefore be classified into two categories: camera-based motion features and object-based motion features. \textit{Camera-based motion features} include movement such camera zooms, pannings and tiltings. \textit{Object-based motion features} are more interesting than the former since they can describe key objects in the shot, which can be further classified into \cite{hu2011survey}:
+\begin{itemize}
+    \item statistics-based
+    \item trajectory-based
+\end{itemize}
 
-object-based motion features
+\begin{figure}[h] 
+\centerline{\includegraphics[width=0.75\textwidth]{figures/optical_flow.png}}
+\caption{\label{fig:optical_flow}Sparse and Dense optical flow.}
+\end{figure}
 
 Example algorithms: optical flow (Dense Optical Flow, Farneback Polynomial Expression Algorithms, Lucas-Kanade Algorithm.
 Can calculate optical flow to prune camera movement caused by unstable recording e.g. hand shaking movement \cite{wang2016actionregonition}.
 
+% ----------------------------------------------------
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 3 - LEARNING MODELS FOR PATTERN MATCHING
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Learning Models for Pattern Matching}
+\subsection{Learning Models for Pattern Matching}
 
 Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database.
 Retrace evolution of pattern matching methods: BoW to CNN (and before? --> find surveys)
 
-% ----------------------------------------------------
+\subsubsection{Bag-of-Visual-Words}
 
-\subsection{Bag-of-Visual-Words}
-
-\subsubsection{BoW}
 BoW for documents
-
-\subsubsection{BoVW}
-
 BoVW
 
 TODO:
@@ -229,24 +228,9 @@ TODO:
     \item State that Fisher Vectors are an improvement on BoW
 \end{itemize}
 
-\subsubsection{Histogram Comparison}
+\subsubsection{Deep Learning Models}
 
-chi-square
-alternative chi-square
-intersection
-bhattacharyya
-
-% ----------------------------------------------------
-
-\subsection{Deep Learning}
-
-\subsubsection{Classical Neural Networks}
-
-nn
-
-\subsubsection{Convolutional Neural Networks}
-
-cnn
+Classical Neural Networks, Convolutional Neural Networks
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
