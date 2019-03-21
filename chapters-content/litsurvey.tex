@@ -154,7 +154,7 @@ Other types of colour-based features can be extracted from images and videos suc
 
 \subsubsection{Texture-based Features}
 
-Texture-based features are often used in parallel with colour-based features. The aforesaid problem where two different objects might share a similar histogram e.g. green tree leaves and green grass, can be solved by using texture-based features to differentiate them. These can be differentiated by using a variety of features such as Tamura features, which extract information including coarseness, contrast, and directionality of the objects \cite{amir2003ibm}. 
+Texture-based features are often used in parallel with colour-based features. The aforesaid problem where two different objects might share a similar histogram e.g. green tree leaves and green grass, can be solved by using texture-based features to differentiate them. These can be discerned by using a variety of features such as Tamura features, which extract information including coarseness, contrast, and directionality of the objects \cite{amir2003ibm}. 
 
 \subsubsection{Shape-based Features}
 
@@ -167,7 +167,7 @@ Shape-based features are used to describe the overall shape of objects present i
 
 In contrast to static features, which can be extracted from individual video frames, dynamic features require the continuity between consecutive frames to extract relevant visual descriptors, making use of the temporal aspect of the video mentioned in section \ref{sec:temporal-aspect-videos}). These features can be divided into two subcategories: object features and motion features. However, before reviewing the techniques used to extract these features, it is important to specify what defines a good visual feature.
 
-\subsubsection{Corner Detection}
+\subsubsection{Points of Interest}
 
 Figure \ref{fig:monaco_palace_features} shows an image with coloured windows used to make the difference between poor and good potential features that could be used for object and motion features:
 \begin{itemize}
@@ -183,11 +183,7 @@ Figure \ref{fig:monaco_palace_features} shows an image with coloured windows use
 
 Once expressive and unique descriptors like corners are detected, they can be used to extract object features and motion features, and to compute similarities between the query video and the videos in the database.\\
 
-Many different techniques exist to find robust features and interest points: Harris Corner Detection, SIFT, SURF.
-
-\begin{comment}
-    detect edges and then use that to detect corners
-\end{comment}
+Many different algorithms exist to find robust features and interest points. For example, Sobel operators can be used to detect edges, and Shi and Tomasi algorithms and Harris operators can be used to detect corners \cite{bradski2008opencv}. Combinations of both can be used, by detecting edges to facilitate corner detection.
 
 \subsubsection{Object Features}
 
@@ -195,19 +191,25 @@ Object features correspond to objects that are detected using the colour, textur
 
 \subsubsection{Motion Features}
 
-Motion features is the unique characteristics of videos that is absent from images. All of the above-mentioned features can be extracted from imaged, apart from motion features. These can originate from two sources: either background camera movement or foreground object movement. Motion features can therefore be classified into two categories: camera-based motion features and object-based motion features. \textit{Camera-based motion features} include movement such camera zooms, pannings and tiltings. \textit{Object-based motion features} are more interesting than the former since they can describe key objects in the shot, which can be further classified into \cite{hu2011survey}:
+Motion features are a unique characteristic of videos that are absent from images. All of the above-mentioned features can be extracted from images, apart from motion features, which are unique to videos. These can originate from two sources: either background camera movement or foreground object movement. Motion features can therefore be classified into two categories: camera-based motion features and object-based motion features. \textit{Camera-based motion features} include movement such camera zooms, pannings and tiltings. \textit{Object-based motion features} are more interesting than the former since they can describe key objects in the shot, which can be further classified into \cite{hu2011survey}:
 \begin{itemize}
-    \item statistics-based
-    \item trajectory-based
+    \item \textit{Statistics-based} motion features are extracted to model the local and global distributions of motion points in the video. For example, a causal Gibbs model can be used to represent the spatio-temporal distribution of local motion measurements in a shot once the trajectory-based motion features have been used to prune undesired camera motions \cite{fablet2002gibbsmodel}. This type of motion features is very cheap to extract but lacks depth as they cannot represent object actions and object relationships accurately.
+    \item \textit{Trajectory-based} motion features are extracted by representing object trajectories in a shot. A long list of algorithms exist to obtain these features such as the, but this section will focus on differentiating sparse and dense techniques with one of the most popular methods: optical flow. Optical flow can be defined as the relative motion between the visual content in a shot and the camera \cite{bradski2008opencv}:
+    
+    In \textit{sparse optical flow}, only a few pixels from the frames in a shot are used. Features describing objects, such as corners, are used to track an object's motion across the shot. However, these only give information about where certain parts of the object are going, which are then used to estimate where the overall object is moving towards. Sparse optical flows. For example, Figure \ref{fig:optical_flow} indicates the overall motion of a car by tracking only a few pixels from it. On the other hand, \textit{dense optical flow} calculates the optical flow for every pixel in the frame. At each pixel of the frame, the direction and magnitude of that specific location are represented by an arrow, which can variate in direction and length (see Figure \ref{fig:dense_optical_flow_representation}).
+    
+    \begin{figure}[h] 
+    \centerline{\includegraphics[width=0.75\textwidth]{figures/dense_optical_flow_representation.png}}
+    \caption{\label{fig:dense_optical_flow_representation}A 3D and a 2D representation of dense optical flow.}
+    \end{figure}
+    
+    Object-based motion features have many applications outside of CBVR systems. One of these applications is calculating the optical flow of a shot to prune camera movements caused by unstable recording e.g. hand shaking movement \cite{wang2016actionregonition}. Compared to statistics-based features, trajectory-based features can be used to describe object actions, but they rely on multiple challenging task to function efficiently such as correct object tracking and automatic trajectory recording. Finally, object-based motion features can also be classified in a third category: objects' relationship-based motion features. However, these are not described in this literature review as they make use of object's symbolic representations, which is not relevant to this topic.
 \end{itemize}
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=0.75\textwidth]{figures/optical_flow.png}}
-\caption{\label{fig:optical_flow}Sparse and Dense optical flow.}
+\caption{\label{fig:optical_flow}Visualisation of sparse and dense optical flow algorithms on different shots.}
 \end{figure}
-
-Example algorithms: optical flow (Dense Optical Flow, Farneback Polynomial Expression Algorithms, Lucas-Kanade Algorithm.
-Can calculate optical flow to prune camera movement caused by unstable recording e.g. hand shaking movement \cite{wang2016actionregonition}.
 
 % ----------------------------------------------------
 
@@ -353,4 +355,4 @@ Fisher Vectors can be used to generate a compact signature for videos, which wil
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Chapter Summary}
 
-chapter summary
+Include a chapter summary here.\\
