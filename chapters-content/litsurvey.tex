@@ -214,24 +214,27 @@ Motion features are a unique characteristic of videos that are absent from image
 
 \subsection{Learning Models for Pattern Matching}
 
-Multiple techniques exist to retrieve a video's visual information to later compare it to the visual information stored in the database.
-Retrace evolution of pattern matching methods: BoW to CNN (and before? --> find surveys)
+This section retraces the evolution of pattern matching models, ranging from Bags-of-Visual-Words and Constellation Models to Deep Learning models such as Neural Networks.
 
 \subsubsection{Bag-of-Visual-Words}
 
-BoW for documents
-BoVW
+The idea of BoVW\footnote{Bag-of-Visual-Words} originates from document analysis, where the frequency words appeared in the text depended on the document type, and the document type could predict the word frequency.\\
 
-TODO:
-\begin{itemize}
-    \item Explain how Bag-of-Words model works
-    \item H. Wang's implementation of BoW histogram \cite{wang2016actionregonition}
-    \item State that Fisher Vectors are an improvement on BoW
-\end{itemize}
+Visual words are created by extracting distinctive features such as SIFT, SURF or HoG to train videos from a training set. These features are then clustered using classic models such as Mean-shift or GMMs. The visual words correspond to the middle of each cluster.\\
+
+Histograms can be used by inputting a collection of visual words and a labelled training set of videos. For each video in the dataset, features are extracted and incremented in the related histogram. Once the training is accomplished, a new histogram can be generated for a query video (in a CBVR system) which will then be compared to the previously generated histograms for each dataset video. Example: H. Wang's implementation of BoW histogram \cite{wang2016actionregonition}. Fisher Vectors are an improvement on BoW \cite{araujo2017i2v}.\\
+
+\subsubsection{Constellation Models}
+
+Constellation models are mainly used for detection. Features are organised in space such as a graph model where nodes are labelled with appearance and a Gaussian distribution is present on each node location. There is one model per class, s in a CBVR system, one model per video. The model is moved over image (could be video keyframes), which fires responses at each location. The biggest responses that are larger than a threshold locate the model.
 
 \subsubsection{Deep Learning Models}
 
-Classical Neural Networks, Convolutional Neural Networks
+\begin{itemize}
+    \item Classical Neural Networks
+    \item Convolutional Neural Networks
+    \item State of the art: AlexNet, VGG, Inception
+\end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
