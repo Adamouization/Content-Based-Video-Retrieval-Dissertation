@@ -126,7 +126,12 @@ These features can be divided into two categories: static features and dynamic f
 
 \subsection{Static Features}
 
-Methods to extract static features operate on stills, which can correspond to individual video frames, thumbnails or key frames (see Section \ref{sec:movie-pre-processing}). This means that traditional image techniques can be applied to those stills \cite{hu2011survey}. They are organised in three different categories: colour-based features, texture-based features and shape-based features.
+Methods to extract static features operate on stills, which can correspond to individual video frames, thumbnails or key frames (see Section \ref{sec:movie-pre-processing}). This means that traditional image techniques can be applied to those stills \cite{hu2011survey}. They are organised in three different categories: colour-based features, texture-based features and shape-based features, which can visualised in Figure \ref{fig:colour-texture-shape-features}.
+
+\begin{figure}[h]
+\centerline{\includegraphics[width=0.75\textwidth]{figures/colour-texture-shape-features.png}}
+\caption{\label{fig:colour-texture-shape-features}Example of static features, including colour-based features (with an RGB colour histograms of 256 bins for colour-based features), texture-based features (with an co-occurrence matrix showing the frequency of pairs of pixels) and shape-based features (with a shape matrix descriptor).}
+\end{figure}
 
 \subsubsection{Colour-based Features}
 \label{sec:color-based-features}
@@ -134,7 +139,7 @@ Methods to extract static features operate on stills, which can correspond to in
 The main colour-based features model are colour histograms. In general, a histogram consists of counts of some underlying data that is organised into predetermined bins to a statistical representation of the distribution of that data. Figure \ref{fig:histogram-general-example} depicts an example of a histogram where a collection of points is organised into specific pre-defined bins based on their location relative to a vertical grid.
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=0.70\textwidth]{figures/histogram_general_example.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/histogram_general_example.png}}
 \caption{\label{fig:histogram-general-example}Example of a histogram counting the location of points relative to a vertical grid. Image courtesy of Bradski and Kaehler.}
 \end{figure}
 
@@ -143,7 +148,7 @@ In the case of a colour histogram, the underlying data that the histogram is try
 Typically, for an RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which are then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represent the distribution efficiently. If the range of pixels that defined the bins is wider, meaning there are less overall bins, then the histogram's distribution would be too coarse-grained and the general structure of the histogram would be lost, as pointed out by the left half of Figure \ref{fig:histogram-bin-size}. On the other hand, if the range of the bins is too narrow, meaning there are more overall bins, then the histogram's distribution would not be represented accurately and there would be many spiky cells, as betrayed in the right half of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=0.80\textwidth]{figures/histogram_bin_size.png}}
+\centerline{\includegraphics[width=0.85\textwidth]{figures/histogram_bin_size.png}}
 \caption{\label{fig:histogram-bin-size}If the range of the bins is too large, then the distribution is coarse (left). If the range of the bins is too small, then the distribution is not accurately represented and spikes cells appear (right). Image courtesy of Bradski and Kaehler.}
 \end{figure}
 
@@ -176,7 +181,7 @@ Figure \ref{fig:monaco_palace_features} shows an image with coloured windows use
 \end{itemize}
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=0.75\textwidth]{figures/monaco_palace_features.jpg}}
+\centerline{\includegraphics[width=0.80\textwidth]{figures/monaco_palace_features.jpg}}
 \caption{\label{fig:monaco_palace_features}An image of the Palace of Monaco with coloured windows representing poor features in blue (flat), edges in green, and good features in red (corners).}
 \end{figure}
 
@@ -198,17 +203,17 @@ Motion features are a unique characteristic of videos that are absent from image
     In \textit{sparse optical flow}, only a few pixels from the frames in a shot are used. Features describing objects, such as corners, are used to track an object's motion across the shot. However, these only give information about where certain parts of the object are going, which are then used to estimate where the overall object is moving towards. Sparse optical flows. For example, Figure \ref{fig:optical_flow} indicates the overall motion of a car by tracking only a few pixels from it. On the other hand, \textit{dense optical flow} calculates the optical flow for every pixel in the frame. At each pixel of the frame, the direction and magnitude of that specific location are represented by an arrow, which can variate in direction and length (see Figure \ref{fig:dense_optical_flow_representation}).
     
     \begin{figure}[h] 
-    \centerline{\includegraphics[width=0.75\textwidth]{figures/dense_optical_flow_representation.png}}
-    \caption{\label{fig:dense_optical_flow_representation}A 3D and a 2D representation of dense optical flow.}
+    \centerline{\includegraphics[width=0.80\textwidth]{figures/optical_flow.png}}
+    \caption{\label{fig:optical_flow}Visualisation of sparse and dense optical flow algorithms on different shots.}
+    \end{figure}
+        
+    \begin{figure}[h] 
+    \centerline{\includegraphics[width=0.80\textwidth]{figures/dense_optical_flow_representation.png}}
+    \caption{\label{fig:dense_optical_flow_representation}A 3D and a 2D representation of dense optical flow. Each arrow represents the direction and magnitude of a specific pixel location, which can variate in direction and length.}
     \end{figure}
     
     Object-based motion features have many applications outside of CBVR systems. One of these applications is calculating the optical flow of a shot to prune camera movements caused by unstable recording e.g. hand shaking movement \cite{wang2016actionregonition}. Compared to statistics-based features, trajectory-based features can be used to describe object actions, but they rely on multiple challenging tasks to function efficiently such as correct object tracking and automatic trajectory recording. Finally, object-based motion features can also be classified in a third category: objects' relationship-based motion features. However, these are not described in this literature review as they make use of the objects' symbolic representations, which is not relevant to this topic.
 \end{itemize}
-
-\begin{figure}[h] 
-\centerline{\includegraphics[width=0.75\textwidth]{figures/optical_flow.png}}
-\caption{\label{fig:optical_flow}Visualisation of sparse and dense optical flow algorithms on different shots.}
-\end{figure}
 
 % ----------------------------------------------------
 
