@@ -1,0 +1,75 @@
+This chapter gives a bried overview of the 
+
+The following requirements are prioritised using the words \textit{must}, \textit{should} and \textit{may}; where \textit{must} indicates a crucial requirement to the system, \textit{should} an optimal requirement and \textit{may} a beneficial requirement. In the following requirements, the term "\textit{recorded video}" corresponds to the video that is used as input to be pattern matched to one of the videos in the database. It may either be directly recorded using a camera or it may be pre-recorded and passed as input.
+
+\section{Functional Requirements}
+
+\subsection{System Requirements}
+
+\begin{enumerate}
+    \item The system \textbf{must} be able to match the recorded video with one of the videos in the database with at least 80\% accuracy.
+    \item The system \textbf{must} stabilise the recorded video before pattern matching it against the videos in the database.
+    \item If using a classifier approach to pattern-matching, the system \textbf{must} train the model only a single time after a change in the video database e.g. a new video being added. It must not train the model every time the system is started.
+    \item The system \textbf{must} be able to record videos or accept pre-recorded videos as input.
+    \item The system \textbf{should} be able to find a match to the recorded video in less than 10 seconds.
+    \item The system \textbf{should} crop the recorded video to ignore the surroundings of the clip being pattern matched.
+    \item The system \textbf{may} start the pattern matching phase only when the video clip in the recorded video starts playing to avoid wasting computational time and accuracy on still images.
+    \item The features used to pattern match the videos \textbf{may} be saved in a Gaussian Mixture Model.
+    \item The system \textbf{may} use the Lucas-Kanade Optical Flow method to track movements in the videos.
+    \item The system \textbf{may} use Fisher Vectors to crop the recorded video and improve the accuracy.
+\end{enumerate}
+
+\subsection{Graphical User Interface Requirements}
+
+\begin{enumerate}
+    \item The interface \textbf{must} be created using Tkinter.
+    \item The interface \textbf{must} be very simple and intuitive to use.
+    \item The interface \textbf{should} start with an option to directly record a video or submit a pre-recorded video as input
+    \item The interface \textbf{should} display a progress bar while the recorded video is being processed, 
+    \item The interface \textbf{should} display the result once the pattern matching has been completed, which could either be the matching video from the database or an error message.
+\end{enumerate}
+
+\subsection{System Configuration Requirements}
+
+\begin{enumerate}
+    \item The system \textbf{must} be a desktop application.
+    \item The system \textbf{must} record the query video using a hand held device to simulate a mobile device recording.
+    \item The system \textbf{should} be able to run on Windows, Mac and Linux distributions.
+    \item The system \textbf{should} be able to run on any desktop device equipped with a Python environment running with version 3.5 or more.
+    \item The system \textbf{should} run smoothly.
+\end{enumerate}
+
+\subsection{Code Design Requirements}
+
+\begin{enumerate}
+    \item The system code \textbf{must} be written in Python version 3.5 or higher.
+    \item The system code \textbf{must} use the OpenCV python library.
+    \item The system code \textbf{must} be source controlled using Git.
+    \item The system code \textbf{must} be backed up on GitHub.
+    \item The system code's GitHub repository \textbf{must} be private during the development phases.
+    \item The system \textbf{must} be covered with unit tests.
+    \item The python code \textbf{should} be follow PEP8 coding guidelines \cite{pep8}.
+    \item The system \textbf{should} be covered with integration tests.
+    \item The system \textbf{may} be covered with acceptance tests.
+\end{enumerate}
+
+\subsection{Data Requirements}
+
+\begin{enumerate}
+    \item The video data \textbf{must} not violate any copyright laws.
+    \item The video data \textbf{must} range from 5 to 15 seconds.
+    \item There \textbf{must} be a minimum of 10 unique videos in the database.
+    \item The video database \textbf{must} easily be implemented with Python.
+    \item The video data \textbf{should} be stored in a PostGreSQL database.
+    \item The videos in the database \textbf{should} vary in style e.g. include movies extracts, animated pictures, cartoons, mangas, black and white movies, etc.
+    
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+
+\begin{enumerate}
+    \item The system \textbf{must} have a name.
+    \item The interface \textbf{should} be easy to read, using large fonts.
+    \item The interface \textbf{should} be easy to navigate, using icons and navigation elements.
+    \item The system \textbf{may} not crash or exit unexpectedly.
+\end{enumerate}
