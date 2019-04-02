@@ -44,22 +44,32 @@ Add any acknowledgements here.
 \pagenumbering{arabic}
 
 \chapter{Introduction}
+\label{ch:chapter1}
 \input{chapters-content/introduction.tex}
 
 \chapter{Literature \& Technology Survey}
+\label{ch:chapter2}
 \input{chapters-content/litsurvey.tex}
 
 % review the requirements decisions and critique the requirements process.
 \chapter{Requirements}
+\label{ch:chapter3}
 \input{chapters-content/requirements.tex}
 
 % review your design decisions at various levels and critique the design process.
 \chapter{Design}
+\label{ch:chapter4}
 \input{chapters-content/design.tex}
 
 % review the implementation and testing decisions and issues, and critique these processes.
-\chapter{Implementation and Testing}
-\input{chapters-content/implementation-testing.tex}
+\chapter{Implementation}
+\label{ch:chapter5}
+\input{chapters-content/implementation.tex}
+
+% review the implementation and testing decisions and issues, and critique these processes.
+\chapter{System Testing}
+\label{ch:chapter6}
+\input{chapters-content/testing.tex}
 
 % Code can be output inline using \verb@\lstinline|some code|@.  For example,
 % this code is inline: \lstinline|public static int example = 0;|  (I have
@@ -83,28 +93,28 @@ Add any acknowledgements here.
 % ideas.
 
 % review the outcomes, and critique the outcomes process.
-\chapter{Results}
-\input{chapters-content/results.tex}
+\chapter{Evaluation}
+\label{ch:chapter7}
+\input{chapters-content/evaluation.tex}
 
 \chapter{Discussion}
+\label{ch:chapter8}
 \input{chapters-content/discussion.tex}
 
 \chapter{Conclusions}
+\label{ch:chapter9}
 \input{chapters-content/conclusion.tex}
-
-This is the chapter in which you review the major achievements in the
-light of your original objectives, critique the process, critique your
-own learning and identify possible future work.
-
 
 \bibliography{Bibliography}
 
 \appendix
 
 \chapter{13 Point Ethics Check List}
+\label{ch:appendix-ethics-checklist}
 \input{chapters-content/appendix/ethics-checklist.tex}
 
 \chapter{Experiment Survey}
+\label{ch:appendix-experiment-survey}
 \input{chapters-content/appendix/experiment-survey.tex}
 
 % \chapter{Design Diagrams}

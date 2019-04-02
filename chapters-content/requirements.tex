@@ -1,54 +1,84 @@
-This chapter gives a brief overview of the 
+This chapter establishes the requirements of the system. These requirements were devised in response to the problems mentioned in Section \ref{sec:problem-description} of Chapter \ref{ch:chapter1}, along with the information provided by the Literature and Technology Survey in Chapter \ref{ch:chapter2}.\\
 
-The following requirements are prioritised using the words \textit{must}, \textit{should} and \textit{may}; where \textit{must} indicates a crucial requirement to the system, \textit{should} an optimal requirement and \textit{may} a beneficial requirement. In the following requirements, the term "\textit{recorded video}" corresponds to the video that is used as input to be pattern matched to one of the videos in the database. It may either be directly recorded using a camera or it may be pre-recorded and passed as input.
+The following requirements are prioritised using the words \textit{must}, \textit{should} and \textit{may}; where \textit{must} indicates a crucial requirement to the system, \textit{should} an optimal requirement and \textit{may} a beneficial requirement. 
+%In the following requirements, the term ``\textit{query video}'' or ``\textit{recorded video}'' corresponds to the video that is used as input to be pattern matched to one of the videos in the database. It may either be directly recorded using a mobile device camera or it may be pre-recorded and passed as input.
 
 \section{Functional Requirements}
 
 \subsection{System Requirements}
 
+\subsubsection{Training}
+
+These requirements concern the training phase of the system, where features are extracted from each video in the database and stored in files for the next phase.
+
 \begin{enumerate}
-    \item The system \textbf{must} be able to match the recorded video with one of the videos in the database with at least 80\% accuracy.
-    \item The system \textbf{must} stabilise the recorded video before pattern matching it against the videos in the database.
-    \item If using a classifier approach to pattern-matching, the system \textbf{must} train the model only a single time after a change in the video database e.g. a new video being added. It must not train the model every time the system is started.
-    \item The system \textbf{must} be able to record videos or accept pre-recorded videos as input.
-    \item The system \textbf{should} be able to find a match to the recorded video in less than 10 seconds.
-    \item The system \textbf{should} crop the recorded video to ignore the surroundings of the clip being pattern matched.
-    \item The system \textbf{may} start the pattern matching phase only when the video clip in the recorded video starts playing to avoid wasting computational time and accuracy on still images.
-    \item The features used to pattern match the videos \textbf{may} be saved in a Gaussian Mixture Model.
-    \item The system \textbf{may} use the Lucas-Kanade Optical Flow method to track movements in the videos.
-    \item The system \textbf{may} use Fisher Vectors to crop the recorded video and improve the accuracy.
+    \item \textbf{The system \underline{must} be trained a single time only}.\\
+    The system \textbf{must} re-train the classifier whenever a change is carried out in the database e.g. a video has been added or a video has been removed.
+    
+    \item \textbf{The system \underline{must} store the training data in files.}\\
+    Files can be saved either in ``\textit{.txt}'' file format or in ``\textit{.dat}'' file format.
+    
+    \item \textbf{The files containing the training data \underline{must} be able to be quickly loaded into memory during the matching phase.}\\
+    To minimise additional time spent on I/O operations, the files should be loaded quickly using efficient functions.
+    
+    \item \textbf{The system \underline{should} extract static colour-based features into histograms.}\\
+    It should use either RGB histograms, grey scale histograms, HSV histograms, or a combination of multiple of the aforementioned histograms.
+    
+    \item The system's interface \textbf{should} specify that it is processing the database videos by displaying either a spinner or iteratively printing text specifying which video is being processed.
 \end{enumerate}
 
-\subsection{Graphical User Interface Requirements}
+\subsubsection{Matching}
+
+These requirements concern the matching phases, or testing phase, of the system, where the same features extracted in the training phases are extracted from the query video and compared to stored features from each database video by calculating a similarity score.
 
 \begin{enumerate}
-    \item The interface \textbf{must} be created using Tkinter.
-    \item The interface \textbf{must} be very simple and intuitive to use.
-    \item The interface \textbf{should} start with an option to directly record a video or submit a pre-recorded video as input
-    \item The interface \textbf{should} display a progress bar while the recorded video is being processed, 
-    \item The interface \textbf{should} display the result once the pattern matching has been completed, which could either be the matching video from the database or an error message.
+    \item \textbf{The system \underline{must} accept a pre-recorded video as input.}\\
+    This pre-recorded video will serve as the query video.
+    
+    \item \textbf{The system \underline{must} crop the recorded video to select a ``region of interest''.}\\
+    It \textbf{must} ignore the pixels outside of the selected area of the clip.
+    
+    \item \textbf{The system \underline{must} display the results once the classification has been completed.}\\
+    The correct result \textbf{must} be emphasised. The results can be displayed in tables if all the scores are shown.
+    
+    \item \textbf{The system \underline{}{should} stabilise the query video before pattern matching it against the videos in the database.}\\
+    The stabilised video will diminish the effects of camera movement and improve the accuracy of the histogram matching algorithm.
+    
+    % \item The system \textbf{should} be able to find a match to the recorded video in less than 20 seconds.
+    
+    % \item The system \textbf{may} be able to directly record a query video.
+   
+    % \item The system \textbf{must} be able to match the recorded video with one of the videos in the database with at least 95\% accuracy.
 \end{enumerate}
 
-\subsection{System Configuration Requirements}
+\subsubsection{Database Pre-processing}
+
+todo
+
+\subsubsection{General Requirements}
 
 \begin{enumerate}
-    \item The system \textbf{must} be a desktop application.
-    \item The system \textbf{must} record the query video using a hand held device to simulate a mobile device recording.
+    \item The MVP\footnote{Minimum Viable Product} \textbf{must} be a CLI\footnote{Command Line Interface}.
+    \item The interface \textbf{must} accept command line inputs.
+    \item The system \textbf{must} be able to run on a machine equipped with a terminal.
     \item The system \textbf{should} be able to run on Windows, Mac and Linux distributions.
-    \item The system \textbf{should} be able to run on any desktop device equipped with a Python environment running with version 3.5 or more.
+    \item The system \textbf{should} be able to run on any desktop device equipped with a Python environment running with version 3.7 or higher.
     \item The system \textbf{should} run smoothly.
+    \item The system \textbf{must} include a ``README'' file with instructions on how to use the system.
+    \item The interface \textbf{should} be able to either directly record a video or to use a pre-recorded video as input.
+    \item The interface \textbf{may} be a graphical interface e.g. a web page or a native desktop application.
 \end{enumerate}
 
 \subsection{Code Design Requirements}
 
 \begin{enumerate}
-    \item The system code \textbf{must} be written in Python version 3.5 or higher.
+    \item The system code \textbf{must} be written in Python version 3.7 or higher.
     \item The system code \textbf{must} use the OpenCV python library.
     \item The system code \textbf{must} be source controlled using Git.
     \item The system code \textbf{must} be backed up on GitHub.
     \item The system code's GitHub repository \textbf{must} be private during the development phases.
     \item The system \textbf{must} be covered with unit tests.
-    \item The python code \textbf{should} be follow PEP8 coding guidelines \cite{pep8}.
+    \item The python code \textbf{should} follow PEP8 coding guidelines \cite{pep8}.
     \item The system \textbf{should} be covered with integration tests.
     \item The system \textbf{may} be covered with acceptance tests.
 \end{enumerate}
@@ -56,20 +86,21 @@ The following requirements are prioritised using the words \textit{must}, \texti
 \subsection{Data Requirements}
 
 \begin{enumerate}
-    \item The video data \textbf{must} not violate any copyright laws.
-    \item The video data \textbf{must} range from 5 to 15 seconds.
-    \item There \textbf{must} be a minimum of 10 unique videos in the database.
+    \item The database videos \textbf{must} not violate any copyright laws.
+    \item The video data length \textbf{must} range from 10 to 15 seconds.
+    \item There \textbf{must} be a minimum of 20 unique videos in the database.
     \item The video database \textbf{must} easily be implemented with Python.
-    \item The video data \textbf{should} be stored in a PostGreSQL database.
-    \item The videos in the database \textbf{should} vary in style e.g. include movies extracts, animated pictures, cartoons, mangas, black and white movies, etc.
+    \item The videos in the database \textbf{should} vary in style e.g. include movie extracts, animated pictures, cartoons, mangas, black and white movies, etc.
     
 \end{enumerate}
 
 \section{Non-Functional Requirements}
 
 \begin{enumerate}
-    \item The system \textbf{must} have a name.
-    \item The interface \textbf{should} be easy to read, using large fonts.
-    \item The interface \textbf{should} be easy to navigate, using icons and navigation elements.
-    \item The system \textbf{may} not crash or exit unexpectedly.
+    \item The interface \textbf{should} be easy to read, using large fonts, with an emphasis on text used to discern the main results from .
+    \item The system \textbf{may} not crash or exit unexpectedly with no error message.
 \end{enumerate}
+
+\section{Summary}
+
+This chapter has summarised the requirements needed to design and implement a successful system based on the problems formulated in Chapter \ref{ch:chapter1} and the Literature and Technology Survey in Chapter \ref{ch:chapter2}. Now that the requirements have been established, different potential solutions will be explored in the next chapter, including the benefits and disadvantages of each method, before one solution can be chosen and implemented.

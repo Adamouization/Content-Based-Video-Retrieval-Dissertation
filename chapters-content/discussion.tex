@@ -1,3 +1,17 @@
 \begin{itemize}
-    \item state what could be improved with time: GUI, automatic ROI detection, more features (e.g. motion and shape features)
+    \item state what could be improved with time
+    \begin{itemize}
+        \item region-based histograms, separate frame in 5 regions and generate a histogram for each region rather than having a global histogram to describe the frame (https://www.pyimagesearch.com/2014/12/01/complete-guide-building-image-search-engine-python-opencv/)
+        \item improve ROI selection to take 4 points rather than 2 (will increase accuracy for query videos that are at an angle, not filming the screen from a straight point of view)
+        \item automatic ROI detection (detect screen edges with edge and corner detector algorithms)
+        \item more features to complement the colour-based features (e.g. motion and shape features) and improve the accuracy
+        \item make use of sound to further improve accuracy
+        \item GUI e.g. Tkinter application or simple HTML webpage
+    \end{itemize} 
+    \item mention that with improvements, could have worked with small database of movies rather than short videos
+    \item limitations of working with large database of movies: 
+    \begin{itemize}
+        \item too much data to process, could perhaps be pre-processed in advance
+        \item copyright issues of having all these movies
+    \end{itemize}
 \end{itemize}
