@@ -1,7 +1,7 @@
 Follow low-level implementation detail of the different stages of the pipeline:
 \begin{itemize}
     \item systems architecture overview (general architecture of a histogram classifier, the different steps to make it work)
-    \item Offline colour-based feature extraction phase:
+    \item \textbf{training} histogram classifier phase:
         \begin{itemize}
             \item generating gray scale histograms
             \item generating RGB histograms
@@ -9,10 +9,10 @@ Follow low-level implementation detail of the different stages of the pipeline:
             \item histogram normalisation
             \item saving data to human-readable .txt files
         \end{itemize}
-    \item Online retrieval phase:
+    \item \textbf{testing} histogram classifier phase:
         \begin{itemize}
             \item query video, identical features extracted, video stabilised
-            \item distance measurements to find nearest neighbour between query histograms and each database video histogram:
+            \item distance measurements between query histograms and each database video histogram:
                 \begin{itemize}
                     \item correlation
                     \item intersection
@@ -20,12 +20,12 @@ Follow low-level implementation detail of the different stages of the pipeline:
                     \item alternative chi-square
                     \item bhattacharyya
                     \item kullback leibler divergence
-                    \item wassertein distance (Earth's Mover Distance)
+                    \item wassertein distance (Eearth's Mover Distance)
                     \item energy distance
                 \end{itemize}
             \item combining results from all 3 methods with weight between different histogram methods to give more importance to HSV, GRB and less importance to grey scale: 1-5-10
         \end{itemize}
-    \item Database \textbf{pre-processing} phase:
+    \item database \textbf{pre-processing} phase:
         \begin{itemize}
             \item shot boundary detection for long videos, allowing the entire movie to be represented with a few thousand frames
             \item current: one frame every second for short videos
