@@ -1,14 +1,8 @@
 This chapter establishes the requirements of the system. These requirements were devised in response to the problems mentioned in Section \ref{sec:problem-description} of Chapter \ref{ch:chapter1}, along with the information provided by the Literature and Technology Survey in Chapter \ref{ch:chapter2}.\\
 
-The following requirements are divided between non-functional and functional sections, which are further split into more precise sections. They are prioritised using the words \textit{must} (Priority 1), \textit{should} (Priority 2) and \textit{may} (Priority 3); where \textit{must} (Priority 1) indicates a crucial requirement to the system, \textit{should} (Priority 2) an optimal requirement and \textit{may} (Priority 3) a beneficial requirement.
+The following requirements are divided between non-functional and functional sections, which are further split into more specific sections. They are prioritised using the words \textit{must} (Priority 1), \textit{should} (Priority 2) and \textit{may} (Priority 3); where \textit{must} indicates a crucial requirement to the system, \textit{should} an optimal requirement and \textit{may} a beneficial requirement.
+
 %In the following requirements, the term ``\textit{query video}'' or ``\textit{recorded video}'' corresponds to the video that is used as input to be pattern matched to one of the videos in the database. It may either be directly recorded using a mobile device camera or it may be pre-recorded and passed as input.
-
-\section{Non-Functional Requirements}
-
-\begin{enumerate}
-    \item The interface \textbf{should} be easy to read, using large fonts, with an emphasis on text used to discern the main results from .
-    \item The system \textbf{may} not crash or exit unexpectedly with no error message.
-\end{enumerate}
 
 \section{Functional Requirements}
 
@@ -19,46 +13,58 @@ The following requirements are divided between non-functional and functional sec
 These requirements concern the offline feature extraction phase\footnote{The learning phase in a classifier ingesting static unsupervised data.} of the system, where static database videos are ingested by the system and features are extracted from each video and stored in files for the next phase.
 
 \begin{enumerate}
+
     \item \textbf{The system \underline{must} successfully run this phase a single time and be able to run multiple times in the next phase}.\\
     The system \textbf{must} re-ingest the data whenever a change is carried out in the database e.g. a video has been added or a video has been removed.\\
     Priority 1.
     
     \item \textbf{The system \underline{must} store the extracted features it used for learning in files for future re-use in the online retrieval phase.}\\
-    Files can be saved either in ``\textit{.txt}'' file format to be human-readable, or in other file formats such as ``\textit{.dat}'' files.
+    Files can be saved either in ``\textit{.txt}'' file format to be human-readable, or in other file formats such as ``\textit{.dat}'' files.\\
+    Priority 1.
     
     \item \textbf{The files containing the training data \underline{must} be able to be quickly loaded into memory during the matching phase.}\\
-    To minimise additional time spent on I/O operations, the files should be loaded quickly using efficient functions designed for this type of operation.
+    To minimise additional time spent on I/O operations, the files should be loaded quickly using efficient functions designed for this type of operation.\\
+    Priority 1.
     
     % \item \textbf{The system \underline{should} extract static features into histograms.}\\
     % It should use either RGB histograms, grey scale histograms, HSV histograms, or a combination of multiple of the aforementioned histograms.
     
     \item \textbf{The system's interface \underline{}{should} specify that it is ingesting and extracting features from the database videos.}\\
-    It can do so by either displaying a loading spinner or by iteratively printing text specifying which video is being currently processed.
+    It can do so by either displaying a loading spinner or by iteratively printing text specifying which video is being currently processed.\\
+    Priority 2.
+    
 \end{enumerate}
 
-\subsubsection{Online Retrieval}
+\subsubsection{Online Retrieval Phase}
 
 These requirements concern the retrieval phase\footnote{The matching phase of a classifier where the extracted features of a query video are compared to each database video's extracted feature.} of the system, where the same extracted features from the previous phase are extracted from the query video and compared to the stored features from each database video by calculating the distance between between these features.
 
 \begin{enumerate}
+
     \item \textbf{The system \underline{must} accept a pre-recorded video as input.}\\
-    This pre-recorded video will serve as the query video.
+    This pre-recorded video will serve as the query video.\\
+    Priority 1.
     
     \item \textbf{The system \underline{must} crop the recorded video to select a ``region of interest''.}\\
-    It \textbf{must} ignore the pixels outside of the selected area of the clip.
+    The system must ignore the pixels outside of the selected area of the clip when extracting its features.\\
+    Priority 1.
     
     \item \textbf{The system \underline{must} display the results once the classification has been completed.}\\
-    The retrieved video \textbf{must} be emphasised over the other videos to clearly point out that the result has been found. Additional results such as individual distances between the query and each video can be displayed as well e.g. tables.
+    The retrieved video \textbf{must} be emphasised over the other videos to clearly point out that the result has been found. Additional results such as individual distances between the query and each video can be displayed as well e.g. tables.\\
+    Priority 1.
     
     \item \textbf{The system \underline{should} stabilise the query video before extracting its features.}\\
-    The stabilised video will diminish the effects of camera movement and increase the similarities between the video's extracted features and the database videos' features.
+    The stabilised video will diminish the effects of camera movement and increase the similarities between the video's extracted features and the database videos' features.\\
+    Priority 2.
     
     \item \textbf{The system \underline{may} be able to directly record a query video.}\\
-    Processing the query video while it is being recorded would drastically improve the system's runtime in this phase rather than waiting for the entire video to be recorded and only processing it after the recording is finished
+    Processing the query video while it is being recorded would drastically improve the system's runtime in this phase rather than waiting for the entire video to be recorded and only processing it after the recording is finished.\\
+    Priority 3.
     
     % \item The system \textbf{should} be able to find a match to the recorded video in less than 20 seconds.
     
     % \item The system \textbf{must} be able to match the recorded video with one of the videos in the database with at least 95\% accuracy.
+
 \end{enumerate}
 
 \subsubsection{Database Pre-processing}
@@ -66,49 +72,93 @@ These requirements concern the retrieval phase\footnote{The matching phase of a 
 These requirements concern the database pre-processing phase of the system. This phase would be used before the two previously mentioned phases, and concerns the operations to carry out the the database videos to improve the offline feature extraction and online retrieval phases.
 
 \begin{enumerate}
+
     \item \textbf{Long videos e.g. feature-length movies, \underline{must} be processed for shot boundary detection to segment them into scenes.}\\
-    A single frame \underline{must} be used to represent each scene of the segmented long video.
+    A single frame \underline{must} be used to represent each scene of the segmented long video.\\
+    Priority 1.
     
-    \item \textbf{The same features from the offline feature extraction and online retrieval phases \underline{should} be used for the shot boundary detection algorithm.}
+    \item \textbf{The same features from the offline feature extraction and online retrieval phases \underline{should} be used for the shot boundary detection algorithm.}\\
+    Priority 2.
+    
 \end{enumerate}
 
 \subsubsection{General Requirements}
 
 \begin{enumerate}
-    \item The MVP\footnote{Minimum Viable Product} \textbf{must} be a CLI\footnote{Command Line Interface}.
-    \item The interface \textbf{must} accept command line inputs.
-    \item The system \textbf{must} be able to run on a machine equipped with a terminal.
-    \item The system \textbf{should} be able to run on Windows, Mac and Linux distributions.
-    \item The system \textbf{should} be able to run on any desktop device equipped with a Python environment running with version 3.7 or higher.
-    \item The system \textbf{should} run smoothly.
-    \item The system \textbf{must} include a ``README'' file with instructions on how to use the system.
-    \item The interface \textbf{should} be able to either directly record a video or to use a pre-recorded video as input.
-    \item The interface \textbf{may} be a graphical interface e.g. a web page or a native desktop application.
+
+    \item \textbf{The MVP\footnote{Minimum Viable Product} \underline{must} at least be a Command Line Interface that accepts command line inputs to run different phases of the program and enable/disable options.}\\
+    A simple CLI is the minimum interface required to run the system with different arguments and to display results.\\
+    Priority 1.
+    
+    \item \textbf{The system \underline{must} be able to run on a machine equipped with a terminal.}\\
+    Any machine running Windows, Mac or Linux distributions should be able to run the system with the correct project dependencies installed.\\
+    Priority 1.
+        
+    \item \textbf{The system \underline{should} include a ``README'' file with instructions on how to run the system.}\\
+    The ``README'' file allows the system to be accessible to other users with the appropriate background knowledge to install the pre-required dependencies and run the system successfully.\\
+    Priority 2.
+    
+    \item \textbf{The interface \underline{may} be a graphical interface.}\\
+    For example, it could be a simple HTML web page or a native UI desktop application (which will depend on the chosen programming language). This would allow for information to be more clearly displayed on the screen.\\
+    Priority 3.
+        
 \end{enumerate}
 
 \subsection{Code Design Requirements}
 
 \begin{enumerate}
-    \item The system code \textbf{must} be written in Python version 3.7 or higher.
-    \item The system code \textbf{must} use the OpenCV python library.
-    \item The system code \textbf{must} be source controlled using Git.
-    \item The system code \textbf{must} be backed up on GitHub.
-    \item The system code's GitHub repository \textbf{must} be private during the development phases.
-    \item The system \textbf{must} be covered with unit tests.
-    \item The python code \textbf{should} follow PEP8 coding guidelines \cite{pep8}.
-    \item The system \textbf{should} be covered with integration tests.
-    \item The system \textbf{may} be covered with acceptance tests.
+
+    \item \textbf{The system's code \underline{must} be source controlled using Git and backed up on GitHub in a private repository.}\\
+    This will enable the code to be safely backed and offer a timeline of the system's development phase.\\
+    Priority 1.
+    	
+    	\item \textbf{The system \underline{should} follow coding style guidelines set for the programming language of choice.}\\
+    	This will ensure that the code will be written at the highest standard by following professional practices and will be more easily readable by industry experts.\\
+    	Priority 2.
+
+	\item \textbf{The system \underline{should} use third-party libraries for complex aspects of the software to avoid rewriting complicated code that already exists and is easily accessible.}\\
+	Rewriting code that already exists could be a waste of time for a project with such as shirt time-frame. Therefore, using third-party libraries will mean more time can be spent designing and implementing high-level concepts of the system.\\
+	Priority 2.
+
+    \item \textbf{The system \underline{may} be covered with unit tests and integration tests.}\\
+    To ensure that different core aspects of the system work as expected, unit tests can be written around these sections. Additionally, multiple core aspects can be tested as a whole with integration tests.\\
+    Priority 3.
+
 \end{enumerate}
 
 \subsection{Data Requirements}
 
 \begin{enumerate}
-    \item The database videos \textbf{must} not violate any copyright laws.
-    \item The video data length \textbf{must} range from 10 to 15 seconds.
-    \item There \textbf{must} be a minimum of 20 unique videos in the database.
-    \item The video database \textbf{must} easily be implemented with Python.
-    \item The videos in the database \textbf{should} vary in style e.g. include movie extracts, animated pictures, cartoons, mangas, black and white movies, etc.
+
+    \item \textbf{The videos used in the database \underline{must} not violate any copyright laws.}\\
+    They must have licenses allowing them to be re-used for personal and commercial purposes at no cost.\\
+    Priority 1.
     
+    \item \textbf{The duration of the videos \underline{should} range from 10 to 15 seconds.}\\
+    Priority 2.
+
+    \item \textbf{There \underline{should} be a minimum of 50 unique videos in the database.}\\
+    Priority 2.
+        
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+
+\begin{enumerate}
+	
+	\item \textbf{The system \underline{should} not be built with external users in mind.}\\
+	It should only be run by the system's creator or users with a background in computer science who could understand how to run it using the README file provided.\\
+	Priority 2.
+
+    \item \textbf{The interface \underline{should} make the results easy to read.}\\
+    This could be achieved with the use of large fonts, colours and bold text. Text used to discern the main results from less important output should be emphasized.
+    
+    \item \textbf{The system \underline{may} run smoothly and uninterrupted.}\\
+    Priority 3.
+    
+    \item \textbf{The system \underline{may} not crash or exit unexpectedly with no error message.}\\
+    Priority 3.
+
 \end{enumerate}
 
 \section{Summary}
