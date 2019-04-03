@@ -1,35 +1,44 @@
 This chapter establishes the requirements of the system. These requirements were devised in response to the problems mentioned in Section \ref{sec:problem-description} of Chapter \ref{ch:chapter1}, along with the information provided by the Literature and Technology Survey in Chapter \ref{ch:chapter2}.\\
 
-The following requirements are prioritised using the words \textit{must}, \textit{should} and \textit{may}; where \textit{must} indicates a crucial requirement to the system, \textit{should} an optimal requirement and \textit{may} a beneficial requirement. 
+The following requirements are divided between non-functional and functional sections, which are further split into more precise sections. They are prioritised using the words \textit{must} (Priority 1), \textit{should} (Priority 2) and \textit{may} (Priority 3); where \textit{must} (Priority 1) indicates a crucial requirement to the system, \textit{should} (Priority 2) an optimal requirement and \textit{may} (Priority 3) a beneficial requirement.
 %In the following requirements, the term ``\textit{query video}'' or ``\textit{recorded video}'' corresponds to the video that is used as input to be pattern matched to one of the videos in the database. It may either be directly recorded using a mobile device camera or it may be pre-recorded and passed as input.
+
+\section{Non-Functional Requirements}
+
+\begin{enumerate}
+    \item The interface \textbf{should} be easy to read, using large fonts, with an emphasis on text used to discern the main results from .
+    \item The system \textbf{may} not crash or exit unexpectedly with no error message.
+\end{enumerate}
 
 \section{Functional Requirements}
 
 \subsection{System Requirements}
 
-\subsubsection{Training}
+\subsubsection{Offline Feature Extraction Phase}
 
-These requirements concern the training phase of the system, where features are extracted from each video in the database and stored in files for the next phase.
+These requirements concern the offline feature extraction phase\footnote{The learning phase in a classifier ingesting static unsupervised data.} of the system, where static database videos are ingested by the system and features are extracted from each video and stored in files for the next phase.
 
 \begin{enumerate}
-    \item \textbf{The system \underline{must} be trained a single time only}.\\
-    The system \textbf{must} re-train the classifier whenever a change is carried out in the database e.g. a video has been added or a video has been removed.
+    \item \textbf{The system \underline{must} successfully run this phase a single time and be able to run multiple times in the next phase}.\\
+    The system \textbf{must} re-ingest the data whenever a change is carried out in the database e.g. a video has been added or a video has been removed.\\
+    Priority 1.
     
-    \item \textbf{The system \underline{must} store the training data in files.}\\
-    Files can be saved either in ``\textit{.txt}'' file format or in ``\textit{.dat}'' file format.
+    \item \textbf{The system \underline{must} store the extracted features it used for learning in files for future re-use in the online retrieval phase.}\\
+    Files can be saved either in ``\textit{.txt}'' file format to be human-readable, or in other file formats such as ``\textit{.dat}'' files.
     
     \item \textbf{The files containing the training data \underline{must} be able to be quickly loaded into memory during the matching phase.}\\
-    To minimise additional time spent on I/O operations, the files should be loaded quickly using efficient functions.
+    To minimise additional time spent on I/O operations, the files should be loaded quickly using efficient functions designed for this type of operation.
     
-    \item \textbf{The system \underline{should} extract static colour-based features into histograms.}\\
-    It should use either RGB histograms, grey scale histograms, HSV histograms, or a combination of multiple of the aforementioned histograms.
+    % \item \textbf{The system \underline{should} extract static features into histograms.}\\
+    % It should use either RGB histograms, grey scale histograms, HSV histograms, or a combination of multiple of the aforementioned histograms.
     
-    \item The system's interface \textbf{should} specify that it is processing the database videos by displaying either a spinner or iteratively printing text specifying which video is being processed.
+    \item \textbf{The system's interface \underline{}{should} specify that it is ingesting and extracting features from the database videos.}\\
+    It can do so by either displaying a loading spinner or by iteratively printing text specifying which video is being currently processed.
 \end{enumerate}
 
-\subsubsection{Matching}
+\subsubsection{Online Retrieval}
 
-These requirements concern the matching phases, or testing phase, of the system, where the same features extracted in the training phases are extracted from the query video and compared to stored features from each database video by calculating a similarity score.
+These requirements concern the retrieval phase\footnote{The matching phase of a classifier where the extracted features of a query video are compared to each database video's extracted feature.} of the system, where the same extracted features from the previous phase are extracted from the query video and compared to the stored features from each database video by calculating the distance between between these features.
 
 \begin{enumerate}
     \item \textbf{The system \underline{must} accept a pre-recorded video as input.}\\
@@ -39,21 +48,29 @@ These requirements concern the matching phases, or testing phase, of the system,
     It \textbf{must} ignore the pixels outside of the selected area of the clip.
     
     \item \textbf{The system \underline{must} display the results once the classification has been completed.}\\
-    The correct result \textbf{must} be emphasised. The results can be displayed in tables if all the scores are shown.
+    The retrieved video \textbf{must} be emphasised over the other videos to clearly point out that the result has been found. Additional results such as individual distances between the query and each video can be displayed as well e.g. tables.
     
-    \item \textbf{The system \underline{}{should} stabilise the query video before pattern matching it against the videos in the database.}\\
-    The stabilised video will diminish the effects of camera movement and improve the accuracy of the histogram matching algorithm.
+    \item \textbf{The system \underline{should} stabilise the query video before extracting its features.}\\
+    The stabilised video will diminish the effects of camera movement and increase the similarities between the video's extracted features and the database videos' features.
+    
+    \item \textbf{The system \underline{may} be able to directly record a query video.}\\
+    Processing the query video while it is being recorded would drastically improve the system's runtime in this phase rather than waiting for the entire video to be recorded and only processing it after the recording is finished
     
     % \item The system \textbf{should} be able to find a match to the recorded video in less than 20 seconds.
     
-    % \item The system \textbf{may} be able to directly record a query video.
-   
     % \item The system \textbf{must} be able to match the recorded video with one of the videos in the database with at least 95\% accuracy.
 \end{enumerate}
 
 \subsubsection{Database Pre-processing}
 
-todo
+These requirements concern the database pre-processing phase of the system. This phase would be used before the two previously mentioned phases, and concerns the operations to carry out the the database videos to improve the offline feature extraction and online retrieval phases.
+
+\begin{enumerate}
+    \item \textbf{Long videos e.g. feature-length movies, \underline{must} be processed for shot boundary detection to segment them into scenes.}\\
+    A single frame \underline{must} be used to represent each scene of the segmented long video.
+    
+    \item \textbf{The same features from the offline feature extraction and online retrieval phases \underline{should} be used for the shot boundary detection algorithm.}
+\end{enumerate}
 
 \subsubsection{General Requirements}
 
@@ -92,13 +109,6 @@ todo
     \item The video database \textbf{must} easily be implemented with Python.
     \item The videos in the database \textbf{should} vary in style e.g. include movie extracts, animated pictures, cartoons, mangas, black and white movies, etc.
     
-\end{enumerate}
-
-\section{Non-Functional Requirements}
-
-\begin{enumerate}
-    \item The interface \textbf{should} be easy to read, using large fonts, with an emphasis on text used to discern the main results from .
-    \item The system \textbf{may} not crash or exit unexpectedly with no error message.
 \end{enumerate}
 
 \section{Summary}
