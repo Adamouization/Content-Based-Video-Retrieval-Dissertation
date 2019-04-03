@@ -17,7 +17,7 @@ Drastic advances in video capturing technology have caused important amounts of 
 Throughout the years, video retrieval has improved in parallel with the breakthroughs in video recording devices. Early video retrieval techniques used a text-based approach where the system accepted text input to search the database of videos \cite{lai2015trajectory}, as seen in Figure \ref{fig:text_vs_content_retrieval}.\emph{a}. For example, the user would input the string query \textit{``De Niro"}, which would return all movies in which Robert De Niro starred or \textit{``Coppola"} to find all movies directed by Francis Ford Coppola. Unique aspects of the video clip such as movie credits or sports scores were often analysed using OCR\footnote{Optical Character Recognition} technology \cite{li2002text}. The query text was then compared to a video file's content, such as colours, shapes, texture, luminance or objects, or to the file's metadata\footnote{The data associated to a video file}, such as the video title, author, date, content description, commentaries, captions or keywords \cite{li2002text} \cite{feng2011} \cite{patel2012}. However, these techniques were highly inefficient compared to content-based techniques as they often relied on manually noted annotations and textual descriptions to find similarities for matching the query video to a video in the database and did not make use of the actual visual content that describes a video.\\
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=\textwidth]{figures/content_text-retrieval_comparison.png}}
+\centerline{\includegraphics[width=\textwidth]{figures/litsurvey/content_text-retrieval_comparison.png}}
 \caption{\label{fig:text_vs_content_retrieval}Illustrations of a text-based content-retrieval system \emph{(a)}, a content-based video retrieval system \emph{(b)}, and the project's desired CBVR system \emph{(c)}.}
 \end{figure}
 
@@ -45,7 +45,7 @@ The most important difference between content-based image retrieval and video re
 \end{itemize}
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=0.75\textwidth]{figures/temporal_structure_videos.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/temporal_structure_videos.png}}
 \caption{\label{fig:temporal_structure}Temporal structure of videos, including the different terms used to describe video temporal units. Figure courtesy of A. Araujo et al.}
 \end{figure}
 
@@ -63,7 +63,7 @@ Because videos are made up of numerous stills, usually around 24 frames per seco
 Figure \ref{fig:forrest_gump_frames} shows six frames from Forrest Gump's famous running shot, which lasts 44 seconds, making up a total of 1056 frames. Each frame in the figure was captured with 10-second intervals, meaning 240 frames separate each still. In the first three frames, the group of people running in the background barely moves in the space of 20 seconds. The pixels that describe the group in the shot remain mostly unchanged for all of the frames between the 3 samples, equivalent to 480 frames, with a few additional pixels describing the group as it advances towards the camera. The same can be said about the red cap in the last two frames. Most of the pixels making up the cap in the fifth frame remain the same in the sixth frame. This example perfectly betrays the reason why analysing a video frame by frame would be extremely inefficient when it comes to CBVR. Due to the similarities between consecutive frames, these should be aggregated \cite{araujo2017i2v} to describe a shot by using a selection of frames, such as taking the six frames in Figure \ref{fig:forrest_gump_frames} to describe the entire 44 seconds of video, rather than keeping the original 1056 frames to describe it.
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=\textwidth]{figures/forrest_gump_shot.jpg}}
+\centerline{\includegraphics[width=\textwidth]{figures/litsurvey/forrest_gump_shot.jpg}}
 \caption{\label{fig:forrest_gump_frames}Frames from the famous running scene in Forrest Gump extracted at intervals of 10 seconds. Video frames courtesy of \textit{``Forrest Gump long run scene"} YouTube video available online: \url{https://youtu.be/QgnJ8GpsBG8?t=325}.}
 \end{figure}
 
@@ -123,7 +123,7 @@ These features can be divided into two categories: static features and dynamic f
 Methods to extract static features operate on stills, which can correspond to individual video frames, thumbnails or key frames (see Section \ref{sec:movie-pre-processing}). This means that traditional image techniques can be applied to those stills \cite{hu2011survey}. They are organised in three different categories: colour-based features, texture-based features and shape-based features, which can visualised in Figure \ref{fig:colour-texture-shape-features}.
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=0.75\textwidth]{figures/colour-texture-shape-features.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/colour-texture-shape-features.png}}
 \caption{\label{fig:colour-texture-shape-features}Example of static features, including colour-based features (with an RGB colour histograms of 256 bins for colour-based features), texture-based features (with an co-occurrence matrix showing the frequency of pairs of pixels) and shape-based features (with a shape matrix descriptor).}
 \end{figure}
 
@@ -133,7 +133,7 @@ Methods to extract static features operate on stills, which can correspond to in
 The main colour-based features model are colour histograms. In general, a histogram consists of counts of some underlying data that is organised into predetermined bins to a statistical representation of the distribution of that data. Figure \ref{fig:histogram-general-example} depicts an example of a histogram where a collection of points is organised into specific pre-defined bins based on their location relative to a vertical grid.
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=0.75\textwidth]{figures/histogram_general_example.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/histogram_general_example.png}}
 \caption{\label{fig:histogram-general-example}Example of a histogram counting the location of points relative to a vertical grid. Image courtesy of Bradski and Kaehler.}
 \end{figure}
 
@@ -142,7 +142,7 @@ In the case of a colour histogram, the underlying data that the histogram is try
 Typically, for an RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which are then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represent the distribution efficiently. If the range of pixels that defined the bins is wider, meaning there are less overall bins, then the histogram's distribution would be too coarse-grained and the general structure of the histogram would be lost, as pointed out by the left half of Figure \ref{fig:histogram-bin-size}. On the other hand, if the range of the bins is too narrow, meaning there are more overall bins, then the histogram's distribution would not be represented accurately and there would be many spiky cells, as betrayed in the right half of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=0.85\textwidth]{figures/histogram_bin_size.png}}
+\centerline{\includegraphics[width=0.85\textwidth]{figures/litsurvey/histogram_bin_size.png}}
 \caption{\label{fig:histogram-bin-size}If the range of the bins is too large, then the distribution is coarse (left). If the range of the bins is too small, then the distribution is not accurately represented and spikes cells appear (right). Image courtesy of Bradski and Kaehler.}
 \end{figure}
 
@@ -175,7 +175,7 @@ Figure \ref{fig:monaco_palace_features} shows an image with coloured windows use
 \end{itemize}
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=0.80\textwidth]{figures/monaco_palace_features.jpg}}
+\centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/monaco_palace_features.jpg}}
 \caption{\label{fig:monaco_palace_features}An image of the Palace of Monaco with coloured windows representing poor features in blue (flat), edges in green, and good features in red (corners).}
 \end{figure}
 
@@ -197,12 +197,12 @@ Motion features are a unique characteristic of videos that are absent from image
     In \textit{sparse optical flow}, only a few pixels from the frames in a shot are used. Features describing objects, such as corners, are used to track an object's motion across the shot. However, these only give information about where certain parts of the object are going, which are then used to estimate where the overall object is moving towards. Sparse optical flows. For example, Figure \ref{fig:optical_flow} indicates the overall motion of a car by tracking only a few pixels from it. On the other hand, \textit{dense optical flow} calculates the optical flow for every pixel in the frame. At each pixel of the frame, the direction and magnitude of that specific location are represented by an arrow, which can variate in direction and length (see Figure \ref{fig:dense_optical_flow_representation}).
     
     \begin{figure}[h] 
-    \centerline{\includegraphics[width=0.80\textwidth]{figures/optical_flow.png}}
+    \centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/optical_flow.png}}
     \caption{\label{fig:optical_flow}Visualisation of sparse and dense optical flow algorithms on different shots.}
     \end{figure}
         
     \begin{figure}[h] 
-    \centerline{\includegraphics[width=0.80\textwidth]{figures/dense_optical_flow_representation.png}}
+    \centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/dense_optical_flow_representation.png}}
     \caption{\label{fig:dense_optical_flow_representation}A 3D and a 2D representation of dense optical flow. Each arrow represents the direction and magnitude of a specific pixel location, which can variate in direction and length.}
     \end{figure}
     
@@ -251,12 +251,12 @@ The database of videos can be pre-processed to optimise the visual content extra
 The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be extremely similar in another frame from the same shot. Detecting shot boundaries would allow the movie to be segmented and organised by shots, as depicted in Figure \ref{fig:shot_boundary_detection}. These boundaries are defined by the type of transition between two different shots, which can either be defined as a quick cut when the transition is direct, or as gradual when it is a dissolve or a fade in/out transition that runs over multiple frames \cite{yuan2007shotboundary}, as shown in Figure \ref{fig:video_transitions}.
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=0.75\textwidth]{figures/shot_boundary_detection.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/shot_boundary_detection.png}}
 \caption{\label{fig:shot_boundary_detection}Shot boundary detection example of a video scene made up of two shots with a gradual transition between the two shots. Figure courtesy of Michael Gygli available online at: \url{https://medium.com/gifs-ai/\_ridiculously-fast-shot-boundary-detection-with-fully-convoluti\_onal-neural-networks-da9d8c73e86c}}
 \end{figure}
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=0.75\textwidth]{figures/video_transitions.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/video_transitions.png}}
 \caption{\label{fig:video_transitions}. Visual examples of a quick cut, a dissolve cut and a fading cut. Frames courtesy of Koprinska \& Carrato (2001) ``Temporal video segmentation: A survey'' available online at: \url{https://www.sciencedirect.com/science/article/pii/S0923596500000114}}
 \end{figure}
 
@@ -294,7 +294,7 @@ The final step in segmenting a video is the detection of the frames to cut, whic
 The \textit{threshold-based approach} compares the measured similarities between a pair of frames with a threshold. Whenever the similarity measure is smaller than the threshold, a shot boundary is detected and the shot can be cut. Figure \ref{fig:shot_boundary_detection_threshold} betrays an example of a threshold-based approach for different types of transitions, with a correct detection (\emph{A}), a missed detection (\emph{B}) and a misinterpreted detection (\emph{C}).\\
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=0.75\textwidth]{figures/shot_boundary_detection_threshold.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/shot_boundary_detection_threshold.png}}
 \caption{\label{fig:shot_boundary_detection_threshold}Threshold-based approach for shot boundary detection. In this example, the shot boundary is detected at \emph{A}, it is missed at \emph{B}, and it is misinterpreted at \emph{C} as two cuts rather than a single one.}
 \end{figure}
 
@@ -337,7 +337,7 @@ The most simple approach is \textit{Sequential Comparison Between Frames} where 
 To illustrate the advantage of using key frames, a 3-seconds long shot recorded at 30 fps\footnote{Frames Per Second} of a ball rolling on the ground can be used (90 frames in total). Analysing all the frames individually as stills would obviously be highly inefficient. However, selecting key frames to work on, as depicted in Figure \ref{fig:rolling_ball} where a single frame is chosen for each second, would mean that 3 key frames can be used for feature extraction and pattern matching instead of using all of the 90 frames that make up the video.\\
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=\textwidth]{figures/ball_rolling.jpg}}
+\centerline{\includegraphics[width=\textwidth]{figures/litsurvey/ball_rolling.jpg}}
 \caption{\label{fig:rolling_ball}Example of frames to sample for low-visual content analysis. The first frame for each second (one frame every thirty seconds) is retrieved for a 30 fps 3-second video of a ball rolling from the left-hand side of the screen to the right-hand side. Video frames courtesy of \textit{``How to Animate a Rolling Ball"} YouTube video available online: \url{https://youtu.be/cgbLAreElNI?t=130}.}
 \end{figure}
 
