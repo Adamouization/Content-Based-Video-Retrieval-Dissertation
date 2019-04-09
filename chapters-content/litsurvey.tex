@@ -1,4 +1,4 @@
-In the content-based video retrieval system to be developed to solve the problems discussed in the previous chapter, a wide spectrum of different techniques can potentially be used. However, grasping the theory behind these various techniques is primordial to make a decision on which technique to use when building the system. Therefore, this section will study the literature surrounding three important areas that are necessary to understand what is required for a content-based video retrieval system.\\
+In the content-based video retrieval system to be developed with the problems discussed in the previous chapter in mind, a wide spectrum of different techniques can potentially be used. However, grasping the theory behind these various techniques is primordial to make a decision on which technique to use when building the system. Therefore, this section will study the literature surrounding three important areas that are necessary to understand what is required for a content-based video retrieval system.\\
 
 The first section will address general content-based retrieval systems concepts, retracing the evolution of such systems for videos and addressing the challenges posed by targeting videos and mobile devices. The second section will focus on extracting visual content from videos, starting with static features and advancing to dynamic features before briefly exploring the progression of learning models for pattern matching. Finally, the third section targets how the structure of videos can be used to segment and extract individual frames from them for optimising the system.
 
@@ -22,7 +22,7 @@ Throughout the years, video retrieval has improved in parallel with the breakthr
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=\textwidth]{figures/litsurvey/content_text-retrieval_comparison.png}}
-\caption{\label{fig:text_vs_content_retrieval}Illustrations of a text-based content-retrieval system \emph{(a)}, a content-based video retrieval system \emph{(b)}, and the project's desired CBVR system \emph{(c)}.}
+\caption{\label{fig:text_vs_content_retrieval}Illustrations of a text-based content-retrieval system \emph{(a)} and a content-based video retrieval system \emph{(b)}.}
 \end{figure}
 
 Content-based retrieval techniques quickly replaced text-based retrieval techniques towards the end of the 20th century by making use of the visual content to compute similarities between videos \cite{lai2015trajectory}. Instead of accepting a text string, the system takes a video as input to extract its visual contents, as shown in Figure \ref{fig:text_vs_content_retrieval}.\emph{b}. According to Petković et al. \cite{petkovic2000}, this visual content can be broken down into three different categories:
