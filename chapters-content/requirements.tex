@@ -27,7 +27,7 @@ These requirements concern the offline feature extraction phase\footnote{The lea
     % \item \textbf{The system \underline{should} extract static features into histograms.}\\
     % It should use either RGB histograms, grey scale histograms, HSV histograms, or a combination of multiple of the aforementioned histograms.
     
-    \item \textbf{The system's interface \underline{}{should} specify that it is ingesting and extracting features from the database videos.}\\
+    \item \textbf{The system's interface \underline{should} specify that it is ingesting and extracting features from the database videos.}\\
     It can do so by either displaying a loading spinner or by iteratively printing text specifying which video is being currently processed.\\
     Priority 2.
     
@@ -72,7 +72,7 @@ These requirements concern the database pre-processing phase of the system. This
 \begin{enumerate}
 
     \item \textbf{Long videos e.g. feature-length movies, \underline{must} be processed for shot boundary detection to segment them into scenes.}\\
-    A single frame \underline{must} be used to represent each scene of the segmented long video.\\
+    A single frame must be used to represent each scene of the segmented long video.\\
     Priority 1.
     
     \item \textbf{The same features from the offline feature extraction and online retrieval phases \underline{should} be used for the shot boundary detection algorithm.}\\

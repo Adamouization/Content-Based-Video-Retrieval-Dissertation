@@ -1,17 +1,27 @@
-Now that the requirements necessary to build the system have been formulated, potential solutions to fulfil the list of requirements from Chapter \ref{ch:chapter3} for each aspect of the system can now be analysed before a final solution can be chosen. The first section of this chapter will focus on different solutions for the system's pipeline, starting with the offline feature extraction phase, followed by the online retrieval phase, and ending with the database pre-processing phase. The second section will focus on general design decisions such as the programming language, the type of interface and the type of videos to use. These two sections will be used to outline the final chosen solutions for each aspect of the system before a development plan can be devised.
+Now that the requirements necessary to build the system have been formulated, potential solutions to fulfil the list of requirements from Chapter \ref{ch:chapter3} for each aspect of the system can now be analysed before a final solution can be chosen. The first section of this chapter will focus on different solutions for the system's pipeline, starting with the offline feature extraction phase, followed by the online retrieval phase, and ending with the database pre-processing phase. The second section will focus on general design decisions such as the programming language, the type of interface and the type of videos to use. These two sections will be used to outline the final chosen solutions for each aspect of the system before concluding with a development plan.
 
 \section{Pipeline Design Analysis}
 
+Before a global design solution can be chosen for the system, it is simpler to break down the system's pipeline into different phases and review numerous potential designs for each of these phases. The system pipeline can be split into three different phases, as shown in Figure \ref{fig:basic-cbvr-diagram}:
+
+\begin{itemize}
+    \item \textbf{Offline Feature Extraction Phase}. This phase corresponds to the ``training'' phase of the system, where features are extracted from each video in the database and then stored in data files for the retrieval phase.
+    \item \textbf{Online Retrieval Phase}. This phase is affiliated to the ``training'' phase of the system, where a single video query is matched to one of the database videos by extracting the same features from the previous phase and comparing them to the stored features.
+    \item \textbf{Database Pre-processing Phase}. This is an optional phase where the database videos are processed before the offline feature extraction phase to improve the accuracy and speed of the database videos feature extraction.
+\end{itemize}
+
+\begin{figure}[h]
+\centerline{\includegraphics[width=\textwidth]{figures/design/basic_cbvr_phases.png}}
+\caption{\label{fig:basic-cbvr-diagram}Basic CBVR system diagram.}
+\end{figure}
+
+\begin{comment}
 Explore possible options for different sections of the system, such as:
     \begin{itemize}
         \item types of features to extract (why static colour features and not object/motion features) - histograms are very popular with videos, calculations are easier, implementation is easier, results are as efficient
         \item types of learning models (histogram matching, BoW-approach VS Neural Network)
     \end{itemize}
-    
-\begin{figure}[h]
-\centerline{\includegraphics[width=1.15\textwidth]{figures/design/basic_cbvr_phases.png}}
-\caption{\label{fig:basic-cbvr-diagram}Basic CBVR system diagram.}
-\end{figure}
+\end{comment}
 
 \subsection{Offline Feature Extraction Phase}
 
