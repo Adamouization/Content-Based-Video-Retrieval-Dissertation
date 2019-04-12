@@ -2,7 +2,7 @@ Now that the requirements necessary to build the system have been formulated, po
 
 \section{Pipeline Design Analysis}
 
-Before a global design solution can be chosen for the system, it is simpler to break down the system's pipeline into different phases and review numerous potential designs for each of these phases. The system pipeline can be split into three different phases, as shown in Figure \ref{fig:basic-cbvr-diagram}:
+In order to chose a global design solution for the system, it is easier to break down the system's pipeline into different phases and review the numerous potential designs for each of these phases. The system pipeline can be split into three different phases, as shown in Figure \ref{fig:basic-cbvr-diagram}:
 
 \begin{itemize}
     \item \textbf{Offline Feature Extraction Phase}. This phase corresponds to the ``training'' phase of the system, where features are extracted from each video in the database and then stored in data files for the retrieval phase.
@@ -37,22 +37,26 @@ todo
 
 \section{General Project Design}
 
-decision on programming language, on database videos and interface choice
+Now that the design choices regarding the system pipeline have been made, general system choices such as the programming language, the interface, the feature storage and the database videos can be inspected.
 
 \subsection{Programming Language}
 
-\begin{itemize}
-	\item python VS MATLAB vs other languages
-	\item rich array of libraries: OpenCV, NumPy, SciPy, MatplotLib
-	\item ease of installing third-party libraries with PIP
-	\item powerful IDEs (PyCharm)
-	\item ease of generating testing suites
-     \item familiarity with
-\end{itemize}
+The programming language is one of the most important aspects when it comes to designing and later implementing the system as it is the medium used to transform the system from design to implementation. However, choosing between 250 different programming languages \cite{tiobe} can be a tricky exercise, which is why multiple views have to be reviewed before a programming language can be chosen. Multiple criteria are considered to justify the choice of the programming languages, including the availability of computer vision-related functions, the runtime speed, the readability and the personal preference.\\
+
+The first element to consider when choosing a programming language for this type of project is the availability of functions for video manipulation and computer vision-related operations. Indeed, using high-level functions to, e.g. read videos or generate histograms is primordial to avoid spending time manually implementing each of these functionalities and to instead devote more time on implementing high-level concepts to complete the pipeline. Some languages such as MATLAB and Python (with mainstream third-party libraries) allow for native manipulation of images/videos and offer collections of computer vision functions. For other programming languages, libraries can be used. The most popular library is OpenCV\footnote{OpenCV, \url{https://opencv.org/}}, which offers functions for real-time computer vision applications. This library supports all the main operating systems (Linux, macOS, Windows, etc.) and although it was mainly designed for C/C++, it contains bindings for the main general-purpose programming languages such as Python, Java, C\#, Javascript, Haskell and MATLAB.\\
+
+Among the previously mentioned programming languages, C/C++ are the fastest languages,
+according to ``Benchmark Games''\footnote{Benchmark Games: \url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/}}, followed by Java, Javascript and Python, which is considerably slower than the aforementioned programming languages. However, Python can be extended with languages such as C/C++ with ease. This means that coupling Python with the OpenCV library that is initially written in C++ allows the Python code to execute as fast as the original C++ code since it is the actual OpenCV C++ code that is running in the background. Furthermore, Python has an extensive set of third-party libraries that add powerful functionalities to the language, such as Numpy, SciPy and MatplotLib that add mathematical and scientific functions that can compete with MATLAB's native functions. Finally, of all the specified programming languages, Python is the favoured one in terms of personal preference, familiarity, and experience. Therefore, the relatively slower execution speeds of Python that are cancelled out when using OpenCV, coupled with the personal preference for Python, make Python the obvious programming language choice for this project.\\
+
+TODO: add table of pros and cons in appendix
 
 \subsection{Interface}
 
 interface choice (why CLI VS GUI?): time constraints and no users, goal of this project is to research efficient results, not create a commercial product
+
+\subsection{Feature Storing}
+
+txt files VS dat files VS binary files
 
 \subsection{Database videos}
 
