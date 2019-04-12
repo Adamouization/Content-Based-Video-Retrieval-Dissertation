@@ -1,4 +1,4 @@
-Now that the requirements necessary to build the system have been formulated, potential solutions to fulfil the list of requirements from Chapter \ref{ch:chapter3} for each aspect of the system can now be analysed before a final solution can be chosen. The first section of this chapter will focus on different solutions for the system's pipeline, starting with the offline feature extraction phase, followed by the online retrieval phase, and ending with the database pre-processing phase. The second section will focus on general design decisions such as the programming language, the type of interface and the type of videos to use. These two sections will be used to outline the final chosen solutions for each aspect of the system before concluding with a development plan.
+Now that the requirements necessary to build the system have been formulated, potential solutions to fulfil the list of requirements from Chapter \ref{ch:chapter3} for each aspect of the system can now be analysed before a final solution can be chosen. The first section of this chapter will focus on different solutions for the system's pipeline, starting with the offline feature extraction phase, followed by the online retrieval phase, and ending with the database pre-processing phase. The second section will focus on general design decisions such as the programming language, the type of interface and the type of videos to use. These two sections will be used to conclude with an outline of the final chosen solutions for each aspect of the system.
 
 \section{Pipeline Design Analysis}
 
@@ -24,10 +24,12 @@ Explore possible options for different sections of the system, such as:
 \end{comment}
 
 \subsection{Offline Feature Extraction Phase}
+\label{sec:design-offline-feature-extraction}
 
 todo
 
 \subsection{Online Retrieval Phase}
+\label{sec:design-online-retrieval}
 
 todo
 
@@ -50,15 +52,32 @@ according to ``Benchmark Games''\footnote{Benchmark Games: \url{https://benchmar
 
 TODO: add table of pros and cons in appendix
 
+\subsection{Query Video}
+
+pre-recorded, manually crop
+
 \subsection{Interface}
 
-Now that is has been decided that Python will be the programming language used to implement the system, the next decision is the type of interface that will be used to present the results. Although it was specified
+Now that is has been decided that Python will be the programming language used to implement the system, the next decision is the type of interface that will be used to present the results. Although it was specified in Chapter \ref{ch:chapter1} that the system is meant to target mobile devices, creating a mobile application is a waste of time and resources for a project with such a narrow time frame. Despite the fact that Python offers many choices of creating native GUIs using frameworks such as Tkinter, PyQt or WxPython, or simply creating HTML websites, building a graphical interface would take as much time as developing the entire system pipeline. Indeed, the main goal is to complete the different phases of pipeline that will process and match a query video to a database video. Spending time on designing a GUI\footnote{Graphical User Interface} for a mobile device is unnecessary as the objective is not to create a commercial application that can be tested with users, but to develop the matching algorithm that would work in the background of such an application.\\
 
-interface choice (why CLI VS GUI?): time constraints and no users, goal of this project is to research efficient results, not create a commercial product
+The only pieces of information that need to be displayed are the following:
+\begin{itemize}
+    \item Progress of current phase e.g. during the offline feature extraction phase, specify how many videos have been processed and how many are left.
+    \item Histograms: display the generated histograms for each video.
+    \item Manual Cropping: display the video have have the user manually select the region of interest.
+    \item Results:
+    \begin{itemize}
+        \item The distance measurements between the query video and each database videos, while specifying which distance metric is used.
+        \item The final result, which should correspond to a thumbnail of the matched video.
+        \item Additional data to measure the efficiency e.g. the runtime and the accuracy (comparison of the number of true positives and the number of false positives)
+    \end{itemize}
+\end{itemize}
 
-\subsection{Feature Storing}
+Most of the information previously mentioned can be displayed directly in the console, such as the current phase progress, the distance measurements and the efficiency results. The only graphical requirements is for the manual query cropping, the histograms and the final result output. The OpenCV GUI functions can be used to display the video in a new window and to manually draw the contour of the region of interest as automatically detecting the edges of the screen in the query video would is a very complex task on its own. Regarding the histograms and the final result, it is important to show visual representations of the histograms and the matched video as it was noticed that during the demonstration of progress in February, simply printing the title of the matched video did not provide a sense of accomplishment. Therefore, displaying the histograms and the matched video result can be done through MatplotLib, which is a library used to display plots (histograms) and images (thumbnail of the matched video).
 
-txt files VS dat files VS binary files
+\subsection{Feature Storing File Type}
+
+The features extracted during the offline feature extraction phase (see Section \ref{sec:design-offline-feature-extraction}) and used during the online retrieval phase (see Section \ref{sec:design-online-retrieval}) can either be stored in text files or binary files. Due to the small amount of spread data (three histograms for each video) and the advantages of being able to view the data being written to the text files for debugging purposes, plain text files are the chosen file types for storing the features extracted from the database videos. For a complete list of pros and cons between text files and binary files, see Appendix \ref{ch:appendix-comparison-text-vs-binary}.
 
 \subsection{Database videos}
 
@@ -66,11 +85,12 @@ types of videos in databases (why short videos VS movies, cartoons/stop-motion p
 
 \section{Chosen Solution}
 
-include a high-level diagram of system excluding detail (all DB videos in system, single query video in system, matching video output)
-
-\section{Development Plan}
-
-plan with time constraints in mind
+\begin{enumerate}
+    \item \textbf{Programming Language}: Python
+    \item \textbf{Query Video}: Manual crop
+    \item \textbf{Interface}: mainly command line for printing data, along with OpenCV GUI for the query video cropping and MatplotLib for displaying the histograms and results.
+    \item \textbf{Feature Storing File Type}: Plain Text files.
+\end{enumerate}
 
 \section{Summary}
 
