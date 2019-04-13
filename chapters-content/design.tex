@@ -50,15 +50,30 @@ The first element to consider when choosing a programming language for this type
 Among the previously mentioned programming languages, C/C++ are the fastest languages,
 according to \textit{Benchmark Games}\footnote{Benchmark Games: \url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/}}, followed by Java, Javascript and Python, which is considerably slower than the aforementioned programming languages. However, Python can be extended with languages such as C/C++ with ease. This means that coupling Python with the OpenCV library that is initially written in C++ allows the Python code to execute as fast as the original C++ code since it is the actual OpenCV C++ code that is running in the background. Furthermore, Python has an extensive set of third-party libraries that add powerful functionalities to the language, such as Numpy, SciPy and MatplotLib that add mathematical and scientific functions that can compete with MATLAB's native functions. Finally, of all the specified programming languages, Python is the favoured one in terms of personal preference, familiarity, and experience. Therefore, the relatively slower execution speeds of Python that are cancelled out when using OpenCV, coupled with the personal preference for Python, make Python the obvious programming language choice for this project.\\
 
-TODO: add table of pros and cons in appendix
+TODO: add table of pros and cons in appendix See Appendix \ref{ch:appendix-comparison-programming-languages}.
 
-\subsection{Query Video}
+\subsection{Query Video Pre-processing}
 
-pre-recorded, manually crop
+The query video corresponds to the video that the user will record with a mobile-device and input in the system to be matched with one of the database videos. A commercial application would allow the user to directly record a video from the application, which would in turn be used to extract its features and compare them to the features of the database videos. Based on current commercial computer vision systems, e.g. Shazam for music recognition \cite{shazam}, the system could even start processing the video as it is being written rather than waiting for it to be saved. However, these are design aspects that would be required if the system were to be release to the public on a large scale. This is not the case since with the goal is to develop the matching algorithm and complete the pipeline, meaning the query video may simply be a pre-recorded one of a database video that is used as input once the program starts running in the online retrieval phase. To simulate realism and what the actual commercial system would be like, the video should be recorded through a mobile device.\\
+
+Recording the query through a mobile device gives rise to multiple challenges, as specified in Section \ref{sec:litsurvey-cbvr-4-mobile-devices}. Indeed, some of those challenges include undesired camera movements and the targeted screen itself not taking up the entire frame, resulting queries of poor quality. The former can be fixed by applying video stabilisation to the video, while the latter can be solved by selecting a ROI\footnote{Region of Interest}. Nonetheless, selecting a ROI can be tricky as the query needs to be recorded in ideal conditions. Four different types of query conditions are depicted in Figure \ref{fig:difference-query-video-issues}:
+\begin{itemize}
+    \item a) Ideal Query: allows for an accurate ROI selection.
+    \item b) Down-scaled Query: requires more complex ROI selection as it is harder to detect the edges of the screen automatically. There is also a loss of information as an important section of the frame will be excluded.
+    \item c) Skewed Query: requires even more complex ROI selection and results in more loss of information.
+    \item d) Incomplete Query: Greatly diminishes the system accuracy since part of the recorded video is missing.
+\end{itemize}
+
+\begin{figure}[h]
+\centerline{\includegraphics[width=0.8\textwidth]{figures/design/difference-query-video-issues.png}}
+\caption{\label{fig:difference-query-video-issues}Different types of video queries, emphasising the contrast between what an idea query and poor quality queries would look like.}
+\end{figure}
+
+On the grounds that the system should expect the worst case query, down-scaled and skewed queries should always be considered as the norm. Ideal queries will be rare as they will depend on competent users. However, incomplete queries as shown in Figure \ref{fig:difference-query-video-issues}d should not be accounted for as it is near-impossible to accurately match such a query to a database video. Therefore, based on this analysis, the assumption that automatically selecting the ROI is a very complex task on its own can be made. Indeed, automatically detecting the edges of different screens to select the video being played as the ROI could be grow to be even more intricate than the CBVR system itself. As a result, the ROI should be manually selected by choosing points on the query video to draw a contour around the screen. 
 
 \subsection{Interface}
 
-Now that is has been decided that Python will be the programming language used to implement the system, the next decision is the type of interface that will be used to present the results. Although it was specified in Chapter \ref{ch:chapter1} that the system is meant to target mobile devices, creating a mobile application is a waste of time and resources for a project with such a narrow time frame. Despite the fact that Python offers many choices of creating native GUIs using frameworks such as Tkinter, PyQt or WxPython, or simply creating HTML websites, building a graphical interface would take as much time as developing the entire system pipeline. Indeed, the main goal is to complete the different phases of pipeline that will process and match a query video to a database video. Spending time on designing a GUI\footnote{Graphical User Interface} for a mobile device is unnecessary as the objective is not to create a commercial application that can be tested with users, but to develop the matching algorithm that would work in the background of such an application.\\
+With Python being the chosen programming language to implement the system and the type of query videos bing decided, the next decision is the type of interface that will be used to present the results. Although it was specified in Chapter \ref{ch:chapter1} that the system is meant to target mobile devices, creating a mobile application is a waste of time and resources for a project with such a narrow time frame. Despite the fact that Python offers many choices of creating native GUIs using frameworks such as Tkinter, PyQt or WxPython, or simply creating HTML websites, building a graphical interface would take as much time as developing the entire system pipeline. Indeed, the main goal is to complete the different phases of pipeline that will process and match a query video to a database video. Spending time on designing a GUI\footnote{Graphical User Interface} for a mobile device is unnecessary as the objective is not to create a commercial application that can be tested with users, but to develop the matching algorithm that would work in the background of such an application.\\
 
 The only pieces of information that need to be displayed are the following:
 \begin{itemize}
@@ -86,10 +101,11 @@ types of videos in databases (why short videos VS movies, cartoons/stop-motion p
 \section{Chosen Solution}
 
 \begin{enumerate}
-    \item \textbf{Programming Language}: Python
-    \item \textbf{Query Video}: Manual crop
-    \item \textbf{Interface}: mainly command line for printing data, along with OpenCV GUI for the query video cropping and MatplotLib for displaying the histograms and results.
-    \item \textbf{Feature Storing File Type}: Plain Text files.
+    \item \textbf{Programming Language}: Python.
+    \item \textbf{Query Video Pre-Processing}: Stabilise video and manually crop ROI.
+    \item \textbf{Interface}: Mainly command line for printing data, along with OpenCV GUI for the query video cropping and MatplotLib for displaying the histograms and results.
+    \item \textbf{Feature Storing File Type}: Plain Text (``.txt'') files.
+    \item \textbf{Database Videos}: tood
 \end{enumerate}
 
 \section{Summary}
