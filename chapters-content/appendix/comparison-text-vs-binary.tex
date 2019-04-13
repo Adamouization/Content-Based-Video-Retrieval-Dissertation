@@ -1,13 +1,15 @@
 % Please add the following required packages to your document preamble:
-\begin{table}[h]
-\centering
-\begin{tabular}{@{}ll@{}}
-\toprule
-\multicolumn{1}{c}{\textbf{Text files}} & \multicolumn{1}{c}{\textbf{Binary files}} \\ \midrule
-\multicolumn{1}{|l|}{Are human readable: text files are easier to debug since people can see what was written to the file.} & \multicolumn{1}{l|}{Are not human readable: binary files are a lot more difficult to debug because people cannot easily see what was written to the file.} \\ \midrule
-\multicolumn{1}{|l|}{When dealing with large data, compression may be a factor. For example, 10-digits number will take at least 10 bytes as text.} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Will store the same data in less space. For example: 10-digits number will take as\\ little as four or two as binary.\end{tabular}} \\ \midrule
-\multicolumn{1}{|l|}{More restrictive than binary files since they can only contain textual data.} & \multicolumn{1}{l|}{Binary file formats are less restrictive as they may include multiple types of data in the same file such as image, video, and audio data.} \\ \midrule
-\multicolumn{1}{|l|}{Less likely to become corrupted. A small error in a text file may simply show up once the file has been opened.} & \multicolumn{1}{l|}{More likely to become corrupted. A small error in a binary file may make it unreadable.} \\ \midrule
-Many programs are capable of reading and editing text files. & Less programs are capable of reading and editing text files. \\ \bottomrule
-\end{tabular}
-\end{table}
+% \usepackage{longtable}
+% Note: It may be necessary to compile the document several times to get a multi-page table to line up properly
+\begin{longtable}[c]{|l|l|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Text files}} & \multicolumn{1}{c|}{\textbf{Binary files}} \\ \hline
+\endhead
+%
+\begin{tabular}[c]{@{}l@{}}Are human readable: text files \\ are easier to debug since \\ people can see what was \\ written to the file.\end{tabular} & \begin{tabular}[c]{@{}l@{}}Are not human readable: binary \\ files are a lot more difficult to \\ debug because people cannot \\ easily see what was written to \\ the file.\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}When dealing with large data, \\ compression may be a factor. \\ For example, a 10-digit number \\ will take at least 10 bytes as text.\end{tabular} & \begin{tabular}[c]{@{}l@{}}Will store the same data in less \\ space. For example: a 10-digit \\ number will take as little as \\ four or two as binary.\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}More restrictive than binary \\ files since they can only \\ contain textual data.\end{tabular} & \begin{tabular}[c]{@{}l@{}}Binary file formats are less \\ restrictive as they may include \\ multiple types of data in the \\ same file such as image, \\ video, and audio data.\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Less likely to become corrupted. \\ A small error in a text file may \\ simply show up once the file has \\ been opened.\end{tabular} & \begin{tabular}[c]{@{}l@{}}More likely to become corrupted. \\ A small error in a binary file may \\ make it unreadable.\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}Many programs are capable of \\ reading and editing text files.\end{tabular} & \begin{tabular}[c]{@{}l@{}}Less programs are capable of reading \\ and editing text files.\end{tabular} \\ \hline
+\caption{Table comparing the pros and cons for storing data in text files and binary files.}
+\end{longtable}
