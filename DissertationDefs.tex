@@ -3,7 +3,6 @@
 %%
 \usepackage{harvard}    	% Uses harvard style referencing
 \usepackage{graphicx}   	% Permits import of various graphics formats
-\usepackage{hyperref}   	% Provides hyperlinks to sections automatically
 \usepackage{multicol}   	% Provides ability to split output into columns
 \usepackage{listings}   	% Provides styled code listings
 \usepackage{float}      	% Suppresses floating for tables and figures when using "H"
@@ -11,6 +10,8 @@
 \usepackage{comment}    	% enable block of comments
 \usepackage{enumitem}       % resume enumerations
 \usepackage{longtable}      % span tables through multiple pages. Note: It may be necessary to compile the document several times to get a multi-page table to line up properly
+\usepackage{breakurl}       % used to break long url links
+\usepackage[breaklinks]{hyperref}   % Provides hyperlinks to sections automatically
 
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
@@ -33,6 +34,9 @@
 \citationstyle{dcu}
 \pagestyle{headings}
 \fussy
+
+% break long urls with the following characters
+\def\UrlBreaks{\do\/\do-\do.\do0}
 
 
 %%
