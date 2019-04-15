@@ -10,18 +10,18 @@ The following requirements are divided between non-functional and functional sec
 
 These requirements concern the offline feature extraction phase\footnote{The learning phase in a classifier ingesting static unsupervised data.} of the system, where static database videos are ingested by the system and features are extracted from each video and stored in files for the next phase.
 
-\begin{enumerate}
+\begin{enumerate}[label=F\arabic*]
 
     \item \textbf{The system \underline{must} successfully run this phase a single time and be able to run multiple times in the next phase}.\\
     The system \textbf{must} re-ingest the data whenever a change is carried out in the database e.g. a video has been added or a video has been removed.\\
     Priority 1.
     
     \item \textbf{The system \underline{must} store the extracted features it used for learning in files for future re-use in the online retrieval phase.}\\
-    Files can be saved either in ``\textit{.txt}'' file format to be human-readable, or in other file formats such as ``\textit{.dat}'' files.\\
+    Files can be saved either in plain text ``\textit{.txt}'' file format to be human-readable, or in other file formats such as binary ``\textit{.dat}'' files.\\
     Priority 1.
     
     \item \textbf{The files containing the training data \underline{must} be able to be quickly loaded into memory during the matching phase.}\\
-    To minimise additional time spent on I/O operations, the files should be loaded quickly using efficient functions designed for this type of operation.\\
+    To minimise additional time spent on I/O operations, the files should be loaded quickly using efficient functions designed for this type of operation. If necessary, an external third-party library may be used to provided functions for quicker I/O operations.\\
     Priority 1.
     
     % \item \textbf{The system \underline{should} extract static features into histograms.}\\
@@ -37,7 +37,7 @@ These requirements concern the offline feature extraction phase\footnote{The lea
 
 These requirements concern the retrieval phase\footnote{The matching phase of a classifier where the extracted features of a query video are compared to each database video's extracted feature.} of the system, where the same extracted features from the previous phase are extracted from the query video and compared to the stored features from each database video by calculating the distance between between these features.
 
-\begin{enumerate}
+\begin{enumerate}[label=F\arabic*,resume]
 
     \item \textbf{The system \underline{must} accept a pre-recorded video as input.}\\
     This pre-recorded video will serve as the query video.\\
@@ -69,7 +69,7 @@ These requirements concern the retrieval phase\footnote{The matching phase of a 
 
 These requirements concern the database pre-processing phase of the system. This phase would be used before the two previously mentioned phases, and concerns the operations to carry out the the database videos to improve the offline feature extraction and online retrieval phases.
 
-\begin{enumerate}
+\begin{enumerate}[label=F\arabic*,resume]
 
     \item \textbf{Long videos e.g. feature-length movies, \underline{must} be processed for shot boundary detection to segment them into scenes.}\\
     A single frame must be used to represent each scene of the segmented long video.\\
@@ -82,7 +82,7 @@ These requirements concern the database pre-processing phase of the system. This
 
 \subsubsection{General Requirements}
 
-\begin{enumerate}
+\begin{enumerate}[label=F\arabic*,resume]
 
     \item \textbf{The MVP\footnote{Minimum Viable Product} \underline{must} at least be a Command Line Interface that accepts command line inputs to run different phases of the program and enable/disable options.}\\
     A simple CLI is the minimum interface required to run the system with different arguments and to display results.\\
@@ -104,7 +104,7 @@ These requirements concern the database pre-processing phase of the system. This
 
 \subsection{Code Design Requirements}
 
-\begin{enumerate}
+\begin{enumerate}[label=F\arabic*,resume]
 
     \item \textbf{The system's code \underline{must} be source controlled using Git and backed up on GitHub in a private repository.}\\
     This will enable the code to be safely backed and offer a timeline of the system's development phase.\\
@@ -126,7 +126,7 @@ These requirements concern the database pre-processing phase of the system. This
 
 \subsection{Data Requirements}
 
-\begin{enumerate}
+\begin{enumerate}[label=F\arabic*,resume]
 
     \item \textbf{The videos used in the database \underline{must} not violate any copyright laws.}\\
     They must have licenses allowing them to be re-used for personal and commercial purposes at no cost.\\
@@ -142,7 +142,11 @@ These requirements concern the database pre-processing phase of the system. This
 
 \section{Non-Functional Requirements}
 
-\begin{enumerate}
+\begin{enumerate}[label=NF\arabic*]
+
+    \item \textbf{The latest technologies \underline{must} be used to build the system.}\\
+	The latest versions of programming languages and libraries must be used to ensure that the system takes advantage of up-to-date technology.\\
+	Priority 1.
 	
 	\item \textbf{The system \underline{should} not be built with external users in mind.}\\
 	It should only be run by the system's creator or users with a background in computer science who could understand how to run it using the README file provided.\\
