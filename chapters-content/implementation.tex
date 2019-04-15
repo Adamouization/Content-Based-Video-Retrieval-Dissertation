@@ -43,6 +43,24 @@ Follow low-level implementation detail of the different stages of the pipeline:
     \item include code snippets for individual sections
 \end{itemize}
 
+Testing:
+\begin{itemize}
+    \item Unit Testing
+        \begin{itemize}
+            \item grey scale / RGB / HSV histogram generation
+            \item histogram saving to file
+            \item histogram normalisation
+            \item ROI selection
+            \item individual histogram matching, test each metric
+        \end{itemize}
+    \item Integration Testing
+        \begin{itemize}
+            \item test the entire pipeline (with a few videos as the database, make sure the correct match is found)
+        \end{itemize}
+    \item Include some code snippets
+    \item Include test suite results
+\end{itemize}
+
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/CBVR-flowchart.png}}
 \caption{\label{fig:CBVR flowchart}Flowchart.}
