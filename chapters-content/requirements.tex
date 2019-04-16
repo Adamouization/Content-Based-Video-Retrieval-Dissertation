@@ -110,9 +110,9 @@ These requirements concern the database pre-processing phase of the system. This
     This will enable the code to be safely backed and offer a timeline of the system's development phase.\\
     Priority 1.
     	
-    	\item \textbf{The system \underline{should} follow coding style guidelines set for the programming language of choice.}\\
-    	This will ensure that the code will be written at the highest standard by following professional practices and will be more easily readable by industry experts.\\
-    	Priority 2.
+	\item \textbf{The system \underline{should} follow coding style guidelines set for the programming language of choice.}\\
+	This will ensure that the code will be written at the highest standard by following professional practices and will be more easily readable by industry experts.\\
+	Priority 2.
 
 	\item \textbf{The system \underline{should} use third-party libraries for complex aspects of the software to avoid rewriting complicated code that already exists and is easily accessible.}\\
 	Rewriting code that already exists could be a waste of time for a project with such as shirt time-frame. Therefore, using third-party libraries will mean more time can be spent designing and implementing high-level concepts of the system.\\
@@ -132,11 +132,17 @@ These requirements concern the database pre-processing phase of the system. This
     They must have licenses allowing them to be re-used for personal and commercial purposes at no cost.\\
     Priority 1.
     
-    \item \textbf{The duration of the videos \underline{should} range from 10 to 15 seconds.}\\
+    \item \textbf{The duration of the videos \underline{should} range from 7 to 14 seconds.}\\
+    Working with short videos is enough to prove that the system pipeline works as intended since a considerable number of them can be used to populate the database, whereas only a handful of videos could be efficiently used if feature-length movies were used instead. 7 seconds is enough to ensure each video has at least 210 frames\footnote{Assuming videos with a frame rate of 30 fps.} to analyse.\\
     Priority 2.
 
     \item \textbf{There \underline{should} be a minimum of 50 unique videos in the database.}\\
+    Because short videos rather than long ones are used to test the system pipeline, there should be a considerable amount of them to challenge the system.\\
     Priority 2.
+    
+    \item \textbf{The system pipeline \underline{may} be tested with a few feature-length movies as database videos.}\\
+    The main goal of the project is to build the system pipeline, which can be tested with a database of many short videos rather than a database of a few long videos. To further explore the efficiency of the system, feature-length movies could be used to report the results when attempting to match them to a short query.\\
+    Priority 3.
         
 \end{enumerate}
 
