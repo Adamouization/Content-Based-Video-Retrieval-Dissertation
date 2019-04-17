@@ -6,18 +6,41 @@ Follow low-level implementation detail of the different stages of the pipeline.\
 
 Include code snippets for individual sections.
 
-\begin{figure}[h] 
-\centerline{\includegraphics[width=\textwidth]{figures/implementation/CBVR-flowchart.png}}
-\caption{\label{fig:CBVR flowchart}Flowchart.}
-\end{figure}
+% \begin{figure}[h] 
+% \centerline{\includegraphics[width=\textwidth]{figures/implementation/CBVR-flowchart.png}}
+% \caption{\label{fig:CBVR flowchart}Flowchart.}
+% \end{figure}
 
 \section{Offline Colour-Based Feature Extraction}
 
+This section details the different steps that go towards generating histograms and creating the compact signature used to represent each video.
+
 \subsection{Histogram Generation}
+
+1 frame every 30 frames retrieved
 
 \subsubsection{RGB Histogram Generation}
 
-An RGB histogram is generated for each database video. 
+The first type of histogram that is generated is the RGB histogram. As described in \ref{sec:color-based-features}, an RGB histogram represents the colour distribution of the pixels in a frame for three different channels: red, blue and green. To calculate an RGB histogram, OpenCV's \textit{calcHist()} method is used, as shown in Listing \ref{listing:generate_rgb_hist}. 
+
+\begin{listing}[h]
+\inputminted
+[
+baselinestretch=0.9,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos,
+breaklines,
+]
+{python}{code-listings/generate_rgb_hist.py}
+\caption{Single RGB histogram generation}
+\label{listing:generate_rgb_hist}
+\end{listing}
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=\textwidth]{figures/implementation/rgb_histogram_generation.png}}
+\caption{\label{fig:implementation-rgb_histogram_generation}Example of the three generated RGB histogram channels.}
+\end{figure}
 
 \subsubsection{Greyscale Histogram Generation}
 
