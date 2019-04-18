@@ -10,6 +10,22 @@ linenos,
 breaklines,
 ]
 {python}{code-listings/get_frames_to_process.py}
-\caption{Single RGB histogram generation}
+\caption{Function used to process one frame every second.}
 \label{listing:generate_rgb_hist}
+\end{listing}
+
+\section{Normalise Histograms}
+
+\begin{listing}[h]
+\inputminted
+[
+baselinestretch=0.9,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos,
+breaklines,
+]
+{python}{code-listings/normalise_histogram.py}
+\caption{Normalise histograms using OpenCV's \textit{normalize} function.}
+\label{listing:normalise_histograms}
 \end{listing}
