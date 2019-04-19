@@ -139,6 +139,23 @@ breaklines,
 
 At this stage, multiple greyscale, RGB and HSV histograms have been generated for each database video. 
 
+Each of these histograms are then averaged into one single histogram per colour model for each video, meaning that a video will be represented by one averaged greyscale histogram, one averaged RGB histogram and one averaged HSV histogram.
+
+\begin{equation}
+\label{eq:average-greyscale-histogram}
+    \frac{\sum_{i=0}^{N} H_i}{N}
+\end{equation}
+
+\begin{equation}
+\label{eq:average-rgb-histogram}
+    \sum_{h=0}^{2}\frac{\sum_{i=0}^{N} H_i}{N}
+\end{equation}
+
+\begin{equation}
+\label{eq:average-hsv-histogram}
+    \sum_h \sum_s \sum_v H[h,s,v]
+\end{equation}
+
 averaging histogram
 normalising
 writing to human-readable txt file
@@ -185,10 +202,23 @@ distance measurements to find nearest neighbour between query histograms and eac
 
 \begin{itemize}
     \item correlation
+    \begin{equation}
+        d(H_1,H_2)=\frac{\sum _I(H_1(I)-\bar{H_1})(H_2(I)-\bar{H_2})}{\sqrt{\sum _I(H_1(I)-\bar{H_1})^2(H_2(I)-\bar{H_2})^2}}
+    \end{equation}
+    where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram
     \item intersection
+    \begin{equation}
+        d(H_1,H_2)=\sum_Imin(H_1(I)-H_2(I))
+    \end{equation}
     \item chi-square
+    \begin{equation}
+        d(H_1,H_2)=\sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)}
+    \end{equation}
     \item alternative chi-square
     \item bhattacharyya
+    \begin{equation}
+        d(H_1,H_2)=\sqrt{1-\frac{1}{\sqrt{\bar{H_1}\bar{H_2}N^2}}\sum_i\sqrt{H_1(I)\cdot H_2(I)}}
+    \end{equation}
     \item kullback leibler divergence
     \item wassertein distance (Earth's Mover Distance)
     \item energy distance
