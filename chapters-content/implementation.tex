@@ -15,37 +15,40 @@ Follow low-level implementation detail of the different stages of the pipeline.\
 
 \section{Offline Colour-Based Feature Extraction}
 
-This section details the different steps that go towards generating histograms and creating the compact signature used to represent each video. 
+This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms have been generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual pipeline of this phase with RGB histograms only (this phase is repeated fro greyscale and HSV histograms as well). 
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=1.2\textwidth,center]{figures/implementation/rgb_average_histogram_pipeline.png}}
+\caption{\label{fig:implementation-rgb_average_histogram_pipeline}Visualisation of the pipeline of the offline colour-based feature extraction phase with RGB histograms only.}
+\end{figure}
+
+The inner pipeline of this phase has to be repeated for every video in the database. For clarity and to illustrate the steps of this phase, the \textit{butterfly} video is used throughout this entire section to provide examples of the multiple offline colour-based feature extraction steps.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Histogram Generation}
 
-As described in \ref{sec:color-based-features}, a histogram represents the distribution of the pixels in a single frame. Different types of histograms can be generated based on the colour model used. This section covers the generation of histograms in greyscale, RGB and HSV colour models, and how a single compact signature to represent videos can be created from these different histograms.\\
-
-The array of stills that make a video can therefore be treated as images when creating the histograms.
+As described in Section \ref{sec:color-based-features}, a histogram represents the distribution of the pixels in a single frame. Different types of histograms can be generated based on the colour model used. This section covers how three types of histograms are constructed based on the colour model used, starting with greyscale histograms, followed by RGB histograms and ending with HSV histograms.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Greyscale Histogram}
 
-The first type of histogram that is generated is the greyscale histogram, also known as an intensity histogram. This type of histogram is used with frames that are converted to a black \& white colour space, and thus has a single channel rather than the three traditional RGB channels found in colour images. The conversion is done using OpenCV's \textit{cv2.cvtColor()} function along with the \textit{cv2.COLOR\_BGR2GRAY} attribute: 
+The first type of histogram that is generated is the greyscale histogram, also known as an intensity-based histogram. This type of histogram is used with frames that are first converted to a black \& white colour space (see Figure \ref{fig:rgb_to_greyscale}), and thus has a single channel rather than the three traditional RGB channels found in colour images. The conversion is done using OpenCV's \textit{cv2.cvtColor()} function along with the \textit{cv2.COLOR\_BGR2GRAY} attribute: 
 \mint[fontsize=\footnotesize]{python}|grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)|
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/rgb_to_greyscale.png}}
-\caption{\label{fig:rgb_to_greyscale}Converting a frame from the RGB colour space to the greyscale.}
+\caption{\label{fig:rgb_to_greyscale}Conversion of a frame from the RGB colour space to greyscale (black \& white).}
 \end{figure}
 
-Because the video frames are 8-bit images, the spectrum of the pixels values range between 256 possible values\footnote{$2^8=256$}. As a result, the histogram has 256 different bins ranging from 0 to 255 to represent all the potential values that each pixels can take. The histogram itself is calculated using Equation \ref{eq:grey-histogram}, where $g\in [0, 255]$ and $N_g$ represents the number of pixels that have an intensity equal to $g$.
+Because the video frames are 8-bit images, the spectrum of the potential pixel values ranges between 256 possible values\footnote{$2^8=256$}. As a result, the histogram has 256 different bins from 0 to 255 to represent all the potential values that each pixels can take. The histogram itself is portrayed by Equation \ref{eq:grey-histogram}, where $g\in [0, 255]$ and $N_g$ represents the number of pixels that have an intensity equal to $g$. For example, $H(30)$ represents the number of pixels in the image with an intensity value of 30.
 \begin{equation}
 \label{eq:grey-histogram}
     H(g)=N_g
 \end{equation}
 
-For example, $h(30)$ represents the number of pixels in the image with an intensity value of 30.\\
-
-To implement the greyscale histogram generation in the system, OpenCV's \textit{calcHist()} method is used, with the result portrayed in Figure \ref{fig:implementation-greyscale_not_normalised}. The grey frame is passed to the function, along with the number of channels to use, which is a single one in this case ($[0]$), an empty mask $None$ since the histogram is being calculated for the full frame, the number of bins $[256]$, and the range of values $[0, 256]$:
+The implementation of the greyscale histogram generation in the system is carried out through OpenCV's \textit{calcHist()} method, with the result portrayed in Figure \ref{fig:implementation-greyscale_not_normalised}. The grey frame is passed to the function, along with the number of channels to use, which is a single one in this case ($[0]$), an empty mask $None$ since the histogram is being calculated for the full frame, the number of bins $[256]$, and the range of values $[0, 256]$:
 
 \mint[fontsize=\footnotesize]{python}|histogram = cv2.calcHist([grey_frame], [0], None, [256], [0,256])|
 
@@ -54,61 +57,71 @@ To implement the greyscale histogram generation in the system, OpenCV's \textit{
 \caption{\label{fig:implementation-greyscale_not_normalised}The generated greyscale histogram (not normalised).}
 \end{figure}
 
-These greyscale histograms are generated for multiple frames of the video, but not all the frames as this would be highly inefficient (see Section \ref{sec:litsurvey-challenges-temporality}). Rather than generating a histogram for each frame, a selection of frames can be made in advance, which are then used for the histogram generation. Ideally, the frames extracted from the shot boundary detection algorithm are used. However, because the scope of the duration of the videos used is between 7 and 14 seconds and they are only made of a single shot, the shot boundary detection algorithm would only extract one frame. Therefore, for the purpose of testing, one frame is extracted every second to build up the selection of frames, using the \textit{\_get\_frames\_to\_process()} function from Appendix \ref{sec:code-listings-get-frames-to-process}. For example, with the butterfly video that contains 301 frames and has a frame rate of 30 frames per second, 11 frames are selected to generate greyscale histogram (frames \textit{[1, 31, 61, ..., 271, 301]}). Once the greyscale histograms are generated for each of these pre-selected frames, they are all stored away in a list, ready to be averaged into a single histogram that will be used as the compact signature to represent the entire video. 
+These greyscale histograms are generated for multiple frames of the video, but not all the frames as this would be highly inefficient, as explained in Section \ref{sec:litsurvey-challenges-temporality}. Indeed, rather than generating a histogram for each frame, which would be extremely inefficient and waste of computations, a selection of frames can be made in advance, which are then used for the histogram generation. Ideally, the frames extracted from the shot boundary detection algorithm are used. However, because the scope of the duration of the videos used is between 7 and 14 seconds and they are only made of a single shot, the shot boundary detection algorithm would only extract one frame from the videos. Therefore, for the purpose of building a realistic system, one frame is extracted every second to build up the selection of frames, using the \textit{\_get\_frames\_to\_process()} function from Appendix \ref{sec:code-listings-get-frames-to-process}. For example, with the butterfly video that contains 301 frames and has a frame rate of 30 frames per second, 11 frames are selected to generate greyscale histogram (frames \textit{[1, 31, 61, ..., 271, 301]}).\\
+
+Once the greyscale histograms are generated for each of these pre-selected frames, they are all stored away in a list, ready to be later averaged into a single histogram in Section \ref{sec:implementation-compact-video-signature} that will be used as the compact signature to represent the entire video.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{RGB Histogram}
 
-Next, RGB histograms are generated. As described in \ref{sec:color-based-features}, an RGB histogram represents the colour distribution of the pixels in a frame for three different channels: red, blue and green. The coloured frame is a combination of three colour channels, which can be split into threen different stills, as shown in Figure \ref{fig:implementation-rgb_image_channel_split}.
+Now that greyscale histograms are generated for the video, RGB histograms are next produced. As described in \ref{sec:color-based-features}, an RGB histogram represents the colour distribution of the pixels in a frame for three different channels: red, blue and green. The coloured frame is a combination of three colour channels, which can be split into three different stills, as rendered in Figure \ref{fig:implementation-rgb_image_channel_split}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/rgb_image_channel_split.png}}
 \caption{\label{fig:implementation-rgb_image_channel_split}The three colour channels that make up an coloured RGB image.}
 \end{figure}
 
-The RGB histogram is similar to the previous greyscale histograms, except that there are three separate 2D histograms, one for each channel (one in red, one in blue and one in green), where the brightness levels of each pixel are represented for each of those three colour channels. Each of the stills resulting from the split depicted in Figure \ref{fig:implementation-rgb_image_channel_split} will have their own histograms, which will form an RGB histogram when combined. Contrary to the greyscale histograms, frames do not need to be converted to a different colour space as they are directly imported into three channels. Similarly to the previous histogram, 256 bins are used for the RGB histograms, representing the potential values that each pixel can take for each colour channel. The RGB histogram is a combination of three 2D histograms, calculated using Equation \ref{eq:rgb-histogram}, where $g_i\in [0, 255]$ and $N_g^i$ represents the number of pixels that have an intensity equal to $g$ for the colour channel $i$. 
+The RGB histogram is similar to the previously mentioned greyscale histograms, except that there are three separate histograms rather than a single one. There is 2D histogram for each colour channel (one in red, one in blue and one in green), where the brightness levels of each pixel are represented for each of those three colour channels. Each of the stills resulting from the split depicted in Figure \ref{fig:implementation-rgb_image_channel_split} will have their own histograms, which will form a complete RGB histogram when merged.\\
+
+In contrast to the greyscale histograms, frames do not need to be converted to a different colour space when constructing RGB histograms as they are directly imported into three channels by OpenCV's \textit{cv2.VideoCapture()} function. In a similar fashion to the greyscale histograms, 256 bins are used for the RGB histograms, representing the potential values that each pixel can take for each colour channel. The RGB histogram is a combination of three 2D histograms, which are illustrated by Equation \ref{eq:rgb-histogram}, where $g_i\in [0, 255]$ and $N_g(i)$ represents the number of pixels that have an intensity equal to $g$ for the colour channel $i$. For example, $H_{i=2}(60)$ represents the number of pixels in the third channel of the image (blue channel) with an intensity value of 60.
 
 \begin{equation}
 \label{eq:rgb-histogram}
     \sum_{i=0}^{2} H_i(g)=N_g[i]
 \end{equation}
 
-For example, $h_{i=2}(60)$ represents the number of pixels in the third channel of the image (blue channel) with an intensity value of 60.\\
-
-To implement the RGB histogram, OpenCV's \textit{calcHist()} is once again used, with the results depicted in Figure \ref{fig:implementation-rgb_not_normalised}. In a similar fashion to the greyscale histogram, the frame is passed to the function along with the colour channel \textit{[i]}, which are all placed inside a for-loop to create a histogram for the three channels:
+To implement RGB histograms in the system, OpenCV's \textit{calcHist()} is once again used. In an identical manner to the greyscale histogram, the frame is passed to the function along with the colour channel \textit{[i]}, which are all placed inside a for-loop to generate a histogram for the three colour channels:
 
 \mint[fontsize=\footnotesize]{python}|histogram = cv2.calcHist([frame], [i], None, [256], [0, 256])|
+
+At this point, the three individual histograms that have been generated for the three colour channels are merged into a single plot to build the RGB histogram, as depicted in Figure \ref{fig:implementation-rgb_not_normalised}.
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/rgb_not_normalised.png}}
 \caption{\label{fig:implementation-rgb_not_normalised}The combination of the generated histograms for the three colour channels to construct the RGB histogram (not normalised).}
 \end{figure}
 
-Once all the RGB histograms have been generated for each of the pre-selected frames (one frame every second), they are all stored in a dictionary made up of three keys, one for each colour channel, which each link to a list where the histograms are stored away before being averaged into a single histogram used to create a second compact signature for the entire video. 
+Now that RGB histograms have been generated for each of the pre-selected frames (one frame every second), they are all stored in a dictionary made up of three keys, one for each colour channel, which each link to a list where the histograms are stored away before being averaged into a single histogram used to create the second compact signature to represent the entire video. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{HSV Histogram Generation}
 
-Finally, HSV histograms are the last type of histogram generated. HSV histograms make use of the HSV colour space, requiring the frames to be converted from the RGB colour space to HSV colour space. The conversion is done using OpenCV's \textit{cv2.cvtColor()} function along with the \textit{cv2.COLOR\_BGR2HSV} attribute:
+With the greyscale and RGB histograms now formed, the HSV histograms can finally be generated. HSV histograms make use of the HSV colour space, requiring the video frames to be converted from the original RGB colour space to the HSV colour space (see Figure \ref{fig:rgb_to_hsv}). The conversion is done using OpenCV's \textit{cv2.cvtColor()} function along with the \textit{cv2.COLOR\_BGR2HSV} attribute:
 
 \mint[fontsize=\footnotesize]{python}|hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)|
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/rgb_to_hsv.png}}
-\caption{\label{fig:greycale_histogram_generation}Converting a frame from the RGB colour space to the HSV colour space.}
+\caption{\label{fig:rgb_to_hsv}Conversion of a frame from the RGB colour space to the HSV colour space.}
 \end{figure}
 
-This type of histogram is more complex to generate as it is not a 2D histogram like the previous greyscale and RGB histograms, but a 3D histogram. Because they are represented in 3D rather than 2D due to the particularities of the HSV colour space, less bins can be used to plot the data as pixels fall into bins when they are within in conjunction in the range of the three channels. Therefore, to avoid creating a histogram that is neither too coarse and neither too dense, 8 bins are used for the hue channel, 12 bins are used for the saturation channel, and 3 bins are used for the value channel. This results in a histogram of 288 values\footnote{$8*12*3=288$}, which is approximately the same length as the 256 values that were previously used for the greyscale histograms and $256*3$ values for the RGB histograms. The histogram is constructed using Equation \ref{eq:hsv-histogram}, where $N(h,s,v)$ represents the number of pixels that fall within the range of the bin with values $h$ \underline{AND} $s$ \underline{AND} $v$.\\
+This type of histogram is more complex to generate as it is not a 2D histogram like the previous greyscale and RGB histograms, but a 3D histogram. Because they are represented in 3D rather than 2D due to the particularities of the HSV colour space, less bins can be used to plot the data as pixels fall into bins when they are in conjunction with the range of the three channels (the pixels values must be within the range of the hue \underline{AND} the saturation \underline{AND} the value). Therefore, to avoid creating a histogram that is neither too coarse nor too sparse, 8 bins are used for the hue channel, 12 bins are used for the saturation channel, and 3 bins are used for the value channel. This results in a histogram of 288 values\footnote{$8*12*3=288$}, which is approximately the same length as the $256$ values that were previously used for the greyscale histograms and $3*256$ values for the RGB histograms. The histogram is described by Equation \ref{eq:hsv-histogram}, where $N(h,s,v)$ represents the number of pixels that fall within the range of the bin with values $h$ \underline{AND} $s$ \underline{AND} $v$.\\
 \begin{equation}
 \label{eq:hsv-histogram}
     H(h,s,v)=N(h,s,v)
 \end{equation}
 
-For example, a pixel with values $H(h=31, s=245, v=200)$ will fall into the bin with a hue value between 22.5 and 45 (bin \#2/8) \underline{AND} saturation value between 234.6 and 256 (bin \#12/12) \underline{AND} value intensity between 170.7 and 256 (bin \#3/3). The number of pixels in this bin will be $N(1,11,2)$ (0-based indexes).\\
+For example, a pixel with values $H(h=31, s=245, v=200)$ will fall into a bin with\footnote{Assuming ranges of 0-180 for Hue, 0-256 for Saturation, 0-256 for Value.}:
+\begin{itemize}
+    \item a hue value between 22.5 and 45 (bin \#2/8) \underline{AND}
+    \item a saturation value between 234.6 and 256 (bin \#12/12) \underline{AND} 
+    \item a value intensity between 170.7 and 256 (bin \#3/3).
+\end{itemize}
+The number of pixels in this bin will be $N(1,11,2)$ (0-based indexes).\\
 
-Implementing an HSV histogram is again achieved through the use of OpenCV's \textit{calcHist()} function, with the result shown in Figure \ref{fig:implementation-hsv_not_normalised}. Similar arguments are passed such as the frame and an empty mask, but the arguments controlling the size of the histogram are different. \textit{[0, 1, 2]} indicates that the histogram has three channels, \textit{(8, 12, 3)} specifies the number of bins, and \textit{[0, 180, 0, 256, 0, 256]} markes the ranges of these bins:
+Implementing the calculation of an HSV histogram in the system is again achieved through the use of OpenCV's \textit{calcHist()} function, with the result shown in Figure \ref{fig:implementation-hsv_not_normalised}. Similar arguments are passed such as the frame and an empty mask, but the arguments controlling the size of the histogram are different. In the code snippet below, \textit{[0, 1, 2]} indicates that the histogram has three channels (H, S and V), \textit{(8, 12, 3)} specifies the number of bins for each channel, and \textit{[0, 180, 0, 256, 0, 256]} marks the ranges of these bins:
 
 \mint[fontsize=\footnotesize,breaklines]{python}|histogram = cv2.calcHist([hsv_frame], [0, 1, 2], None, (8, 12, 3), [0, 180, 0, 256, 0, 256])|
 
@@ -117,66 +130,58 @@ Implementing an HSV histogram is again achieved through the use of OpenCV's \tex
 \caption{\label{fig:implementation-hsv_not_normalised}The generated 3D HSV histogram (not normalised).}
 \end{figure}
 
-To conclude, the same steps are followed for HSV histograms. Once all the HSV histograms have been generated for each pre-selected frame, they are all stored in a list until they are averaged into a compact histogram.
-
-\begin{listing}[h]
-\inputminted
-[
-baselinestretch=0.9,
-bgcolor=LightGray,
-fontsize=\footnotesize,
-linenos,
-breaklines,
-]
-{python}{code-listings/generate_single_histogram.py}
-\caption{Function generating histograms for the pre-selected frames and adding them to lists before averaging them to create a video's compact signature.}
-\label{listing:generate_single_histogram}
-\end{listing}
+To conclude this offline colour-based extraction phase, HSV histograms are finally generated. Once all the HSV histograms have been generated for each pre-selected frame, they are all stored in a list like the greyscale and RGB histograms. With the greyscale, RGB and HSV histograms all generated for each pre-selected frame of the video, these can now be averaged into a single compact signature for each histogram, which is explained in the next section.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Compact Video Signature}
+\label{sec:implementation-compact-video-signature}
 
-At this stage, multiple greyscale, RGB and HSV histograms have been generated for each database video. 
+At this stage of the offline colour-based extraction phase, multiple greyscale, RGB and HSV histograms have been generated for each pre-selected frame for a video. Each of these histograms can now be averaged into one single histogram per colour model for each video. This means that each database video will be represented by one averaged greyscale histogram, one averaged RGB histogram and one averaged HSV histogram. This is achieved by looping through all the histograms' bins generated per video and calculating a new averaged value for each bin. For reminders, this process has to be repeated for every video in the database.\\
 
-Each of these histograms are then averaged into one single histogram per colour model for each video, meaning that a video will be represented by one averaged greyscale histogram, one averaged RGB histogram and one averaged HSV histogram.
-
+For the \textbf{greyscale histograms}, the 256 bins of the $N$ generated histograms are looped through and averaged (see Equation \ref{eq:average-greyscale-histogram}) to create a new mean value, where $H_n(i)$ corresponds to the number of pixels for the video's $n^{th}$ histogram at intensity $i$.
 \begin{equation}
 \label{eq:average-greyscale-histogram}
-    \frac{\sum_{i=0}^{N} H_i}{N}
+    \sum_{n=0}^{N} \frac{\sum_{i=0}^{255} H_n(i)}{N}
 \end{equation}
+
+The averaged value is then stored into the corresponding $i_{th}$ bin of the new histogram. For example, if $N=10$ (the video had 10 pre-selected frames, so 10 greyscale histograms were generated for that video), then for each of the 256 bins, the values of the 10 histograms at that bin are averaged and the mean is stored in the new histogram.\\
+
+Once all the bins have been averaged and added to the new histogram, that averaged histogram is normalised to obtain scale invariance between the histograms of the different videos. Instead of representing the number of pixels that fall into a bin, a normalised histogram represents a relative percentage count of the number of pixels in each bin, as depicted in Figure \ref{fig:implementation-normalise-histogram}. This is a necessary step in cases where the video frames have different sizes (the larger frames to have more pixels than the smaller frames) as the histograms can be more accurately compared when they represent a relative percentage rather than an integer count. The normalisation is achieved through OpenCV's \textit{cv2.normalize()} function:
+
+\mint[fontsize=\footnotesize]{python}|histogram = cv2.normalize(histogram, histogram)|
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=0.85\textwidth]{figures/implementation/normalise-histogram.png}}
+\caption{\label{fig:implementation-normalise-histogram}Normalising RGB and HSV histograms.}
+\end{figure}
+
+Finally, the averaged and normalised histogram values are stored in a plain text file as float values to maintain the precision, which is implemented using Numpy's \textit{np.savetxt()} function:
+
+\mint[fontsize=\footnotesize,breaklines]{python}|np.savetxt("../histogram_data/{}/hist-{}".format(self.file_name, "gray"), avg_histogram, fmt='%f'))|
+
+With the greyscale averaged and normalised histogram now stored in a plain text file, the same steps are repeated for the \textbf{RGB histogram} and \textbf{the HSV histogram}, with a few differences in the loops. First, for the RGB histograms, the identical greyscale histogram steps are followed for the three colour channels rather than a single time (see Equation \ref{eq:average-rgb-histogram}).
 
 \begin{equation}
 \label{eq:average-rgb-histogram}
-    \sum_{h=0}^{2}\frac{\sum_{i=0}^{N} H_i}{N}
+    \sum_{h}^{(r,g,b)} (\sum_{n=0}^{N} \frac{\sum_{i=0}^{255} H_{h,n}(i)}{N_h})
 \end{equation}
+
+Second, for the HSV histograms, the histogram averaging is done by looping through each hue, saturation and value bin, since it is a 3D histogram and not a 2D histogram (see Equation \ref{eq:average-hsv-histogram}).
 
 \begin{equation}
 \label{eq:average-hsv-histogram}
-    \sum_h \sum_s \sum_v H[h,s,v]
+    \sum_{n=0}^{N}(\sum_h \sum_s \sum_v H_n(h,s,v))
 \end{equation}
 
-averaging histogram
-normalising
-writing to human-readable txt file
-1 frame every 30 frames retrieved
+Finally, the \textit{cv2.normalize()} and \textit{np.savetxt()} functions are used to normalise and save the average RGB and HSV histograms to plain text files. Samples of the saved plain text files for the butterfly video can be found in Appendix \ref{sec:appendix-txt-greyscale} for the greyscale histogram, in Appendix \ref{sec:appendix-txt-rgb} for the RGB histogram and in Appendix \ref{sec:appendix-txt-hsv} for the HSV histogram.\\
 
-% \begin{figure}[h] 
-% \centerline{\includegraphics[width=\textwidth]{figures/implementation/greycale_histogram_generation.png}}
-% \caption{\label{fig:greycale_histogram_generation}Example of the generated greyscale histogram.}
-% \end{figure}
+The final result of the offline colour-based feature extraction phase is a set of three averaged histograms that represent an entire video, with the values saved in three separate plain text files, as depicted in Figure \ref{fig:implementation-all_avg_norm_histograms}. With the colour-based features now saved in text files, they can now be used multiple times in the online retrieval phase without needing to be re-generated.
 
-% \begin{figure}[h] 
-% \centerline{\includegraphics[width=\textwidth]{figures/implementation/rgb_histogram_generation.png}}
-% \caption{\label{fig:implementation-rgb_histogram_generation}Example of the three generated RGB histogram channels.}
-% \end{figure}
-
-% \begin{figure}[h] 
-% \centerline{\includegraphics[width=\textwidth]{figures/implementation/hsv_histogram_generation.png}}
-% \caption{\label{fig:hsv_histogram_generation}Example of the generated HSV histogram.}
-% \end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h] 
+\centerline{\includegraphics[width=\textwidth]{figures/implementation/all_avg_norm_histograms.png}}
+\caption{\label{fig:implementation-all_avg_norm_histograms}The three average histograms generated for each database video and saved in plain text files.}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

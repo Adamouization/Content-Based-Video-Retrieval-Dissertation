@@ -1,3 +1,41 @@
+\section{Generate And Store Greyscale Histogram}
+\label{sec:code-generate-and-store-greyscale-histogram}
+
+\begin{listing}[h]
+\inputminted
+[
+baselinestretch=0.9,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos,
+breaklines,
+]
+{python}{code-listings/generate_and_store_greyscale_histogram.py}
+\caption{Averaging and storing greyscale histogram.}
+\label{listing:generate_and_store_greyscale_histogram}
+\end{listing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Generate Single Histogram}
+\label{sec:code-generate-single-histogram}
+
+\begin{listing}[h]
+\inputminted
+[
+baselinestretch=0.9,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos,
+breaklines,
+]
+{python}{code-listings/generate_single_histogram.py}
+\caption{Function generating histograms for the pre-selected frames and adding them to lists before averaging them to create a video's compact signature.}
+\label{listing:generate_single_histogram}
+\end{listing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Get Frames To Process}
 \label{sec:code-listings-get-frames-to-process}
 
@@ -31,4 +69,40 @@ breaklines,
 {python}{code-listings/normalise_histogram.py}
 \caption{Normalise histograms using OpenCV's \textit{normalize} function.}
 \label{listing:normalise_histograms}
+\end{listing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Stabilise Query Video}
+
+\begin{listing}[h]
+\inputminted
+[
+baselinestretch=0.9,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos,
+breaklines,
+]
+{python}{code-listings/video_stabiliser.py}
+\caption{Stabilise query video.}
+\label{listing:video_stabiliser}
+\end{listing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{ROI Selection}
+
+\begin{listing}[h]
+\inputminted
+[
+baselinestretch=0.9,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos,
+breaklines,
+]
+{python}{code-listings/roi_selection.py}
+\caption{Manually select ROI.}
+\label{listing:roi_selection}
 \end{listing}

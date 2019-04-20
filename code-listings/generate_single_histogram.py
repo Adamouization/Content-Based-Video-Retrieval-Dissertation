@@ -1,12 +1,11 @@
-def __init__(self, directory, file_name):
-    # dicts of lists to store histograms for each frame
-    self.histograms_grey_dict = list()
-    self.histograms_rgb_dict = {
-        'b': list(),
-        'g': list(),
-        'r': list()
-    }
-    self.histograms_hsv_dict = list()
+# dicts of lists to store histograms for each frame
+self.histograms_grey_dict = list()
+self.histograms_rgb_dict = {
+    'b': list(),
+    'g': list(),
+    'r': list()
+}
+self.histograms_hsv_dict = list()
 
 def generate_video_histogram(self):
     frame_counter = 0  # current frame ID to know to process it or not
