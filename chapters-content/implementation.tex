@@ -14,6 +14,7 @@ Follow low-level implementation detail of the different stages of the pipeline.\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Offline Colour-Based Feature Extraction}
+\label{sec:implementation-offline-colour-based-feature-extraction}
 
 This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms have been generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual pipeline of this phase with RGB histograms only (this phase is repeated fro greyscale and HSV histograms as well). 
 
@@ -189,17 +190,24 @@ The final result of the offline colour-based feature extraction phase is a set o
 
 \section{Online Retrieval}
 
-query video, identical features extracted
+This section details the different steps that go towards matching a query video to one of the database videos using the colour-based features extracted in Section \ref{sec:implementation-offline-colour-based-feature-extraction}. The first step consists in processing the recorded query video to get rid of undesired artefacts such as poor framing (e.g. camera not properly positioned) and unwanted camera movements (e.g. shaky camera). Once the query is finished being processed, the same colour-based features previously extracted for all the database videos in the form of greyscale, RGB and HSV histograms are used to compute the similarities between the query video and each database video by measuring the distance between the histograms.
 
 \subsection{Query Video Pre-processing}
 
-\subsubsection{Video Stabilisation}
+The first improvement that can be made to the query is video stabilisation. Video stabilisation is implemented through the VidStab\footnote{Python Video Stabilisation: \url{https://github.com/AdamSpannbauer/python_video_stab}} third-party library, which is a quick solution to prune query videos with shaky movements. Additionally, an option to extend the query's borders to maintain the original frame size is available to prevent losing information. The library is implemented in a custom class, which can be found in \ref{sec:code-stabilise-query-video}.\\
 
-video stabilised
+The second improvement that can be carried out to the query is selecting a Region Of Interest (ROI). Selecting a ROI involves cropping the query video to select only the area with the actual object of interest. In this case, this involves selecting the video playing on a display.\\
 
-\subsubsection{Region of Interest Selection}
+ROI selection is achieved through OpenCV's GUI functionality, which is employed through multiple functions such as a function to display images using \textit{cv2.imshow()}, draw on them using \textit{cv2.rectangle()}, and record mouse events by writing a callback function named \textit{click\_and\_crop()}:
 
-roi selection
+\mint[fontsize=\footnotesize]{python}|cv2.setMouseCallback("Select ROI", self.click_and_crop)|
+
+These three functionalities are combined in the system to display the first frame of the query video and allow a manual selection of two points on the frame. The first point is selected when the left mouse button is pressed using \textit{cv2.EVENT\_LBUTTONDOWN}, and the second point is selected when the button is unpressed using \textit{cv2.EVENT\_LBUTTONUP}. With these two points, a rectangle can be draw on the frame to indicate the area that was selected. If the rectangle is correctly drawn, the \textit{`C'} key can be pressed to perform the cropping action, otherwise the \textit{`R'} key can be pressed to erase the rectangle and attempt to re-draw the it until a satisfactory ROI is selected. The point coordinates are then used to ignore all the pixels outside the drawn rectangle when generating the compact histogram signatures of the query video, as sketched in Figure \ref{fig:implementation-roi_selection}. The full implementation of the code can be found in Appendix \ref{sec:code-roi-selection}.
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=\textwidth]{figures/implementation/roi_selection.png}}
+\caption{\label{fig:implementation-roi_selection}The process of manually selecting a ROI to crop the query video.}
+\end{figure}
 
 \subsection{Similarity Measurements}
 
