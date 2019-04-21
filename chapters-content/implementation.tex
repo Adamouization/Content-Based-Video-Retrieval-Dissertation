@@ -190,7 +190,9 @@ The final result of the offline colour-based feature extraction phase is a set o
 
 \section{Online Retrieval}
 
-This section details the different steps that go towards matching a query video to one of the database videos using the colour-based features extracted in Section \ref{sec:implementation-offline-colour-based-feature-extraction}. The first step consists in processing the recorded query video to get rid of undesired artefacts such as poor framing (e.g. camera not properly positioned) and unwanted camera movements (e.g. shaky camera). Once the query is finished being processed, the same colour-based features previously extracted for all the database videos in the form of greyscale, RGB and HSV histograms are used to compute the similarities between the query video and each database video by measuring the distance between the histograms.
+This section details the different steps that go towards matching a query video to one of the database videos using the colour-based features extracted in Section \ref{sec:implementation-offline-colour-based-feature-extraction}. The first step consists in processing the recorded query video to get rid of undesired artefacts such as poor framing (e.g. camera not properly positioned) and unwanted camera movements (e.g. shaky camera). Once the query is finished being processed, the same colour-based features previously extracted for all the database videos in the form of greyscale, RGB and HSV histograms are used to compute the similarities between the query video and each database video by measuring the distance between the histograms. The video with the highest score will be the match found by the system, which can be displayed to the screen to show the final result.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Query Video Pre-processing}
 
@@ -209,35 +211,66 @@ These three functionalities are combined in the system to display the first fram
 \caption{\label{fig:implementation-roi_selection}The process of manually selecting a ROI to crop the query video.}
 \end{figure}
 
-\subsection{Similarity Measurements}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Matching Query to a Database Video}
+
+\subsubsection{Distance Measurements}
+
+At this stage of the pipeline, ...
 
 distance measurements to find nearest neighbour between query histograms and each database video histogram:
 
 \begin{itemize}
+    
     \item correlation
     \begin{equation}
         d(H_1,H_2)=\frac{\sum _I(H_1(I)-\bar{H_1})(H_2(I)-\bar{H_2})}{\sqrt{\sum _I(H_1(I)-\bar{H_1})^2(H_2(I)-\bar{H_2})^2}}
     \end{equation}
     where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram
+    
     \item intersection
     \begin{equation}
         d(H_1,H_2)=\sum_Imin(H_1(I)-H_2(I))
     \end{equation}
-    \item chi-square
+    
+    \item chi-square: This metric uses $\chi^2=\frac{(a-b)^2}{a+b}$ 
     \begin{equation}
-        d(H_1,H_2)=\sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)}
+        d(H_1,H_2)=\sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)+H_2(I)}
     \end{equation}
+    
     \item alternative chi-square
+    
     \item bhattacharyya
     \begin{equation}
         d(H_1,H_2)=\sqrt{1-\frac{1}{\sqrt{\bar{H_1}\bar{H_2}N^2}}\sum_i\sqrt{H_1(I)\cdot H_2(I)}}
     \end{equation}
+    
     \item kullback leibler divergence
+    
     \item wassertein distance (Earth's Mover Distance)
+    
     \item energy distance
+    
 \end{itemize}
 
 combining results from all 3 methods with weight between different histogram methods to give more importance to HSV, GRB and less importance to grey scale: 1-5-10
+
+\input{tables/distance-metric-weights.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Result Display}
+
+\begin{itemize}
+    \item opencv box drawing to select Region of Interest
+    \item matplot lib histogram plotting (with an option to show each generated histogram or to hide them)
+    \item tables to show scores for each type of histogram and each distance
+    \item exporting results to CSV for further analysis
+    \item spinners to show calculations are being done when training the system or stabilising videos 
+    \item argument parsing
+    \item final output to clearly show if result if right/wrong, including a frame of the original query video, a frame of the match found, along with the runtime and tha accuracy
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -250,21 +283,6 @@ combining results from all 3 methods with weight between different histogram met
     \item current: one frame every second for short videos
 \end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Output-Related}
-
-\begin{itemize}
-    \item opencv box drawing to select Region of Interest
-    \item matplot lib histogram plotting (with an option to show each generated histogram or to hide them)
-    \item tables to show scores for each type of histogram and each distance
-    \item exporting results to CSV for further analysis
-    \item spinners to show calculations are being done when training the system or stabilising videos 
-    \item argument parsing
-    \item final output to clearly show if result if right/wrong, including a frame of the original query video, a frame of the match found, along with the runtime and tha accuracy
-\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -288,3 +306,11 @@ combining results from all 3 methods with weight between different histogram met
     \item Include some code snippets
     \item Include test suite results
 \end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Summary}
+
+todo
