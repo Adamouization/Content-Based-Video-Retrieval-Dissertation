@@ -211,65 +211,129 @@ These three functionalities are combined in the system to display the first fram
 \caption{\label{fig:implementation-roi_selection}The process of manually selecting a ROI to crop the query video.}
 \end{figure}
 
+Once the video query has been processed for stability and ROI selection, the same colour-based features from the offline extraction phase can be extracted before being compared to the database videos' features.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Matching Query to a Database Video}
 
+\subsubsection{Query Video Feature Extraction}
+
+In order to compare the query video to all the database videos, the same colour-based features described in Section \ref{sec:implementation-offline-colour-based-feature-extraction} need to be extracted first. A compact signature is generated for the query video in the form of an averaged greyscale histogram, an averaged RGB histogram and an averaged HSV histogram. Once these are generated, they can be compared to the histograms for each database videos.
+
 \subsubsection{Distance Measurements}
 
-At this stage of the pipeline, ...
+At this stage of the pipeline, all of the database videos and the query video have now been analysed to create the compact signatures required to compute the similarities between the query video and the database videos. The similarity measurements are done by measuring the distance between each of database videos histograms with the query video's histograms. A wide collection of distance metrics can be used to calculate which histograms are closest to the query video's histograms, so the most popular techniques are used to achieve this. Six different distance metrics are used to compare the 2D greyscale and RGB histograms, while two different metrics are used to compare the 3D HSV histograms.\\
 
-distance measurements to find nearest neighbour between query histograms and each database video histogram:
+The calculations between two 2D histograms are achieved through OpenCV's \textit{cv2.compareHist()} function, where the two histograms to compare are passed along with the method of choice:
 
-\begin{itemize}
-    
-    \item correlation
+\mint[fontsize=\footnotesize]{python}|comparison = cv2.compareHist(query_hist, rgb_video_hist, method)|
+
+For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. The eight different methods used are detailed below, where $d(H_1,H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, $I$ the number of bins in the histograms.
+
+% \begin{minted}
+% [
+% baselinestretch=0.9,
+% bgcolor=LightGray,
+% fontsize=\footnotesize,
+% linenos,
+% breaklines,
+% ]
+% {python}
+% comparison = 0
+% for h in range(0, self.bins[0]):  # loop through hue bins
+%     for s in range(0, self.bins[1]):  # loop through saturation bins
+%         query_hist_slice = hist_recording['hsv'][h][s]
+%         dbvideo_hist_slice = hist_hsv[h][s]
+%         if method == "WASSERSTEIN DISTANCE (EMD)":
+%             comparison += scipy.stats.wasserstein_distance(hist_recording_slice, hist_hsv_slice)
+%         elif method == "ENERGY DISTANCE":
+%             comparison += scipy.stats.energy_distance(hist_recording_slice, hist_hsv_slice)
+% \end{minted}
+
+\begin{enumerate}
+
+    \item \underline{Correlation}:\\
+    This is a metric that indicates the linear relationship between two histograms. The result of this metric ranges between $-1 < d(H_1,H_2) < 1$, where -1 represents a negative correlation, 0 an absence of correlation and 1 a high positive correlation. The closer the two histograms are to each other, the closer their correlation will be to 1. Equation \ref{eq:correlation} describes how this metric can be calculated.
     \begin{equation}
+    \label{eq:correlation}
         d(H_1,H_2)=\frac{\sum _I(H_1(I)-\bar{H_1})(H_2(I)-\bar{H_2})}{\sqrt{\sum _I(H_1(I)-\bar{H_1})^2(H_2(I)-\bar{H_2})^2}}
     \end{equation}
-    where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram
+    where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. This metric is available through OpenCV's \textit{cv2.HISTCMP\_CORREL} attribute:
+    \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_CORREL)|
     
-    \item intersection
+    \item \underline{Intersection}:\\
+    This metric calculates the similarity between two histograms by superposing the two histograms and calculating how important the superposition is for each bin in the histogram. A value of 0 for a bin indicates that there is no overlap between the two histograms at that bin. The higher the intersection, the more the two histograms have in common, as portrayed by Equation \ref{eq:intersection}.
     \begin{equation}
-        d(H_1,H_2)=\sum_Imin(H_1(I)-H_2(I))
+    \label{eq:intersection}
+        d(H_1,H_2)=\sum_Imin(H_1(I),H_2(I))
     \end{equation}
+    Intersection is implemented through OpenCV's \textit{cv2.HISTCMP\_INTERSECT} attribute:
+    \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_INTERSECT)|
     
-    \item chi-square: This metric uses $\chi^2=\frac{(a-b)^2}{a+b}$ 
+    \item \underline{Chi-square}:\\ 
+    This metric uses the chi-square test $\chi^2=\frac{(a-b)^2}{a}$ in the form of a distance function described by Equation \ref{eq:chi-square}. The lower the value, the more the data from $H_1$ fits the data from $H_2$ and vice versa, the higher the value, the less the data from $H_1$ fits the data from $H_2$.
     \begin{equation}
-        d(H_1,H_2)=\sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)+H_2(I)}
+    \label{eq:chi-square}
+        d(H_1,H_2)=\sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)}
     \end{equation}
+    Therefore, the database video that will match the query the most is the one with the lowest chi-square distance. The chi-square distance is implemented in OpenCV by using \textit{cv2.HISTCMP\_CHISQR}:
+    \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_CHISQR)|
     
-    \item alternative chi-square
-    
-    \item bhattacharyya
+    \item \underline{Alternative Chi-Square}:\\
+    This metric uses an alternative to the first chi-square test $\chi^2=2\cdot \frac{(a-b)^2}{a+b}$ with the same properties (see Equation \ref{eq:alternative-chi-square}).
     \begin{equation}
+    \label{eq:alternative-chi-square}
+        d(H_1,H_2)=2\cdot \sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)+H_2(I)}
+    \end{equation}
+    This alternative to the first chi-square distance is implemented in OpenCV by using \textit{cv2.HISTCMP\_CHISQR\_ALT}:
+    \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_CHISQR_ALT)|
+    
+    \item \underline{Hellinger} (using Bhattacharyya coefficient):\\
+    The Hellinger distance is used to quantify the difference between two discrete probability distributions (see Equation \ref{eq:hellinger}). The smaller the value, the closer the two histograms are to each other.
+    \begin{equation}
+    \label{eq:hellinger}
         d(H_1,H_2)=\sqrt{1-\frac{1}{\sqrt{\bar{H_1}\bar{H_2}N^2}}\sum_i\sqrt{H_1(I)\cdot H_2(I)}}
     \end{equation}
+    where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. The Hellinger metric is implemented in the code through OpenCV's \textit{cv2.HISTCMP\_BHATTACHARYYA} (although the OpenCV method is named Bhattacharyya, it actually uses the Hellinger distance but was named Bhattacharyya by the library developers because it uses the Bhattacharyya coefficient):
+    \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_BHATTACHARYYA)|
     
-    \item kullback leibler divergence
+    \item \underline{Kullback Leibler Divergence}:\\
+    \begin{equation}
+        d(H_1,H_2)=\sum_I H_1(I)\cdot log(\frac{H_1(I)}{H_2(I)})
+    \end{equation}
     
-    \item wassertein distance (Earth's Mover Distance)
+    \item \underline{Wassertein Distance} (Earth's Mover Distance):\\
+    add equation
     
-    \item energy distance
+    \item \underline{Energy Distance}:\\
+    add equation
     
+\end{enumerate}
+
+All of the distance metrics and histogram models are finally combined to produce the final result. For each histogram model distance metric used, scores indicating the similarities between each database video and the query video are calculated. Of all the scores calculated for each model and distance metric, the one revealing which database video matches the query the most is used to increment an dictionary. The increment depends on pre-defined weights assigned to each histogram model, which are detailed in Table \ref{tab:distance-metric-weights}:
+
+\begin{itemize}
+    \item \underline{Greyscale} histograms are the least descriptive model, with only one channel which cannot represent colours. They are therefore attributed the lowest weight worth 1.
+    \item \underline{RGB} histograms use three channels and can describe the colours in a frame. They are therefore attributed a weight of 5.
+    \item \underline{HSV} histograms are the most complex histograms employed in the system as they use three channels to describe how human vision perceives colours, plotting the results in 3D histograms. They are therefore attributed the highest weight worth 10.
 \end{itemize}
 
-combining results from all 3 methods with weight between different histogram methods to give more importance to HSV, GRB and less importance to grey scale: 1-5-10
-
 \input{tables/distance-metric-weights.tex}
+
+This dictionary is used at the end of the pipeline to determine which video was matched the most based on the number of occurrences in the dictionary, which can be plotted in a simple histogram using Matplotlib to visualise which video is matched. This is the final result of the system.\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Result Display}
 
 \begin{itemize}
-    \item opencv box drawing to select Region of Interest
     \item matplot lib histogram plotting (with an option to show each generated histogram or to hide them)
     \item tables to show scores for each type of histogram and each distance
     \item exporting results to CSV for further analysis
     \item spinners to show calculations are being done when training the system or stabilising videos 
     \item argument parsing
-    \item final output to clearly show if result if right/wrong, including a frame of the original query video, a frame of the match found, along with the runtime and tha accuracy
+    \item final output to clearly show if result if right/wrong, including a frame of the original query video, a frame of the match found, along with the runtime and the accuracy
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
