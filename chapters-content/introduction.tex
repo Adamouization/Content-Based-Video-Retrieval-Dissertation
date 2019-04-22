@@ -7,18 +7,7 @@ Content-based video retrieval is a computer vision solution to the problem of se
 
 Several visual search techniques exist for querying databases of unstructured data such as video or image files. These techniques can be classified based on the type of query and on the type of database used, as shown in table \ref{table:visual_search_table}. The most common forms of visual search consist in querying a database of images either with an image (I2I) or with a video (V2I), as depicted in section \ref{sec:v2v_applications} where similar existing systems are mentioned. Another less frequent variant consists of querying a database of images with a video query (V2I) \cite{araujo2017i2v}. However, this dissertation will solely focus on querying a database of videos with a video query (V2V). Because algorithms from other variants of visual search can be relevant to V2V, existing solutions for these variants will also be explored to find ways potential techniques that could be implemented with this project.\\
 
-% types of visual search table
-\begin{table}[H]
-\centering
-\begin{tabular}{c|c|c|}
-\hline
-\multicolumn{1}{|c|}{Image Query} & I2I                & I2V                \\ \hline
-\multicolumn{1}{|c|}{Video Query} & V2I                & V2V                \\ \hline
-\multicolumn{1}{l|}{}             & Database of Images & Database of Videos \\ \cline{2-3} 
-\end{tabular}
-\caption{The four types of visual search involving images and videos, classified by type of query used and by type of database being queried.}
-\label{table:visual_search_table}
-\end{table}
+\input{tables/visual_search_types.tex}
 
 To pattern match the query video to a video in the database, key elements from the query video, called \textit{``features''}, are extracted and compared to the same features from videos in the database to find similarities. These features can include elements such as colour histograms or shapes of interest and their on-screen movements \cite{patel2012}, as well colour percentages, colour layouts or textures \cite{petkovic2000}, or other unique features such as on-screen text or audio components e.g. soundtracks, dialogues or sound effects. A wide spectrum of existing solutions exists to efficiently retrieve videos using video queries, which are discussed in the section below.
 

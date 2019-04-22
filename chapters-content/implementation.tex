@@ -196,7 +196,13 @@ This section details the different steps that go towards matching a query video 
 
 \subsection{Query Video Pre-processing}
 
-The first improvement that can be made to the query is video stabilisation. Video stabilisation is implemented through the VidStab\footnote{Python Video Stabilisation: \url{https://github.com/AdamSpannbauer/python_video_stab}} third-party library, which is a quick solution to prune query videos with shaky movements. Additionally, an option to extend the query's borders to maintain the original frame size is available to prevent losing information. The library is implemented in a custom class, which can be found in \ref{sec:code-stabilise-query-video}.\\
+\subsubsection{Video Stabilisation}
+
+The first improvement that can be made to the query is video stabilisation. Video stabilisation is implemented through the VidStab\footnote{Python Video Stabilisation: \url{https://github.com/AdamSpannbauer/python_video_stab}} third-party library, which is a quick solution to prune query videos with shaky movements. Additionally, an option to extend the query's borders to maintain the original frame size is available to prevent losing information.\\
+
+The library is implemented in a custom class, which can be found in \ref{sec:code-stabilise-query-video}. A ``yes/no'' is displayed on the console, giving the choice to stabilise the query video or not. If ``yes'' is chosen, the system first checks if a potential version of the video has already been previously stabilised and stabilises the query if it has not been stabilised already. If ``no'' is chosen, then the system again checks for potential stable versions to use, otherwise it uses the original version.
+
+\subsubsection{Region of Interest Selection}
 
 The second improvement that can be carried out to the query is selecting a Region Of Interest (ROI). Selecting a ROI involves cropping the query video to select only the area with the actual object of interest. In this case, this involves selecting the video playing on a display.\\
 
