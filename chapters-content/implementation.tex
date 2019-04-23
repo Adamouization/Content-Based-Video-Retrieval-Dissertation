@@ -15,14 +15,14 @@ This chapter offers an overview of the different implementation steps to develop
 \section{Offline Colour-Based Feature Extraction}
 \label{sec:implementation-offline-colour-based-feature-extraction}
 
-This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms have been generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual pipeline of this phase with RGB histograms only (this phase is repeated fro greyscale and HSV histograms as well). 
+This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual pipeline of this phase with RGB histograms only (this phase is repeated for greyscale and HSV histograms as well). 
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=1.2\textwidth,center]{figures/implementation/rgb_average_histogram_pipeline.png}}
 \caption{\label{fig:implementation-rgb_average_histogram_pipeline}Visualisation of the pipeline of the offline colour-based feature extraction phase with RGB histograms only.}
 \end{figure}
 
-The inner pipeline of this phase has to be repeated for every video in the database. For clarity and to illustrate the steps of this phase, the \textit{butterfly} video is used throughout this entire section to provide examples of the multiple offline colour-based feature extraction steps.
+This inner pipeline of the entire system has to be repeated for every video in the database. For clarity and to illustrate the steps of this phase, the \textit{butterfly} video is used throughout this entire section to provide examples of the multiple offline colour-based feature extraction steps.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -43,7 +43,7 @@ The first type of histogram that is generated is the greyscale histogram, also k
 \caption{\label{fig:rgb_to_greyscale}Conversion of a frame from the RGB colour space to greyscale (black \& white).}
 \end{figure}
 
-Because the video frames are 8-bit images, the spectrum of the potential pixel values ranges between 256 possible values\footnote{$2^8=256$}. As a result, the histogram has 256 different bins from 0 to 255 to represent all the potential values that each pixels can take. The histogram itself is portrayed by Equation \ref{eq:grey-histogram}, where $g\in [0, 255]$ and $N_g$ represents the number of pixels that have an intensity equal to $g$. For example, $H(30)$ represents the number of pixels in the image with an intensity value of 30.
+Because the video frames are 8-bit images, the spectrum of the potential pixel values ranges between 256 possible values\footnote{$2^8=256$}. As a result, the histogram has 256 different bins from 0 to 255 to represent all the potential values that each pixel can take. The histogram itself is portrayed by Equation \ref{eq:grey-histogram}, where $g\in [0, 255]$ and $N_g$ represents the number of pixels that have an intensity equal to $g$. For example, $H(30)$ represents the number of pixels in the image with an intensity value of 30.
 \begin{equation}
 \label{eq:grey-histogram}
     H(g)=N_g
@@ -58,7 +58,7 @@ The implementation of the greyscale histogram generation in the system is carrie
 \caption{\label{fig:implementation-greyscale_not_normalised}The generated greyscale histogram (not normalised).}
 \end{figure}
 
-These greyscale histograms are generated for multiple frames of the video, but not all the frames as this would be highly inefficient, as explained in Section \ref{sec:litsurvey-challenges-temporality}. Indeed, rather than generating a histogram for each frame, which would be extremely inefficient and waste of computations, a selection of frames can be made in advance, which are then used for the histogram generation. Ideally, the frames extracted from the shot boundary detection algorithm are used. However, because the scope of the duration of the videos used is between 7 and 14 seconds and they are only made of a single shot, the shot boundary detection algorithm would only extract one frame from the videos. Therefore, for the purpose of building a realistic system, one frame is extracted every second to build up the selection of frames, using the \textit{\_get\_frames\_to\_process()} function from Appendix \ref{sec:code-listings-get-frames-to-process}. For example, with the butterfly video that contains 301 frames and has a frame rate of 30 frames per second, 11 frames are selected to generate greyscale histogram (frames \textit{[1, 31, 61, ..., 271, 301]}).\\
+These greyscale histograms are generated for multiple frames of the video, but not all the frames as this would be highly inefficient, as explained in Section \ref{sec:litsurvey-challenges-temporality}. Indeed, rather than generating a histogram for each frame, which would be extremely inefficient and waste of computations, a selection of frames can be made in advance, which is then used for the histogram generation. Ideally, the frames extracted from the shot boundary detection algorithm later described in Section \ref{sec:database-pre-processing} are used. However, because the scope of the duration of the videos used is between 7 and 14 seconds and they are only made of a single shot, the shot boundary detection algorithm would only extract one frame from the videos. Therefore, for the purpose of building a realistic system, one frame is extracted every second to build up the selection of frames, using the \textit{\_get\_frames\_to\_process()} function from Appendix \ref{sec:code-listings-get-frames-to-process}. For example, with the butterfly video that contains 301 frames and has a frame rate of 30 frames per second, 11 frames are selected to generate a greyscale histogram (frames \textit{[1, 31, 61, ..., 271, 301]}).\\
 
 Once the greyscale histograms are generated for each of these pre-selected frames, they are all stored away in a list, ready to be later averaged into a single histogram in Section \ref{sec:implementation-compact-video-signature} that will be used as the compact signature to represent the entire video.
 
@@ -66,7 +66,7 @@ Once the greyscale histograms are generated for each of these pre-selected frame
 
 \subsubsection{RGB Histogram}
 
-Now that greyscale histograms are generated for the video, RGB histograms are next produced. As described in \ref{sec:color-based-features}, an RGB histogram represents the colour distribution of the pixels in a frame for three different channels: red, blue and green. The coloured frame is a combination of three colour channels, which can be split into three different stills, as rendered in Figure \ref{fig:implementation-rgb_image_channel_split}.\\
+Now that greyscale histograms are generated for the video, RGB histograms are produced next. As described in \ref{sec:color-based-features}, an RGB histogram represents the colour distribution of the pixels in a frame for three different channels: red, blue and green. The coloured frame is a combination of three colour channels, which can be split into three different stills, as rendered in Figure \ref{fig:implementation-rgb_image_channel_split}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/rgb_image_channel_split.png}}
@@ -93,7 +93,7 @@ At this point, the three individual histograms that have been generated for the 
 \caption{\label{fig:implementation-rgb_not_normalised}The combination of the generated histograms for the three colour channels to construct the RGB histogram (not normalised).}
 \end{figure}
 
-Now that RGB histograms have been generated for each of the pre-selected frames (one frame every second), they are all stored in a dictionary made up of three keys, one for each colour channel, which each link to a list where the histograms are stored away before being averaged into a single histogram used to create the second compact signature to represent the entire video. 
+Now that RGB histograms have been generated for each of the pre-selected frames (one frame every second), they are all stored in a dictionary made up of three keys, one for each colour channel. Each key links to a list where the histograms are stored away before being averaged into a single histogram used to create the second compact signature to represent the entire video. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -108,7 +108,7 @@ With the greyscale and RGB histograms now formed, the HSV histograms can finally
 \caption{\label{fig:rgb_to_hsv}Conversion of a frame from the RGB colour space to the HSV colour space.}
 \end{figure}
 
-This type of histogram is more complex to generate as it is not a 2D histogram like the previous greyscale and RGB histograms, but a 3D histogram. Because they are represented in 3D rather than 2D due to the particularities of the HSV colour space, less bins can be used to plot the data as pixels fall into bins when they are in conjunction with the range of the three channels (the pixels values must be within the range of the hue \underline{AND} the saturation \underline{AND} the value). Therefore, to avoid creating a histogram that is neither too coarse nor too sparse, 8 bins are used for the hue channel, 12 bins are used for the saturation channel, and 3 bins are used for the value channel. This results in a histogram of 288 values\footnote{$8*12*3=288$}, which is approximately the same length as the $256$ values that were previously used for the greyscale histograms and $3*256$ values for the RGB histograms. The histogram is described by Equation \ref{eq:hsv-histogram}, where $N(h,s,v)$ represents the number of pixels that fall within the range of the bin with values $h$ \underline{AND} $s$ \underline{AND} $v$.\\
+This type of histogram is more complex to generate as it is not a 2D histogram like the previous greyscale and RGB histograms, but a 3D histogram. Because they are represented in 3D rather than 2D due to the particularities of the HSV colour space, less bins can be used to plot the data as pixels fall into bins when they are in conjunction with the range of the three channels (the pixels values must be within the range of the hue \underline{AND} the saturation \underline{AND} the value). Therefore, to avoid creating a histogram that is neither too coarse nor too sparse, 8 bins are used for the hue channel, 12 bins are used for the saturation channel, and 3 bins are used for the value channel, resulting in a histogram of 288 values\footnote{$8*12*3=288$}. This histogram is approximately the same length as the $256$ values previously used for the greyscale histograms and $3*256$ values for the RGB histograms. The histogram is described by Equation \ref{eq:hsv-histogram}, where $N(h,s,v)$ represents the number of pixels that fall within the range of the bin with values $h$ \underline{AND} $s$ \underline{AND} $v$.\\
 \begin{equation}
 \label{eq:hsv-histogram}
     H(h,s,v)=N(h,s,v)
@@ -131,14 +131,14 @@ Implementing the calculation of an HSV histogram in the system is again achieved
 \caption{\label{fig:implementation-hsv_not_normalised}The generated 3D HSV histogram (not normalised).}
 \end{figure}
 
-To conclude this offline colour-based extraction phase, HSV histograms are finally generated. Once all the HSV histograms have been generated for each pre-selected frame, they are all stored in a list like the greyscale and RGB histograms. With the greyscale, RGB and HSV histograms all generated for each pre-selected frame of the video, these can now be averaged into a single compact signature for each histogram, which is explained in the next section.
+To conclude this offline colour-based extraction phase, HSV histograms are finally generated. Once all the HSV histograms are generated for each pre-selected frame, they are all stored in a list, like for the greyscale and RGB histograms. With the greyscale, RGB and HSV histograms all generated for each pre-selected frame of the video; these can now be averaged into a single compact signature for each histogram, which is explained in the next section.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Compact Video Signature}
 \label{sec:implementation-compact-video-signature}
 
-At this stage of the offline colour-based extraction phase, multiple greyscale, RGB and HSV histograms have been generated for each pre-selected frame for a video. Each of these histograms can now be averaged into one single histogram per colour model for each video. This means that each database video will be represented by one averaged greyscale histogram, one averaged RGB histogram and one averaged HSV histogram. This is achieved by looping through all the histograms' bins generated per video and calculating a new averaged value for each bin. For reminders, this process has to be repeated for every video in the database.\\
+At this stage of the offline colour-based extraction phase, multiple greyscale, RGB and HSV histograms have been generated for each pre-selected frame for a video. Each of these histograms can now be averaged into one single histogram per colour model for each video. This means that each database video will be represented by one averaged greyscale histogram, one averaged RGB histogram and one averaged HSV histogram. This is achieved by looping through all the histograms' bins generated per video and calculating a new averaged value for each bin. For reminders, this process is repeated for every video in the database.\\
 
 For the \textbf{greyscale histograms}, the 256 bins of the $N$ generated histograms are looped through and averaged (see Equation \ref{eq:average-greyscale-histogram}) to create a new mean value, where $H_n(i)$ corresponds to the number of pixels for the video's $n^{th}$ histogram at intensity $i$.
 \begin{equation}
@@ -146,7 +146,7 @@ For the \textbf{greyscale histograms}, the 256 bins of the $N$ generated histogr
     \sum_{n=0}^{N} \frac{\sum_{i=0}^{255} H_n(i)}{N}
 \end{equation}
 
-The averaged value is then stored into the corresponding $i_{th}$ bin of the new histogram. For example, if $N=10$ (the video had 10 pre-selected frames, so 10 greyscale histograms were generated for that video), then for each of the 256 bins, the values of the 10 histograms at that bin are averaged and the mean is stored in the new histogram.\\
+The averaged value is then stored into the corresponding $i_{th}$ bin of the new histogram. For example, if $N=10$ (the video had ten pre-selected frames, so ten greyscale histograms were generated for that video), then for each of the 256 bins, the values of the ten histograms at that bin are averaged and the mean is stored in the new histogram.\\
 
 Once all the bins have been averaged and added to the new histogram, that averaged histogram is normalised to obtain scale invariance between the histograms of the different videos. Instead of representing the number of pixels that fall into a bin, a normalised histogram represents a relative percentage count of the number of pixels in each bin, as depicted in Figure \ref{fig:implementation-normalise-histogram}. This is a necessary step in cases where the video frames have different sizes (the larger frames to have more pixels than the smaller frames) as the histograms can be more accurately compared when they represent a relative percentage rather than an integer count. The normalisation is achieved through OpenCV's \textit{cv2.normalize()} function:
 
@@ -161,7 +161,7 @@ Finally, the averaged and normalised histogram values are stored in a plain text
 
 \mint[fontsize=\footnotesize,breaklines]{python}|np.savetxt("../histogram_data/{}/hist-{}".format(self.file_name, "gray"), avg_histogram, fmt='%f'))|
 
-With the greyscale averaged and normalised histogram now stored in a plain text file, the same steps are repeated for the \textbf{RGB histogram} and \textbf{the HSV histogram}, with a few differences in the loops. First, for the RGB histograms, the identical greyscale histogram steps are followed for the three colour channels rather than a single time (see Equation \ref{eq:average-rgb-histogram}).
+With the greyscale averaged and normalised histogram now stored in a plain text file, the same steps are repeated for the \textbf{RGB histogram} and \textbf{the HSV histogram}, with a few differences in the loops. First, for the RGB histograms, steps identical to the greyscale histogram's are followed for the three colour channels rather than a single time (see Equation \ref{eq:average-rgb-histogram}).
 
 \begin{equation}
 \label{eq:average-rgb-histogram}
@@ -200,17 +200,17 @@ This section details the different steps that go towards matching a query video 
 
 The first improvement that can be made to the query is video stabilisation. Video stabilisation is implemented through the VidStab\footnote{Python Video Stabilisation: \url{https://github.com/AdamSpannbauer/python_video_stab}} third-party library, which is a quick solution to prune query videos with shaky movements. Additionally, an option to extend the query's borders to maintain the original frame size is available to prevent losing information.\\
 
-The library is implemented in a custom class, which can be found in \ref{sec:code-stabilise-query-video}. A ``yes/no'' is displayed on the console, giving the choice to stabilise the query video or not. If ``yes'' is chosen, the system first checks if a potential version of the video has already been previously stabilised and stabilises the query if it has not been stabilised already. If ``no'' is chosen, then the system again checks for potential stable versions to use, otherwise it uses the original version.
+The library is implemented in a custom class, which can be found in \ref{sec:code-stabilise-query-video}. A ``yes/no'' is displayed on the console, giving a choice to stabilise the query video or not. If ``yes'' is chosen, the system first checks if a potential version of the video has already been previously stabilised and stabilises the query if it has not been stabilised already. If ``no'' is chosen, then the system again checks for potential stabilised versions to use; otherwise, it uses the original version.
 
 \subsubsection{Region of Interest Selection}
 
-The second improvement that can be carried out to the query is selecting a Region Of Interest (ROI). Selecting a ROI involves cropping the query video to select only the area with the actual object of interest. In this case, this involves selecting the video playing on a display.\\
+The second improvement that can be carried out to the query is selecting a Region Of Interest (ROI). Selecting an ROI involves cropping the query video to select only the area with the actual object of interest. In this case, this involves selecting the video playing on a display.\\
 
 ROI selection is achieved through OpenCV's GUI functionality, which is employed through multiple functions such as a function to display images using \textit{cv2.imshow()}, draw on them using \textit{cv2.rectangle()}, and record mouse events by writing a callback function named \textit{click\_and\_crop()}:
 
 \mint[fontsize=\footnotesize]{python}|cv2.setMouseCallback("Select ROI", self.click_and_crop)|
 
-These three functionalities are combined in the system to display the first frame of the query video and allow a manual selection of two points on the frame. The first point is selected when the left mouse button is pressed using \textit{cv2.EVENT\_LBUTTONDOWN}, and the second point is selected when the button is unpressed using \textit{cv2.EVENT\_LBUTTONUP}. With these two points, a rectangle can be draw on the frame to indicate the area that was selected. If the rectangle is correctly drawn, the \textit{`C'} key can be pressed to perform the cropping action, otherwise the \textit{`R'} key can be pressed to erase the rectangle and attempt to re-draw the it until a satisfactory ROI is selected. The point coordinates are then used to ignore all the pixels outside the drawn rectangle when generating the compact histogram signatures of the query video, as sketched in Figure \ref{fig:implementation-roi_selection}. The full implementation of the code can be found in Appendix \ref{sec:code-roi-selection}.
+These three functionalities are combined in the system to display the first frame of the query video and allow a manual selection of two points on the frame. The first point is selected when the left mouse button is pressed using \textit{cv2.EVENT\_LBUTTONDOWN}, and the second point is selected when the button is unpressed using \textit{cv2.EVENT\_LBUTTONUP}. With these two points, a rectangle can be drawn on the frame to indicate the area that was selected. If the rectangle is correctly drawn, the \textit{`C'} key can be pressed to perform the cropping action; otherwise the \textit{`R'} key can be pressed to erase the rectangle and attempt to re-draw it until a satisfactory ROI is selected. The point coordinates are then used to ignore all the pixels outside the drawn rectangle when generating the compact histogram signatures of the query video, as sketched in Figure \ref{fig:implementation-roi_selection}. The full implementation of the code can be found in Appendix \ref{sec:code-roi-selection}.
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/roi_selection.png}}
@@ -229,13 +229,13 @@ In order to compare the query video to all the database videos, the same colour-
 
 \subsubsection{Distance Measurements}
 
-At this stage of the pipeline, all of the database videos and the query video have now been analysed to create the compact signatures required to compute the similarities between the query video and the database videos. The similarity measurements are done by measuring the distance between each of database videos histograms with the query video's histograms. A wide collection of distance metrics can be used to calculate which histograms are closest to the query video's histograms, so the most popular techniques are used to achieve this. Six different distance metrics are used to compare the 2D greyscale and RGB histograms, while two different metrics are used to compare the 3D HSV histograms.\\
+At this stage of the pipeline, all of the database videos and the query video have now been analysed to create the compact signatures required to compute the similarities between the query video and the database videos. The similarity measurements are done by measuring the distance between each of database videos histograms with the query video's histograms. An extensive collection of distance metrics can be used to calculate which histograms are closest to the query video's histograms, so the most prevalent techniques are used to achieve this. Six different distance metrics are used to compare the 2D greyscale and RGB histograms, while two different metrics are used to compare the 3D HSV histograms.\\
 
 The calculations between two 2D histograms are achieved through OpenCV's \textit{cv2.compareHist()} function, where the two histograms to compare are passed along with the method of choice:
 
 \mint[fontsize=\footnotesize]{python}|comparison = cv2.compareHist(query_hist, rgb_video_hist, method)|
 
-For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. The eight different methods used are detailed below, where $d(H_1,H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, $I$ the number of bins in the histograms.
+For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. The eight different methods used are detailed below, where $d(H_1, H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, $I$ the number of bins in the histograms.
 
 % \begin{minted}
 % [
@@ -317,12 +317,12 @@ For the 3D HSV histograms, SciPy's statistical distances are used to calculate t
     
 \end{enumerate}
 
-All of the distance metrics and histogram models are finally combined to produce the final result. For each histogram model distance metric used, scores indicating the similarities between each database video and the query video are calculated. Of all the scores calculated for each model and distance metric, the one revealing which database video matches the query the most is used to increment an dictionary. The increment depends on pre-defined weights assigned to each histogram model, which are detailed in Table \ref{tab:distance-metric-weights}:
+All of the distance metrics and histogram models are finally combined to produce the final result. For each histogram model distance metric used, scores indicating the similarities between each database video and the query video are calculated. Of all the scores calculated for each model and distance metric, the one revealing which database video matches the query the most is used to increment a dictionary. The increment depends on pre-defined weights assigned to each histogram model, which are detailed in Table \ref{tab:distance-metric-weights}:
 
 \begin{itemize}
-    \item \underline{Greyscale} histograms are the least descriptive model, with only one channel which cannot represent colours. They are therefore attributed the lowest weight worth 1.
+    \item \underline{Greyscale} histograms are the least descriptive model, with only one channel which cannot represent colours. The lowest weight worth one is therefore attributed to these.
     \item \underline{RGB} histograms use three channels and can describe the colours in a frame. They are therefore attributed a weight of 5.
-    \item \underline{HSV} histograms are the most complex histograms employed in the system as they use three channels to describe how human vision perceives colours, plotting the results in 3D histograms. They are therefore attributed the highest weight worth 10.
+    \item \underline{HSV} histograms are the most complex histograms employed in the system as they use three channels to describe how human vision perceives colours, plotting the results in 3D histograms. The highest weight worth ten is therefore attributed to these.
 \end{itemize}
 
 \input{tables/distance-metric-weights.tex}
@@ -347,8 +347,9 @@ This dictionary is used at the end of the pipeline to determine which video was 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Database Pre-Processing}
+\label{sec:database-pre-processing}
 
-This section details the steps that go towards processing the database of videos with a shot boundary detection algorithm in order to segment a long video e.g. feature-length movies.\\
+This section details the steps that go towards processing the database of videos with a shot boundary detection algorithm in order to segment a long video, e.g. feature-length movies.\\
 
 The RGB histograms of two consecutive frames are generated and compared using the Kullback Leibler Divergence metric for each colour channel in the histogram (see Equation \ref{eq:shot-boundary-detection}). If the sum of the three distances is greater than a global pre-defined threshold, then the two consecutive frames are different enough to be interpreted as a shot change, and the frame index is added to a list of detected shot boundaries. A global threshold of 10 is used to detect shot boundaries, which was determined by running the code multiple times to determine a value that detects most transitions. This is implemented in the code using the same techniques mentioned in the previous techniques, employing the \textit{cv2.calcHist()} function to generate the histograms for the three colour channels and \textit{cv2.compareHist()} to compare the RGB histograms. 
 
@@ -372,20 +373,26 @@ Once the video has been processed, all of the frames with a KL divergence superi
 \caption{\label{fig:shot_boundary_detection_example}Example of the shot boundary detection algorithm on the test video from Figure \ref{fig:shot_boundary_detection_frames} using the Kullback Leibler Divergence to compare the RGB histograms between consecutive frames.}
 \end{figure}
 
-Using a global threshold approach to process consecutive frames detects hard cuts \textit{(A)} and fading to black cuts \textit{(C \& E)}, but does not detect a dissolve cut \textit{(B)} and detects the black frames in a fading to black transition as shot \textit{(D)}. However, this is a satisfying method to use for long videos as the goal is to simply extract a fraction of the frames rather than generate an exhaustive list of all the shots and scenes in a video. As mentioned earlier in Section \ref{sec:implementation-greyscale-histogram}, this algorithm is not included in the actual pipeline as short videos made of single shots and ranging from 7 to 14 seconds are used. However, it is used when testing with longer videos comprised of multiple shots.
+Using a global threshold approach to process consecutive frames detects hard cuts \textit{(A)} and fading to black cuts \textit{(C \& E)}, but does not detect a dissolve cut \textit{(B)} and detects the black frames in a fading to black transition as shot \textit{(D)}. However, this is a satisfying method to use for long videos as the goal is to extract a fraction of the frames rather than generate an exhaustive list of all the shots and scenes in a video. As mentioned earlier in Section \ref{sec:implementation-greyscale-histogram}, this algorithm is not included in the actual pipeline as short videos made of single shots and ranging from 7 to 14 seconds are used. However, it is used when testing with longer videos comprised of multiple shots.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Complete System Pipeline Diagram}
+\section{Complete System Pipeline Flowchart}
 
-todo
+Based on the detailed implementation of the system, a flowchart depicting the main aspects of the system can be found in Figure \ref{fig:CBVR-flowchart}.
+\clearpage
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=\textwidth]{figures/implementation/CBVR-flowchart.png}}
-\caption{\label{fig:CBVR-flowchart}Flowchart.}
+\centerline{\includegraphics[width=\textwidth]{figures/implementation/UntitledDiagram.png}}
+\caption{\label{fig:CBVR-flowchart}Complete flowchart of the system pipeline.}
 \end{figure}
+
+% \begin{figure}[h] 
+% \centerline{\includegraphics[width=\textwidth]{figures/implementation/CBVR-flowchart.png}}
+% \caption{\label{fig:CBVR-flowchart}Complete flowchart of the system pipeline.}
+% \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -393,22 +400,24 @@ todo
 
 \section{Code Structure}
 
+This section covers the project structure of the implemented code, detailing what each directory and file represents. The entire code structure can be found online on GitHub: \url{https://github.com/Adamouization/Content-Based-Video-Retrieval-Code}.
+
 \begin{itemize}
-    \item app
+    \item \textit{``app''} directory: contains all the Python code used to implement the system.
     \begin{itemize}
-        \item main.py
-        \item histogram.py
-        \item video\_operations.py
-        \item helpers.py
-        \item config.py
-        \item \_\_init\_\_.py
+        \item \textit{``main.py''} file: the starting point of the program. Parses command line arguments to determine whether to run in offline feature extraction phase, in online retrieval phase, or in database pre-processing phase.
+        \item \textit{``histogram.py''} file: contains the \textit{HistogramGenerator} class with functions to generate, average, store and compare greyscale, RGB and HSV histograms.
+        \item \textit{``video\_operations.py''} file: contains classes for video-related operations. The \textit{ClickAndDrop} class is used for manually selecting the Region of Interest and the \textit{VideoStabiliser} is used to stabilise the query video.
+        \item \textit{``helpers.py''} file: contains multiple general-use functions such as retrieving file names, removing file extensions from filenames, displaying results in the form of plots or console outputs, parsing command line input and getting video information.
+        \item \textit{``config.py''} file: contains global variables whose values are set by the command line arguments.
+        \item \textit{``\_\_init\_\_.py''} file: default file required in any python package (cannot be deleted without causing errors).
     \end{itemize}
-    \item footage
-    \item histogram\_data
-    \item recordings
-    \item results
-    \item requirements.txt
-    \item README.md
+    \item \textit{``footage''} directory: where all the database of videos is located. A greyscale, RGB and HSV histogram is generated for each video in this directory. The query's histograms are then compared to each video's histograms from this directory.
+    \item \textit{``histogram\_data''} directory: where the averaged greyscale, RGB and HSV histograms are stored as plain text files.
+    \item \textit{``recordings''} directory: where all the pre-recorded query videos used to test the system are placed.
+    \item \textit{``results''} directory: where general result-related files such as CSV and PNG files are placed.
+    \item \textit{``requirements.txt''} file: the different technologies and third-party libraries required to run the code. The file is used by the Pip\footnote{PyPi: \url{https://pypi.org/}} system to install everything in a single installation.
+    \item \textit{``README.md''} file: the instructions on how to setup and run the program locally.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -417,22 +426,7 @@ todo
 
 \section{Testing}
 
-\begin{itemize}
-    \item Unit Testing
-        \begin{itemize}
-            \item grey scale / RGB / HSV histogram generation
-            \item histogram saving to file
-            \item histogram normalisation
-            \item ROI selection
-            \item individual histogram matching, test each metric
-        \end{itemize}
-    \item Integration Testing
-        \begin{itemize}
-            \item test the entire pipeline (with a few videos as the database, make sure the correct match is found)
-        \end{itemize}
-    \item Include some code snippets
-    \item Include test suite results
-\end{itemize}
+This project ignores the implementation of a traditional testing suite with unit tests, integration tests and acceptance tests. Rather than spending time on writing an extensive testing suite, which is not very useful considering the nature of the project, the program is repetitively tested before committing changes to GitHub by using one of the database videos as the query video, which should always match that same video with 100\% accuracy (only true positives, no false positives).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
