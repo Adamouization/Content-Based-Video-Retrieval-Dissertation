@@ -317,7 +317,9 @@ For the 3D HSV histograms, SciPy's statistical distances are used to calculate t
     
 \end{enumerate}
 
-All of the distance metrics and histogram models are finally combined to produce the final result. For each histogram model distance metric used, scores indicating the similarities between each database video and the query video are calculated. Of all the scores calculated for each model and distance metric, the one revealing which database video matches the query the most is used to increment a dictionary. The increment depends on pre-defined weights assigned to each histogram model, which are detailed in Table \ref{tab:distance-metric-weights}:
+All of the distance metrics and histogram models are finally combined to produce the final result. For each histogram model distance metric used, scores indicating the similarities between each database video and the query video are calculated. A table is printed in the console to display the distance results for each metric and histogram model using the TerminalTables\footnote{TerminalTables: \url{https://github.com/Robpol86/terminaltables}} third-party library. An example of the printed console table using the library can be found in Appendix X. Additionally, the data is also written to multiple CSV files to further analyse in specialised tools such as Excel and in order to read the output data of the online retrieval phase after the console has been cleared or closed.\\
+
+Of all the scores calculated for each model and distance metric, the one revealing which database video matches the query the most is used to increment a dictionary. The increment relies on pre-defined weights assigned to each histogram model, which are detailed in Table \ref{tab:distance-metric-weights}:
 
 \begin{itemize}
     \item \underline{Greyscale} histograms are the least descriptive model, with only one channel which cannot represent colours. The lowest weight worth one is therefore attributed to these.
@@ -327,7 +329,11 @@ All of the distance metrics and histogram models are finally combined to produce
 
 \input{tables/distance-metric-weights.tex}
 
-This dictionary is used at the end of the pipeline to determine which video was matched the most based on the number of occurrences in the dictionary, which can be plotted in a simple histogram using Matplotlib to visualise which video is matched. This is the final result of the system.\\
+This dictionary is used at the end of the pipeline to determine which video was matched the most based on the number of occurrences in the dictionary, which can be plotted in a simple histogram using Matplotlib to visualise which video is matched the most. The final result is displayed in the form of a figure that includes the first frames of the query video and the matched video, along with the runtime in seconds and the accuracy $Accuracy = \frac{True \quad Positives}{Number \quad of \quad Matches}$ of the match (see Figure X for an example of the result figure).\\
+
+todo add results figure here
+
+Once this figure with the final results is displayed, the program exits, marking the end of the pipeline. The online retrieval phase can be repeated any number of times using different query recordings of one of the database videos, without the need to run the offline colour-based extraction phase again.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -335,11 +341,8 @@ This dictionary is used at the end of the pipeline to determine which video was 
 
 \begin{itemize}
     \item matplot lib histogram plotting (with an option to show each generated histogram or to hide them)
-    \item tables to show scores for each type of histogram and each distance
-    \item exporting results to CSV for further analysis
     \item spinners to show calculations are being done when training the system or stabilising videos 
     \item argument parsing
-    \item final output to clearly show if result if right/wrong, including a frame of the original query video, a frame of the match found, along with the runtime and the accuracy
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
