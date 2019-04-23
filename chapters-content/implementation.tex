@@ -1,13 +1,12 @@
 This chapter offers an overview of the different implementation steps to develop the project.
 
-\section{System Architecture Overview}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Follow low-level implementation detail of the different stages of the pipeline.\\
+% \section{System Architecture Overview}
 
-% \begin{figure}[h] 
-% \centerline{\includegraphics[width=\textwidth]{figures/implementation/CBVR-flowchart.png}}
-% \caption{\label{fig:CBVR flowchart}Flowchart.}
-% \end{figure}
+% Follow low-level implementation detail of the different stages of the pipeline.\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,6 +33,7 @@ As described in Section \ref{sec:color-based-features}, a histogram represents t
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Greyscale Histogram}
+\label{sec:implementation-greyscale-histogram}
 
 The first type of histogram that is generated is the greyscale histogram, also known as an intensity-based histogram. This type of histogram is used with frames that are first converted to a black \& white colour space (see Figure \ref{fig:rgb_to_greyscale}), and thus has a single channel rather than the three traditional RGB channels found in colour images. The conversion is done using OpenCV's \textit{cv2.cvtColor()} function along with the \textit{cv2.COLOR\_BGR2GRAY} attribute: 
 \mint[fontsize=\footnotesize]{python}|grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)|
@@ -348,11 +348,68 @@ This dictionary is used at the end of the pipeline to determine which video was 
 
 \section{Database Pre-Processing}
 
-\begin{itemize}
-    \item shot boundary detection for long videos, allowing the entire movie to be represented with a few thousand frames
-    \item current: one frame every second for short videos
-\end{itemize}
+This section details the steps that go towards processing the database of videos with a shot boundary detection algorithm in order to segment a long video e.g. feature-length movies.\\
 
+The RGB histograms of two consecutive frames are generated and compared using the Kullback Leibler Divergence metric for each colour channel in the histogram (see Equation \ref{eq:shot-boundary-detection}). If the sum of the three distances is greater than a global pre-defined threshold, then the two consecutive frames are different enough to be interpreted as a shot change, and the frame index is added to a list of detected shot boundaries. A global threshold of 10 is used to detect shot boundaries, which was determined by running the code multiple times to determine a value that detects most transitions. This is implemented in the code using the same techniques mentioned in the previous techniques, employing the \textit{cv2.calcHist()} function to generate the histograms for the three colour channels and \textit{cv2.compareHist()} to compare the RGB histograms. 
+
+\begin{equation}
+\label{eq:shot-boundary-detection}
+\begin{aligned}
+    detection \quad if \sum_{h}^{(r,g,b)}d(H_1,H_2) & > 10 \\
+    \sum_{h}^{(r,g,b)} (\sum_I H_{1,h}(I)\cdot log(\frac{H_{1,h}(I)}{H_{2,h}(I)}) & > 10
+\end{aligned}
+\end{equation}
+
+Once the video has been processed, all of the frames with a KL divergence superior to the threshold are marked as shot boundaries. The KL divergence between the consecutive frames from a test video with a hard cut transition \textit{(A)}, a dissolve transition \textit{(B)} and a fade to black transition \textit{(C-E)}, portrayed in Figure \ref{fig:shot_boundary_detection_frames}, are plotted using MatplotLib, with the results depicted in Figure \ref{fig:shot_boundary_detection_example}.
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=\textwidth]{figures/implementation/shot_boundary_detection_frames.png}}
+\caption{\label{fig:shot_boundary_detection_frames}Video frames used for the shot boundary detection algorithm.}
+\end{figure}
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=0.70\textwidth]{figures/implementation/shot_boundary_detection_example.png}}
+\caption{\label{fig:shot_boundary_detection_example}Example of the shot boundary detection algorithm on the test video from Figure \ref{fig:shot_boundary_detection_frames} using the Kullback Leibler Divergence to compare the RGB histograms between consecutive frames.}
+\end{figure}
+
+Using a global threshold approach to process consecutive frames detects hard cuts \textit{(A)} and fading to black cuts \textit{(C \& E)}, but does not detect a dissolve cut \textit{(B)} and detects the black frames in a fading to black transition as shot \textit{(D)}. However, this is a satisfying method to use for long videos as the goal is to simply extract a fraction of the frames rather than generate an exhaustive list of all the shots and scenes in a video. As mentioned earlier in Section \ref{sec:implementation-greyscale-histogram}, this algorithm is not included in the actual pipeline as short videos made of single shots and ranging from 7 to 14 seconds are used. However, it is used when testing with longer videos comprised of multiple shots.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Complete System Pipeline Diagram}
+
+todo
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=\textwidth]{figures/implementation/CBVR-flowchart.png}}
+\caption{\label{fig:CBVR-flowchart}Flowchart.}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Code Structure}
+
+\begin{itemize}
+    \item app
+    \begin{itemize}
+        \item main.py
+        \item histogram.py
+        \item video\_operations.py
+        \item helpers.py
+        \item config.py
+        \item \_\_init\_\_.py
+    \end{itemize}
+    \item footage
+    \item histogram\_data
+    \item recordings
+    \item results
+    \item requirements.txt
+    \item README.md
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
