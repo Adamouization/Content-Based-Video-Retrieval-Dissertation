@@ -2,7 +2,7 @@ Now that the requirements necessary to build the system have been formulated, po
 
 \section{Pipeline Design Analysis}
 
-To chose a global design solution for the system, it is easier to break down the system's pipeline into different phases and review the numerous potential designs for each of these phases. The system pipeline can be split into three different phases, as shown in Figure \ref{fig:basic-cbvr-diagram}:
+To chose a global design solution for the system, it is easier to break down the system's pipeline into different phases and review the numerous potential designs for each of these phases. The system pipeline can be split into three different phases, as shown in the concise diagram in Figure \ref{fig:basic-cbvr-diagram}:
 
 \begin{itemize}
     \item \textbf{Offline Feature Extraction Phase}. This phase corresponds to the ``training'' phase of the system, where features are extracted from each video in the database and then stored in data files for the retrieval phase.
@@ -37,14 +37,20 @@ To maximise speed, a compact signature should be generated for each video. This 
 
 Using histograms to represent the database videos and the query video enables the similarity between two videos to be calculated with distance measures, such as:
 \begin{itemize}
-    \item correlation
-    \item intersection
-    \item chi-square
-    \item alternative chi-square
-    \item bhattacharyya
-    \item kullback leibler divergence
-    \item wassertein distance (Earth's Mover Distance)
-    \item energy distance
+    \item OpenCV comparison metrics:
+    \begin{itemize}
+        \item Correlation
+        \item Intersection
+        \item Chi-square (two versions can be used)
+        \item Hellinger (using Bhattacharyya coefficient)
+        \item Lullback Leibler Divergence
+    \end{itemize}
+    \item SciPy statistical distances:
+    \begin{itemize}
+        \item Wassertein Distance (Earth's Mover Distance)
+        \item Energy Distance
+    \end{itemize}
+   
 \end{itemize}
 
 Smaller distance translates to similar histograms. Once the distance between the query video and each database video has been calculated, the smallest distance is used to find the best match. The importance of the calculated distance depends on the colour space used, where grey scale histograms have low importance as they only use one channel, RGB histograms have medium importance as they use three channels, and HSV histograms have the highest importance as it is an improvement on RGB.
