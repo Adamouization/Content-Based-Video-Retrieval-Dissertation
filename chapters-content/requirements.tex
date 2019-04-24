@@ -12,8 +12,12 @@ These requirements concern the offline feature extraction phase\footnote{The lea
 
 \begin{enumerate}[label=F\arabic*]
 
-    \item \textbf{The system \underline{must} successfully run this phase a single time and be able to run multiple times in the next phase}.\\
-    The system \textbf{must} re-ingest the data whenever a change is carried out in the database e.g. a video has been added or a video has been removed.\\
+    \item \textbf{The system \underline{must} run this phase a single time without requiring to be executed again for the next phase}.\\
+    The features stored in files must be re-used in the next phase rather than being generated every time. The system \textbf{must} re-ingest the data whenever a change is carried out in the database e.g. a video has been added or a video has been removed.\\
+    Priority 1.
+    
+    \item \textbf{Simple features that are proven to work efficiently with videos \underline{must} be chosen to be extracted.}\\
+    Due to the nature of the project, a line must be drawn between the complexity of the feature being extracted to represent the videos and the efficiency of working with such a feature. For example, if the feature is very complicated to extract and use, but does not offer many more advantages than a simpler feature to extract and use, then the simpler feature should be used.\\
     Priority 1.
     
     \item \textbf{The system \underline{must} store the extracted features it used for learning in files for future re-use in the online retrieval phase.}\\
@@ -23,9 +27,6 @@ These requirements concern the offline feature extraction phase\footnote{The lea
     \item \textbf{The files containing the training data \underline{must} be able to be quickly loaded into memory during the matching phase.}\\
     To minimise additional time spent on I/O operations, the files should be loaded quickly using efficient functions designed for this type of operation. If necessary, an external third-party library may be used to provided functions for quicker I/O operations.\\
     Priority 1.
-    
-    % \item \textbf{The system \underline{should} extract static features into histograms.}\\
-    % It should use either RGB histograms, grey scale histograms, HSV histograms, or a combination of multiple of the aforementioned histograms.
     
     \item \textbf{The system's interface \underline{should} specify that it is ingesting and extracting features from the database videos.}\\
     It can do so by either displaying a loading spinner or by iteratively printing text specifying which video is being currently processed.\\
@@ -47,9 +48,24 @@ These requirements concern the retrieval phase\footnote{The matching phase of a 
     The system must ignore the pixels outside of the selected area of the clip when extracting its features.\\
     Priority 1.
     
+    \item \textbf{The system \underline{must} use well-known distance metrics to calculate the distances between the query's feature vectors and the database videos' feature vectors.}\\
+    Hundreds of metrics exist, but some are more efficient for the task at hand. A good indication that a distance metric is good for the task at hand is its availability for popular programming languages and their mainstream third-party libraries.\\
+    Priority 1.
+    
     \item \textbf{The system \underline{must} display the results once the classification has been completed.}\\
     The retrieved video \textbf{must} be emphasised over the other videos to clearly point out that the result has been found. Additional results such as individual distances between the query and each video can be displayed as well e.g. tables.\\
     Priority 1.
+    
+    \item \textbf{The system \underline{must} be evaluated using reliable performance measurements.}\\
+    The accuracy of the system should be calculated using different queries.
+    Priority 1.
+    
+    % The accuracy of the system can be measured through a confusion matrix (or contigency table) to calculate the acusing the number of true positives and:
+    % \begin{itemize}
+    %     \item True Positives:
+    %     \item False Positives:
+    % \end{itemize}
+    % Additionally, the runtime can be measure\\
     
     \item \textbf{The system \underline{should} stabilise the query video before extracting its features.}\\
     The stabilised video will diminish the effects of camera movement and increase the similarities between the video's extracted features and the database videos' features.\\
@@ -59,10 +75,10 @@ These requirements concern the retrieval phase\footnote{The matching phase of a 
     Processing the query video while it is being recorded would drastically improve the system's runtime in this phase rather than waiting for the entire video to be recorded and only processing it after the recording is finished.\\
     Priority 3.
     
-    % \item The system \textbf{should} be able to find a match to the recorded video in less than 20 seconds.
+    \item \textbf{The system \underline{may} find a match to the query in less than 10 seconds.}\\
+    Commercial applications usually take around 10 seconds to produce a match to the query. Therefore, this project should take roughly the same amount of time before producing an output.\\
+    Priority 3.
     
-    % \item The system \textbf{must} be able to match the recorded video with one of the videos in the database with at least 95\% accuracy.
-
 \end{enumerate}
 
 \subsubsection{Database Pre-processing}
@@ -71,11 +87,12 @@ These requirements concern the database pre-processing phase of the system. This
 
 \begin{enumerate}[label=F\arabic*,resume]
 
-    \item \textbf{Long videos e.g. feature-length movies, \underline{must} be processed for shot boundary detection to segment them into scenes.}\\
-    A single frame must be used to represent each scene of the segmented long video.\\
+    \item \textbf{Long videos, e.g. feature-length movies, \underline{must} be processed for shot boundary detection to segment them into scenes.}\\
+    A single frame must be used to represent each shot of a long video. However, this is not required if the video is short enough to be a shot by itself.\\
     Priority 1.
     
     \item \textbf{The same features from the offline feature extraction and online retrieval phases \underline{should} be used for the shot boundary detection algorithm.}\\
+    This would ensure cohesion between different phases of the program and allow code to be re-used.
     Priority 2.
     
 \end{enumerate}

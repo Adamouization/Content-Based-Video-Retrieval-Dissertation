@@ -7,14 +7,14 @@ This chapter presents an overview of the different steps taken to fully implemen
 \section{Offline Colour-Based Feature Extraction}
 \label{sec:implementation-offline-colour-based-feature-extraction}
 
-This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual pipeline of this phase with RGB histograms only (this phase is repeated for greyscale and HSV histograms as well). 
+This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual example of inner pipeline of this phase with RGB histograms only. This phase is repeated for greyscale and HSV histograms as well). 
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=1.2\textwidth,center]{figures/implementation/rgb_average_histogram_pipeline.png}}
 \caption{\label{fig:implementation-rgb_average_histogram_pipeline}Visualisation of the pipeline of the offline colour-based feature extraction phase with RGB histograms only.}
 \end{figure}
 
-This inner pipeline of the entire system has to be repeated for every video in the database. For clarity and to illustrate the steps of this phase, the \textit{butterfly} video is used throughout this entire section to provide examples of the multiple offline colour-based feature extraction steps.
+This phase has to be repeated for every video in the database. For consistency throughout the various examples that are illustrated in this section, the \textit{butterfly} video is used to provide examples of the multiple offline colour-based feature extraction steps.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -169,7 +169,11 @@ Second, for the HSV histograms, the histogram averaging is done by looping throu
 
 Finally, the \textit{cv2.normalize()} and \textit{np.savetxt()} functions are used to normalise and save the average RGB and HSV histograms to plain text files. Samples of the saved plain text files for the butterfly video can be found in Appendix \ref{sec:appendix-txt-greyscale} for the greyscale histogram, in Appendix \ref{sec:appendix-txt-rgb} for the RGB histogram and in Appendix \ref{sec:appendix-txt-hsv} for the HSV histogram.\\
 
-The final result of the offline colour-based feature extraction phase is a set of three averaged histograms that represent an entire video, with the values saved in three separate plain text files, as depicted in Figure \ref{fig:implementation-all_avg_norm_histograms}. With the colour-based features now saved in text files, they can now be used multiple times in the online retrieval phase without needing to be re-generated.
+The final result of the offline colour-based feature extraction phase is a set of three averaged histograms that represent an entire video, with the values saved in three separate plain text files, as depicted in Figure \ref{fig:implementation-all_avg_norm_histograms}.\\
+
+These histograms can be displayed using MatplotLib as they are being generated based on a flag passed on program start up. If the \textit{``--showhists''} flag is passed, then all averaged histograms are displayed before being saved in plain text files. As it takes approximately three seconds to process a single video in order to generate and store the three averaged histograms, the entire phase can take a while depending on the number of videos in the database. Therefore, a spinner is employed to indicate that the system is performing computations, which is implemented using Py-Spin\footnote{Py-Spin: \url{https://github.com/lord63/py-spin}}, a third-party library used to implement console-based spinners. The spinner, coupled with the histograms being displayed as they are being calculated, gives an visual indication that progress is being made.\\
+
+With the colour-based features now saved in text files, they can be used multiple times in the online retrieval phase without needing to be re-generated, unless changes are made to the database videos, e.g. adding or removing videos.
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/all_avg_norm_histograms.png}}
@@ -419,7 +423,7 @@ This section covers the project structure of the implemented code, detailing wha
 
 \section{Testing}
 
-This project skips the implementation of a traditional testing suite with unit tests, integration tests and acceptance tests. Rather than spending time writing an extensive testing suite, which is not very useful considering the nature of the project, the program is repetitively tested before committing changes to GitHub by using one of the database videos as the query video, which should always match that same video with 100\% accuracy (only true positives, no false positives).
+This project skips the implementation of a traditional testing suite with unit tests, integration tests and acceptance tests (Priority 3 Requirement F19). Rather than spending time writing an extensive testing suite, which is not very useful considering the nature of the project, the program is repetitively tested before committing changes to GitHub by using one of the database videos as the query video, which should always match that same video with 100\% accuracy (only true positives, no false positives).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
