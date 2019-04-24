@@ -11,3 +11,5 @@ def generate_and_store_average_greyscale_histogram(self):
         new_bin_value = bin_sum / len(self.histograms_grey_dict)
         avg_histogram[i] = new_bin_value
     np.savetxt("../histogram_data/{}/hist-{}".format(self.file_name, "gray"), avg_histogram, fmt='%f')
+    
+    
