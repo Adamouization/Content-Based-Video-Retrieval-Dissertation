@@ -7,7 +7,7 @@ This chapter presents an overview of the different steps taken to fully implemen
 \section{Offline Colour-Based Feature Extraction}
 \label{sec:implementation-offline-colour-based-feature-extraction}
 
-This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual example of inner pipeline of this phase with RGB histograms only. This phase is repeated for greyscale and HSV histograms as well). 
+This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual example of inner pipeline of this phase with RGB histograms only. This phase is repeated for greyscale and HSV histograms as well).\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=1.2\textwidth,center]{figures/implementation/rgb_average_histogram_pipeline.png}}
@@ -58,7 +58,7 @@ Once the greyscale histograms are generated for each of these pre-selected frame
 
 \subsubsection{RGB Histogram}
 
-Now that greyscale histograms are generated for the video, RGB histograms are produced next. As described in \ref{sec:color-based-features}, an RGB histogram represents the colour distribution of the pixels in a frame for three different channels: red, blue and green. The coloured frame is a combination of three colour channels, which can be split into three different stills, as rendered in Figure \ref{fig:implementation-rgb_image_channel_split}.\\
+Now that greyscale histograms are generated for the video, RGB histograms are produced next. As described in \ref{sec:color-based-features}, an RGB histogram represents the colour distribution of the pixels in a frame for three different channels: red, blue and green. The coloured frame is a combination of three colour channels, which can be split into three different stills, as rendered in Figure \ref{fig:implementation-rgb_image_channel_split}.
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/rgb_image_channel_split.png}}
@@ -149,7 +149,7 @@ Once all the bins have been averaged and added to the new histogram, that averag
 \caption{\label{fig:implementation-normalise-histogram}Normalising RGB and HSV histograms.}
 \end{figure}
 
-Finally, the averaged and normalised histogram values are stored in a plain text file as float values to maintain the precision, which is implemented using Numpy's \textit{np.savetxt()} function:
+Finally, the averaged and normalised histogram values are stored in a plain text file as float values to maintain the precision, which is implemented using NumPy's \textit{np.savetxt()} function:
 
 \mint[fontsize=\footnotesize,breaklines]{python}|np.savetxt("../histogram_data/{}/hist-{}".format(self.file_name, "gray"), avg_histogram, fmt='%f'))|
 
@@ -171,7 +171,7 @@ Finally, the \textit{cv2.normalize()} and \textit{np.savetxt()} functions are us
 
 The final result of the offline colour-based feature extraction phase is a set of three averaged histograms that represent an entire video, with the values saved in three separate plain text files, as depicted in Figure \ref{fig:implementation-all_avg_norm_histograms}.\\
 
-These histograms can be displayed using MatplotLib as they are being generated based on a flag passed on program start up. If the \textit{``--showhists''} flag is passed, then all averaged histograms are displayed before being saved in plain text files. As it takes approximately three seconds to process a single video in order to generate and store the three averaged histograms, the entire phase can take a while depending on the number of videos in the database. Therefore, a spinner is employed to indicate that the system is performing computations, which is implemented using Py-Spin\footnote{Py-Spin: \url{https://github.com/lord63/py-spin}}, a third-party library used to implement console-based spinners. The spinner, coupled with the histograms being displayed as they are being calculated, gives an visual indication that progress is being made.\\
+These histograms can be displayed using Matplotlib as they are being generated based on a flag passed on program start up. If the \textit{``--showhists''} flag is passed, then all averaged histograms are displayed before being saved in plain text files. As it takes approximately three seconds to process a single video in order to generate and store the three averaged histograms, the entire phase can take a while depending on the number of videos in the database. Therefore, a spinner is employed to indicate that the system is performing computations, which is implemented using Py-Spin\footnote{Py-Spin: \url{https://github.com/lord63/py-spin}}, a third-party library used to implement console-based spinners. The spinner, coupled with the histograms being displayed as they are being calculated, gives an visual indication that progress is being made.\\
 
 With the colour-based features now saved in text files, they can be used multiple times in the online retrieval phase without needing to be re-generated, unless changes are made to the database videos, e.g. adding or removing videos.
 
@@ -206,7 +206,7 @@ ROI selection is achieved through OpenCV's GUI functionality, which is employed 
 
 \mint[fontsize=\footnotesize]{python}|cv2.setMouseCallback("Select ROI", self.click_and_crop)|
 
-These three functionalities are combined in the system to display the first frame of the query video and allow a manual selection of two points on the frame. The first point is selected when the left mouse button is pressed using \textit{cv2.EVENT\_LBUTTONDOWN}, and the second point is selected when the button is unpressed using \textit{cv2.EVENT\_LBUTTONUP}. With these two points, a rectangle can be drawn on the frame to indicate the area that was selected. If the rectangle is correctly drawn, the \textit{`C'} key can be pressed to perform the cropping action; otherwise the \textit{`R'} key can be pressed to erase the rectangle and attempt to re-draw it until a satisfactory ROI is selected. The point coordinates are then used to ignore all the pixels outside the drawn rectangle when generating the compact histogram signatures of the query video, as sketched in Figure \ref{fig:implementation-roi_selection}. The full implementation of the code can be found in Appendix \ref{sec:code-roi-selection}.
+These three functionalities are combined in the system to display the first frame of the query video and allow a manual selection of two points on the frame. The first point is selected when the left mouse button is pressed using \textit{cv2.EVENT\_LBUTTONDOWN}, and the second point is selected when the button is unpressed using \textit{cv2.EVENT\_LBUTTONUP}. With these two points, a rectangle can be drawn on the frame to indicate the area that was selected. If the rectangle is correctly drawn, the \textit{`C'} key can be pressed to perform the cropping action; otherwise the \textit{`R'} key can be pressed to erase the rectangle and attempt to re-draw it until a satisfactory ROI is selected. The point coordinates are then used to ignore all the pixels outside the drawn rectangle when generating the compact histogram signatures of the query video, as sketched in Figure \ref{fig:implementation-roi_selection}. The full implementation of the code can be found in Appendix \ref{sec:code-roi-selection}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/roi_selection.png}}
@@ -221,7 +221,11 @@ Once the video query has been processed for stability and ROI selection, the sam
 
 \subsubsection{Query Video Feature Extraction}
 
-In order to compare the query video to all the database videos, the same colour-based features described in Section \ref{sec:implementation-offline-colour-based-feature-extraction} need to be extracted first. A compact signature is generated for the query video in the form of an averaged greyscale histogram, an averaged RGB histogram and an averaged HSV histogram. Once these are generated, they can be compared to the histograms for each database videos.
+In order to compare the query video to all the database videos, the same colour-based features described in Section \ref{sec:implementation-offline-colour-based-feature-extraction} need to be extracted first. A compact signature is generated for the query video in the form of an averaged greyscale histogram, an averaged RGB histogram and an averaged HSV histogram. The identical functions written for the offline colour-based feature extraction phase are re-used to generate the query video's histograms. This is achieved through a function parameter named \textit{is\_query}, which is a boolean that enters more sections of the function when it is true, such as selecting an ROI:
+
+\mint[fontsize=\footnotesize]{python}|def generate_video_rgb_histogram(self, is_query=False, cur_ref_points=None):|
+
+Once these histograms are generated, they can be compared to the histograms of each database videos.
 
 \subsubsection{Distance Measurements}
 
@@ -300,10 +304,11 @@ For the 3D HSV histograms, SciPy's statistical distances are used to calculate t
     where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. The Hellinger metric is implemented in the code through OpenCV's \textit{cv2.HISTCMP\_BHATTACHARYYA} (although the OpenCV method is named Bhattacharyya, it actually uses the Hellinger distance but was named Bhattacharyya by the library developers because it uses the Bhattacharyya coefficient):
     \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_BHATTACHARYYA)|
     
-    \item \underline{Kullback Leibler Divergence}:\\
-    \begin{equation}
-        d(H_1,H_2)=\sum_I H_1(I)\cdot log(\frac{H_1(I)}{H_2(I)})
-    \end{equation}
+    % \item \underline{Kullback Leibler Divergence}:\\
+    % The KL Divergence is normally used to calculate how much information is lost between two distributions 
+    % \begin{equation}
+    %     d_{KL}(H_1||H_2)=\sum_I H_1(I)\cdot log(\frac{H_1(I)}{H_2(I)})
+    % \end{equation}
     
     \item \underline{Wassertein Distance} (Earth's Mover Distance):\\
     add equation
@@ -339,7 +344,7 @@ Once this figure with the final results is displayed, the program exits, marking
 \subsubsection{Result Display}
 
 \begin{itemize}
-    \item matplot lib histogram plotting (with an option to show each generated histogram or to hide them)
+    \item Matplotlib histogram plotting (with an option to show each generated histogram or to hide them)
     \item spinners to show calculations are being done when training the system or stabilising videos 
     \item argument parsing
 \end{itemize}
@@ -363,7 +368,7 @@ The RGB histograms of two consecutive frames are generated and compared using th
 \end{aligned}
 \end{equation}
 
-Once the video has been processed, all of the frames with a KL divergence superior to the threshold are marked as shot boundaries. The KL divergence between the consecutive frames from a test video with a hard cut transition \textit{(A)}, a dissolve transition \textit{(B)} and a fade to black transition \textit{(C-E)}, portrayed in Figure \ref{fig:shot_boundary_detection_frames}, are plotted using MatplotLib, with the results depicted in Figure \ref{fig:shot_boundary_detection_example}.\\
+Once the video has been processed, all of the frames with a KL divergence superior to the threshold are marked as shot boundaries. The KL divergence between the consecutive frames from a test video with a hard cut transition \textit{(A)}, a dissolve transition \textit{(B)} and a fade to black transition \textit{(C-E)}, portrayed in Figure \ref{fig:shot_boundary_detection_frames}, are plotted using Matplotlib, with the results depicted in Figure \ref{fig:shot_boundary_detection_example}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/shot_boundary_detection_frames.png}}

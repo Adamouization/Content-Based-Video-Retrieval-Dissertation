@@ -295,6 +295,8 @@ The first technique rests on using pairs of frames to compute the similarities b
 The second technique is the window-based similarity measure, that measures the similarities between multiple frames specified within a range \cite{cernekova2006information}. This helps counter the effects of noise and disturbances captured by the pair-based approach but is more expensive to compute, therefore less used \cite{hu2011survey}.
 
 \subsubsection{Detection}
+\label{sec:litsurvey-shot-boundary-detection}
+
 The final step in segmenting a video is the detection of the frames to cut, which is achieved by using the measured similarities between the frames. Two methods exist for this step: a threshold-based approach and a statistical learning-based approach.\\
 
 The \textit{threshold-based approach} compares the measured similarities between a pair of frames with a threshold. Whenever the similarity measure is smaller than the threshold, a shot boundary is detected and the shot can be cut. Figure \ref{fig:shot_boundary_detection_threshold} betrays an example of a threshold-based approach for different types of transitions, with a correct detection (\emph{A}), a missed detection (\emph{B}) and a misinterpreted detection (\emph{C}).\\

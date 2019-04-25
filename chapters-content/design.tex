@@ -1,17 +1,37 @@
-Now that the requirements necessary to build the system have been formulated, potential solutions to fulfil the list of requirements from Chapter \ref{ch:chapter3} for each aspect of the system can now be analysed before choosing a final solution. Throughout this chapter, the requirements established from the previous chapter referred as ``F'' stand for functional requirements, while requirements referred as ``NF'' stand for non-functional requirements. The first section of this chapter will focus on different solutions for the system's pipeline, starting with the offline feature extraction phase, followed by the online retrieval phase, and ending with the database pre-processing phase. The second section will focus on general design decisions such as the programming language, the query video pre-processing operations, the type of interface, the type of file to store the features in and the type of videos to use. These two sections are used to conclude with an outline of the final chosen solutions for each aspect of the system, which are used to bring the system to life.
+Now that the requirements necessary to build the system have been formulated, potential solutions to fulfil the list of requirements from Chapter \ref{ch:chapter3} for each aspect of the system can now be analysed before choosing a final solution. Throughout this chapter, the requirements established from the previous chapter referred as ``F'' stand for functional requirements, while requirements referred as ``NF'' stand for non-functional requirements. The first section of this chapter will focus on the programming language that will be used to build the system. Next, the second section explores different solutions for the system's pipeline, starting with the offline feature extraction phase, followed by the online retrieval phase, and ending with the database pre-processing phase. Finally, the last section will focus on general design decisions such as the type of interface, the type of file to store the features in and the type of videos to populate the database with. These two sections are used to conclude the chapter with a detailed outline of the final chosen solutions for each aspect of the system, which are all used to eventually bring the system to life.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Programming Language}
+\label{sec:design-programming-languages}
+
+The programming language is one of the essential aspects when it comes to designing and later implementing the system as it is the medium used to transform the system from design to implementation. However, choosing between 250 different programming languages \cite{tiobe} can be a tricky exercise, which is why multiple views have to be evaluated before choosing a programming language. Various criteria are considered to justify the choice of the programming languages, including the availability of computer vision-related functions, the runtime speed, the readability and the personal preference.\\
+
+The first element to consider when choosing a programming language for this type of project is the availability of functions for video manipulation and computer vision-related operations. Indeed, using high-level functions to, e.g. read videos or generate histograms is primordial to avoid spending time manually implementing each of these functionalities and to instead devote more time on implementing high-level concepts to complete the pipeline. Some languages such as MATLAB and Python (with mainstream third-party libraries) allow for efficient manipulation of images/videos and offer collections of computer vision functions. For other programming languages, libraries can be used. The most popular library in this field is OpenCV\footnote{OpenCV, \url{https://opencv.org/}}, which offers functions for real-time computer vision applications. This library supports all the main operating systems (Linux, macOS, Windows, etc.) and although it was mainly designed for C/C++, it contains bindings for the main general-purpose programming languages such as Python, C++, Java, C\#, Javascript, Haskell and MATLAB.\\
+
+Among the previously mentioned programming languages, C/C++ are the fastest languages,
+according to \textit{Benchmark Games}\footnote{Benchmark Games: \url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/}}, followed by Java, MATLAB and Python, which is considerably slower than the aforementioned programming languages. However, Python can be extended with languages such as C/C++ with ease. This means that coupling Python with the OpenCV library that is initially written in C++ allows the Python code to execute as fast as the original C++ code since it is the actual OpenCV C++ code that is running in the background. Furthermore, Python has an extensive set of third-party libraries that add powerful functionalities to the language, such as NumPy\footnote{NumPy: \url{https://www.numpy.org/}}, SciPy\footnote{SciPy: \url{https://www.scipy.org/scipylib/index.html}} and Matplotlib\footnote{Matplotlib: \url{https://matplotlib.org/}}, which all add mathematical and scientific functions able to compete with MATLAB's native functions. Finally, of all the specified programming languages, Python is the favoured one in terms of personal preference, familiarity, and experience. Therefore, the relatively slower execution speeds of Python being outweighed when using OpenCV functions, coupled with the personal preference for Python, make Python the obvious programming language choice for this project.\\
+
+For a complete review of the main pros and cons considered between when deciding between Python, C++, Java and MATLAB, refer to Appendix \ref{ch:appendix-comparison-programming-languages}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Pipeline Design Analysis}
 
 To chose a global design solution for the system, it is easier to break down the system's pipeline into different phases and review the numerous potential designs for each of these phases. The system pipeline can be split into three different phases, as shown in the concise diagram in Figure \ref{fig:basic-cbvr-diagram}:
 
 \begin{itemize}
-    \item \textbf{Offline Feature Extraction Phase}. This phase corresponds to the ``training'' phase of the system, where features are extracted from each video in the database and then stored in data files for the retrieval phase.
-    \item \textbf{Online Retrieval Phase}. This phase is affiliated to the ``training'' phase of the system, where a single video query is matched to one of the database videos by extracting the same features from the previous phase and comparing them to the stored features.
+    \item \textbf{Offline Feature Extraction Phase}. This phase corresponds to the ``training'' phase of the system, where features are extracted from each video in the database and then stored in data files to be later used in the retrieval phase.
+    \item \textbf{Online Retrieval Phase}. This phase is affiliated to the ``testing'' phase of the system, where a single video query is matched to one of the database videos by extracting the same features from the previous phase and comparing them to the stored features.
     \item \textbf{Database Pre-processing Phase}. This is an optional phase where the database videos are processed before the offline feature extraction phase to improve the accuracy and speed of the database videos feature extraction.
 \end{itemize}
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=\textwidth]{figures/design/basic_cbvr_phases.png}}
+\centerline{\includegraphics[width=1.1\textwidth]{figures/design/basic_cbvr_phases.png}}
 \caption{\label{fig:basic-cbvr-diagram}Basic CBVR system diagram.}
 \end{figure}
 
@@ -23,27 +43,40 @@ Explore possible options for different sections of the system, such as:
     \end{itemize}
 \end{comment}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Offline Feature Extraction Phase}
 \label{sec:design-offline-feature-extraction}
 
-The first distinction between the possible types of features that could be extracted from the videos is static and dynamic features. Because static features extraction are a much less challenging task to code and to compute than dynamic feature extraction while providing as much useful information as dynamic features and being cheaper and quicker to compute, static features are therefore the logical choice for this project. There are many choices of static features to extract, including colour-based, texture-based and shape-based features. Texture and shape-based features are more suitable for images than videos, while colour-based videos are suitable for both. Therefore, colour-based features are the features used to describe the videos.\\
+Retracing the Section \ref{sec:visual-content-extraction} of Literature \& Technology Survey, the first distinction between the possible types of features that could be extracted from the videos is static and dynamic features. Because static features extraction is a much less challenging task to code and to compute than dynamic feature extraction, while providing almost as much information as dynamic features and being cheaper to compute, static features are therefore the logical choice for this project. However, there are many different choices of static features to extract, including colour-based, texture-based and shape-based features. Texture and shape-based features are more suitable for images than videos, while colour-based videos are suitable for both. Therefore, colour-based features are the features used to describe the videos, fulfilling requirement F2.\\
 
-The most efficient model for storing colour-based features is histograms, which are described in Section \ref{sec:color-based-features}, Chapter \ref{ch:chapter2}. Different histograms exist for a variety of colour spaces depending on the application, with greyscale, RGB and HSV colour models often used to describe images and videos.\\ 
+The most efficient type of model for storing colour-based features is histograms, which are described in Section \ref{sec:color-based-features}, Chapter \ref{ch:chapter2}. Different histograms exist for a variety of colour spaces depending on the application, with 2D histograms for \textit{greyscale} and \textit{RGB} colour spaces, and 3D histograms for the \textit{HSV} colour space. These are the three most used colour models for describing videos and their frames (which can be treated as images).\\ 
 
-To maximise speed, a compact signature should be generated for each video. This idea of representing a video in a unique compact signature originates from \cite{araujo2017i2v} who uses Fisher Vectors to construct compact signatures for the database videos and the query video. This project applies Araujo's idea of creating such a signature for the database videos and the query video to histograms, where histograms are generated for multiple frames of video and are then averaged into a single histogram. Once generated, the condensed signatures are then stored in files to be quickly re-used rather than being re-calculated every time, which is explored in more detail in Section \ref{sec:design-feature-storing-file-type}. 
+To maximise speed, a compact signature should be generated for each video. The inspiration of representing a video in a unique and compact signature originates from \cite{araujo2017i2v} who uses Fisher Vectors to construct compact signatures for the database videos and the query video. This project applies Araujo's idea of creating such a signature for the database videos and the query video to histograms, where histograms are generated for multiple frames of video and are then averaged into a single histogram for each model. Once generated, the condensed signatures are then stored in files in order to be easily re-used in the online retrieval phase rather than being re-calculated in this phase every time. The design choices for storing the compact signatures, also known as feature vectors, are explored in more detail in Section \ref{sec:design-feature-storing-file-type}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Online Retrieval Phase}
 \label{sec:design-online-retrieval}
 
-Using histograms to represent the database videos and the query video enables the similarity between two videos to be calculated with distance measures, such as:
+\subsubsection{Similarity Measurement}
+\label{sec:design-online-retrieval-similarity-measurement}
+
+Histograms are discrete distributions of the extracted colour-based features. Therefore, the distance between two histograms can be used to establish how close they are to each other. As stated earlier in Chapter \ref{ch:chapter3}, a long list of metrics exists to calculate the distance between two discrete distributions. Therefore, the most common distance metrics can be used to perform the measurements. To determine which distance metrics to use, their availability in popular third-party libraries is analysed. With Python as the chosen programming language and the third-party libraries to use already decided, the metrics available can be explored from the OpenCV and SciPy libraries.\\
+
+\textbf{OpenCV}, the Python computer vision library, offers multiple metrics to compare histograms, including the \textit{Correlation}, \textit{Chi-Square}, \textit{Intersection}, \textit{Hellinger Distance} using the Bhattacharyya coefficient, an \textit{alternative Chi-Square} and the \textit{Kullback-Leibler Divergence} \cite{opencv-histcomp}. All of the mentioned metrics can be used in the system, apart from the alternative Chi-Square distance and the KL Divergence. In the first hand, the alternative Chi-Square distance is more efficient when working with texture-based features rather than colour-based ones \cite{puzicha1997non}. In the second hand, the Kullback-Leibler Divergence is more aimed at calculating the loss of information between two different distributions rather than calculating the actual distance between them \cite{kurt2007kldivergence}. An additional advantage of using the OpenCV library to compare histograms, which is already mentioned in Section \ref{sec:design-programming-languages}, is the fact that the original C++ code is being executed to calculate the comparison itself, meaning that using OpenCV to compare histograms is the quickest option available, even quicker than writing custom distance functions directly in Python.\\
+
+\textbf{SciPy}, the Python mathematics/science/engineering library, offers two more advanced statistical distance metrics to compare discrete distributions, including the Wassertein Distance\footnote{The Wassertein Distance is also referred to as the Earth Mover’s Distance.} and the Energy Distance, which are both perfectly suitable for comparing histograms.\\
+
+Using these metrics from the OpenCV and SciPy libraries satisfies requirement F22 of using libraries to avoid re-writing code that would be less efficient than the libraries'. Based on the availability of distance metrics in OpenCV and SciPy, the following distance metrics will be used when implementing the system, fulfilling requirement F8:
+
 \begin{itemize}
-    \item OpenCV comparison metrics:
+    \item OpenCV distance comparison metrics:
     \begin{itemize}
         \item Correlation
         \item Intersection
-        \item Chi-square (two versions can be used)
-        \item Hellinger (using Bhattacharyya coefficient)
-        \item Lullback Leibler Divergence
+        \item Chi-Square (first version only)
+        \item Hellinger (using the Bhattacharyya coefficient)
     \end{itemize}
     \item SciPy statistical distances:
     \begin{itemize}
@@ -53,32 +86,15 @@ Using histograms to represent the database videos and the query video enables th
    
 \end{itemize}
 
-Smaller distance translates to similar histograms. Once the distance between the query video and each database video has been calculated, the smallest distance is used to find the best match. The importance of the calculated distance depends on the colour space used, where grey scale histograms have low importance as they only use one channel, RGB histograms have medium importance as they use three channels, and HSV histograms have the highest importance as it is an improvement on RGB.
+Smaller distance between two histograms using the aforementioned metrics translates to similarities between those histograms. Once the distance between the query video and each database video has been calculated, the smallest (or largest, depending on the metrics being used) distance is used to find the best match. The number of correct matches made, also known as \textit{true positives}, and the number of incorrect matches, also known as \textit{false positives}, can be used to evaluate the system's accuracy (see requirement F10).\\
 
-\subsection{Database Pre-Processing Phase}
+Some metrics are more complex than others, which, coupled with the colour model used, means that some distances have more importance than others. Therefore, the importance of the distances depends on the colour space used, where grey scale histograms have a low importance as they only use one channel, RGB histograms have a medium importance as they use three channels, and HSV histograms have the highest importance as they describe the colours in a frame with more detail than RGB.
 
-This optional phase can pre-process the database videos to improve the efficiency and speed of the compact signature generation. A shot boundary detection algorithm can be applied to each database video to extract a single frame for each shot. This would cut down the size of a video to a fraction of the original frames, translating into fewer frames have to be analysed when generating the average histogram. The global threshold approach, which is the simplest and most efficient one, can be used to extract those frames. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{itemize}
-    \item mention global threshold approach
-\end{itemize}
+\subsubsection{Query Video Pre-processing}
 
-\section{General Project Design}
-
-Now that the design choices regarding the system pipeline have been made, general system choices such as the programming language, the interface, the feature storage and the database videos can be inspected.
-
-\subsection{Programming Language}
-
-The programming language is one of the essential aspects when it comes to designing and later implementing the system as it is the medium used to transform the system from design to implementation. However, choosing between 250 different programming languages \cite{tiobe} can be a tricky exercise, which is why multiple views have to be evaluated before choosing a programming language. Multiple criteria are considered to justify the choice of the programming languages, including the availability of computer vision-related functions, the runtime speed, the readability and the personal preference.\\
-
-The first element to consider when choosing a programming language for this type of project is the availability of functions for video manipulation and computer vision-related operations. Indeed, using high-level functions to, e.g. read videos or generate histograms is primordial to avoid spending time manually implementing each of these functionalities and to instead devote more time on implementing high-level concepts to complete the pipeline. Some languages such as MATLAB and Python (with mainstream third-party libraries) allow for efficient manipulation of images/videos and offer collections of computer vision functions. For other programming languages, libraries can be used. The most popular library in this field is OpenCV\footnote{OpenCV, \url{https://opencv.org/}}, which offers functions for real-time computer vision applications. This library supports all the main operating systems (Linux, macOS, Windows, etc.) and although it was mainly designed for C/C++, it contains bindings for the main general-purpose programming languages such as Python, C++, Java, C\#, Javascript, Haskell and MATLAB.\\
-
-Among the previously mentioned programming languages, C/C++ are the fastest languages,
-according to \textit{Benchmark Games}\footnote{Benchmark Games: \url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/}}, followed by Java, MATLAB and Python, which is considerably slower than the aforementioned programming languages. However, Python can be extended with languages such as C/C++ with ease. This means that coupling Python with the OpenCV library that is initially written in C++ allows the Python code to execute as fast as the original C++ code since it is the actual OpenCV C++ code that is running in the background. Furthermore, Python has an extensive set of third-party libraries that add powerful functionalities to the language, such as Numpy, SciPy and MatplotLib that all add mathematical and scientific functions able to compete with MATLAB's native functions. Finally, of all the specified programming languages, Python is the favoured one in terms of personal preference, familiarity, and experience. Therefore, the relatively slower execution speeds of Python being cancelled out when using OpenCV, coupled with the personal preference for Python, make Python the obvious programming language choice for this project. For a complete review of the main pros and cons considered between Python, C++, Java and MATLAB, see Appendix \ref{ch:appendix-comparison-programming-languages}.
-
-\subsection{Query Video Pre-processing}
-
-The query video corresponds to the video that a user records with a mobile-device and input in the system to be matched with one of the database videos. A commercial application would allow the user to directly record a video from the application, which would, in turn, be used to extract its features and compare them to the features of the database videos. Based on current commercial computer vision systems, e.g. Shazam for music recognition, the system could even start processing the video as it is being written rather than waiting for it to be saved. However, these are design aspects that would be required if the system were to be released to the public on a large scale. This is not the case since the goal is to develop the matching algorithm and complete the pipeline, meaning the query video may be a recording of one of the database videos used as input once the program starts running in the online retrieval phase. To simulate a realistic query and a potential commercial system, the video should be pre-recorded through a mobile device and used , fulfilling requirement F6, rather than being recorded directly through a mobile application, as pointed out by the low-priority requirement F12.\\
+Drastic improvements in accuracy can be found by pre-processing the query video. The query video corresponds to the video that a user records with a mobile-device and uses as input in the system in order to be matched with one of the database videos. A commercial application would allow the user to directly record a video from the application, which would, in turn, be used to extract its features and compare them to the features of the database videos. Based on current commercial computer vision systems, e.g. Shazam for music recognition, the system could even start processing the video as it is being written rather than waiting for it to be saved. However, these are design aspects that would be required if the system were to be released to the public on a large scale. This is not the case since the goal is to develop the matching algorithm and complete the pipeline, meaning the query video may be a recording of one of the database videos used as input once the program starts running in the online retrieval phase. To simulate a realistic query and a potential commercial system, the video should be pre-recorded through a mobile device and used , fulfilling requirement F6, rather than being recorded directly through a mobile application, as pointed out by the low-priority requirement F12.\\
 
 Recording the query through a mobile device gives rise to multiple challenges, as specified in Section \ref{sec:litsurvey-cbvr-4-mobile-devices}. Indeed, some of those challenges include undesired camera movements and the targeted screen itself not taking up the entire frame, resulting in queries of poor quality. The former can be fixed by applying video stabilisation to the video (requirement F11), while the latter can be solved by selecting a ROI\footnote{Region of Interest} (requirement F7). Nonetheless, selecting an ROI can be tricky as the query needs to be recorded in ideal conditions. Four different types of query conditions are depicted in Figure \ref{fig:difference-query-video-issues}:
 \begin{itemize}
@@ -94,6 +110,22 @@ Recording the query through a mobile device gives rise to multiple challenges, a
 \end{figure}
 
 On the grounds that the system should expect the worst case query, down-scaled and skewed queries should always be considered as the norm. Ideal queries are rare as they depend on competent users. However, incomplete queries as shown in Figure \ref{fig:difference-query-video-issues}d should not be accounted for as it is near-impossible to match such a query to a database video accurately. Therefore, based on this analysis, the assumption that automatically selecting the ROI is a very complex task on its own can be made. Indeed, automatically detecting the edges of different screens to select the video being played as the ROI could grow to be even more intricate than the CBVR system itself. As a result, the ROI should be manually selected by choosing points on the query video to draw a contour around the screen. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Database Pre-Processing Phase}
+
+The database pre-processing phase's aim is to modify the database videos to improve the efficiency and speed of the compact signature generation. To achieve this, a shot boundary detection algorithm can be applied to each database video to extract a single frame per shot. This would cut down the size of a video to a tiny fraction of the original frames (ideally, one frame per shot), translating into fewer frames to be analyse when generating the average histogram. The global threshold approach, which is the simplest and most efficient one (see Section \ref{sec:litsurvey-shot-boundary-detection}, can be used to extract those frames. One of the distance metrics mentioned earlier in Section \ref{sec:design-online-retrieval-similarity-measurement} can be used to compare the histograms from consecutive frames, and detect shot boundaries when the distance is larger than the global threshold.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{General Project Design}
+
+Now that the design choices regarding the system pipeline have been made, general system choices such as the interface, the feature storage and the database videos can be inspected.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Interface}
 
@@ -112,42 +144,83 @@ The only pieces of information that need to be displayed are the following:
     \end{itemize}
 \end{itemize}
 
-Most of the information previously mentioned can be displayed directly in the console, such as the current phase progress, the distance measurements and the efficiency results. The only graphical requirements are for the manual query cropping, the histograms and the final result output. The OpenCV GUI functions can be used to display the video in a new window and to manually draw the contour of the region of interest as automatically detecting the edges of the screen in the query video would be a very complicated task on its own. Regarding the histograms and the final result, it is crucial to show visual representations of the histograms and the matched video as it was noticed that during the demonstration of progress in February, only printing the title of the matched video did not provide a sense of accomplishment. Therefore, displaying the histograms and the matched video result can be done through MatplotLib, which is a library used to display plots (histograms) and images (thumbnail of the matched video). The combination of a CLI-based application supported by a few graphical interfaces meet requirement F16, while requirement F19 will only be fulfilled if time allows it as it is a low-priority requirement.
+Most of the information previously mentioned can be displayed directly in the console, such as the current phase progress, the distance measurements and the efficiency results. The only graphical requirements are for the manual query cropping, the histograms and the final result output. The OpenCV GUI functions can be used to display the video in a new window and to manually draw the contour of the region of interest as automatically detecting the edges of the screen in the query video would be a very complicated task on its own. Regarding the histograms and the final result, it is crucial to show visual representations of the histograms and the matched video as it was noticed that during the demonstration of progress in February, only printing the title of the matched video did not provide a sense of accomplishment. Therefore, displaying the histograms and the matched video result can be done through Matplotlib, which is a library used to display plots (histograms) and images (thumbnail of the matched video). The combination of a CLI-based application supported by a few graphical interfaces meet requirement F16, while requirement F19 will only be fulfilled if time allows it as it is a low-priority requirement.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Feature Storing File Type}
 \label{sec:design-feature-storing-file-type}
 
-The features extracted during the offline feature extraction phase (see Section \ref{sec:design-offline-feature-extraction}) and used during the online retrieval phase (see Section \ref{sec:design-online-retrieval}) can either be stored in text files or binary files. Due to the small amount of spread data (three histograms for each video) and the advantages of being able to view the data being written to the text files for debugging purposes, plain text files are the chosen file types for storing the features extracted from the database videos, satisfying requirement F3. Additionally, now that Python has been chosen as the programming language, functions from the Numpy library can be used to quick I/O operations when saving the data in plain text files, fulfilling requirement F4. For a complete review of the pros and cons between text files and binary files, see Appendix \ref{ch:appendix-comparison-text-vs-binary}.\\
+The features extracted during the offline feature extraction phase (see Section \ref{sec:design-offline-feature-extraction}) and used during the online retrieval phase (see Section \ref{sec:design-online-retrieval}) can either be stored in text files or binary files. Due to the small amount of spread data (three histograms for each video) and the advantages of being able to view the data being written to the text files for debugging purposes, plain text files are the chosen file types for storing the features extracted from the database videos, satisfying requirement F3. Additionally, now that Python has been chosen as the programming language, functions from the NumPy library can be used to quick I/O operations when saving the data in plain text files, fulfilling requirement F4. For a complete review of the pros and cons between text files and binary files, see Appendix \ref{ch:appendix-comparison-text-vs-binary}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Database videos}
 
 Although the goal of the project is to work with feature-length movies, the system will mainly be tested with short videos ranging between 7 and 14 seconds (see requirement F25). Indeed, using feature-length movies is not necessary to test the different stages of the system pipeline, and would not meet requirement F24 since they are copyrighted and not re-usable. Therefore, free stock footage from \textit{Pexels Video}\footnote{Pexels Video: \url{https://www.pexels.com/videos/}} is used instead to populate the database. Feature-length movies can be used to test the database pre-processing phase rather than the entire pipeline (see requirement F27), while the short videos can be used to test the offline feature extraction and online retrieval phases.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Chosen Solution}
 
 \begin{enumerate}
+    \item \underline{\textbf{Programming Language}}: 
+    \begin{enumerate}
+        \item Python 3.7\footnote{Version 3.7 is the latest stable release of Python, satisfying NF1.}
+        \item Third-party libraries:
+        \begin{enumerate}
+            \item OpenCV
+            \item NumPy
+            \item SciPy
+            \item Matplotlib
+        \end{enumerate}
+    \end{enumerate}
+    
     \item \underline{\textbf{Offline Feature Extraction Phase}}:
     \begin{enumerate}
-        \item \textbf{Types of feature}: static colour features in form of colour histograms
-        \item \textbf{Types of Histograms}:
+        \item \textbf{Types of feature}: static colour-based features in the form of colour histograms.
+        \item \textbf{Types of Histograms Models}:
         \begin{enumerate}
-            \item Grey scale
+            \item Greyscale
             \item RGB
             \item HSV
         \end{enumerate}
-        \item \textbf{Compact Signature}: Averaged histogram
+        \item \textbf{Compact Signature / Feature Vector}: Averaged histogram (for each histogram model)
     \end{enumerate}
-    \item \underline{\textbf{Online Retrieval}}: Distance metrics between histograms.
-    \item \underline{\textbf{Query Video Pre-Processing}}: 
-    \begin{itemize}
-        \item Video stabilisation,
-        \item ROI selection: manual.
-    \end{itemize}
-    \item \underline{\textbf{Programming Language}}: Python 3.7\footnote{Version 3.7 is the latest stable release of Python, satisfying NF1.}
-    \item \underline{\textbf{Interface}}: Mainly command line for printing data, along with OpenCV GUI for the query video cropping and MatplotLib for displaying the histograms and results.
+    
+    \item \underline{\textbf{Online Retrieval}}: 
+    \begin{enumerate}
+        \item \textbf{Distance metrics}:
+            \begin{enumerate}
+                \item Correlation
+                \item Intersection
+                \item Chi-Square Distance
+                \item Hellinger Distance
+                \item Wassertein Distance
+                \item Energy Distance
+            \end{enumerate}
+        \item \textbf{Query Video Pre-Processing}:
+        \begin{enumerate}
+            \item Video stabilisation
+            \item ROI selection: manual
+        \end{enumerate}
+    \end{enumerate}
+    
+    \item \underline{\textbf{Database pre-processing}}: shot boundary detection algorithm using global threshold approach
+    
+    \item \underline{\textbf{Interface}}: Mainly command line for printing data, along with OpenCV GUI for the query video cropping and Matplotlib for displaying the histograms and results.
+    
     \item \underline{\textbf{Feature Storing File Type}}: Plain Text (``.txt'') files.
-    \item \underline{\textbf{Database Videos}}: 50 license-free short videos.
+    
+    \item \underline{\textbf{Database Videos}}: Short license-free videos ranging between 7 and 14 seconds each.
+
 \end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Summary}
 
