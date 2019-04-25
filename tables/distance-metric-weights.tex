@@ -4,18 +4,14 @@
 \begin{tabular}{|c|l|c|}
 \hline
 \textbf{Histogram Model} & \multicolumn{1}{c|}{\textbf{Distance Measurement}} & \textbf{Weight} \\ \hline
-\multirow{6}{*}{\textbf{Greyscale}} & Correlation & 1 \\ \cline{2-3} 
+\multirow{4}{*}{\textbf{Greyscale}} & Correlation & 1 \\ \cline{2-3} 
  & Intersection & 1 \\ \cline{2-3} 
  & Chi-Square & 1 \\ \cline{2-3} 
- & Alternative Chi-Square & 1 \\ \cline{2-3} 
- & Bhattacharyya & 1 \\ \cline{2-3} 
- & Kullback Leibler Divergence & 1 \\ \hline
-\multirow{6}{*}{\textbf{RGB}} & Correlation & 5 \\ \cline{2-3} 
+ & Hellinger & 1 \\ \hline
+\multirow{4}{*}{\textbf{RGB}} & Correlation & 5 \\ \cline{2-3} 
  & Intersection & 5 \\ \cline{2-3} 
  & Chi-Square & 5 \\ \cline{2-3} 
- & Alternative Chi-Square & 5 \\ \cline{2-3} 
- & Bhattacharyya & 5 \\ \cline{2-3} 
- & Kullback Leibler Divergence & 5 \\ \hline
+ & Hellinger & 5 \\ \hline
 \multirow{2}{*}{\textbf{HSV}} & Wassertein distance (Earth's Mover Distance) & 10 \\ \cline{2-3} 
  & Energy Distance & 10 \\ \hline
 \end{tabular}%

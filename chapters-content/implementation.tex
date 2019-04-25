@@ -1,5 +1,7 @@
 This chapter presents an overview of the different steps taken to fully implement a functional system by exploring the entire system pipeline. The chapter begins with the first stage of pipeline, the offline colour-based feature extraction phase, where histograms are extracted and averaged into compact signatures for each database video before being saved in files. Next, the second stage of the pipeline is covered, the online retrieval phase, explaining how the query video is matched to one of the database videos using the compact histograms previously generated. Finally, the final optional stage of the pipeline is explored, the database pre-processing phase, explaining how videos can be segmented into smaller videos. These three phases of the pipeline culminate with the flowchart diagram representing the entire system. Figures, mathematical formulas and code snippets are used to assist with examples and clearer visualisations. To round off the chapter, the code structure of the project is covered, along with a few words on testing. 
 
+% TODO: mention argument parsing somewhere
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -196,7 +198,7 @@ This section details the different steps that go towards matching a query video 
 
 The first improvement that can be made to the query is video stabilisation. Video stabilisation is implemented through the VidStab\footnote{Python Video Stabilisation: \url{https://github.com/AdamSpannbauer/python_video_stab}} third-party library, which is a quick solution to prune query videos with shaky movements. Additionally, an option to extend the query's borders to maintain the original frame size is available to prevent losing information.\\
 
-The library is implemented in a custom class, which can be found in \ref{sec:code-stabilise-query-video}. A ``yes/no'' is displayed on the console, giving a choice to stabilise the query video or not. If ``yes'' is chosen, the system first checks if a potential version of the video has already been previously stabilised and stabilises the query if it has not been stabilised already. If ``no'' is chosen, then the system again checks for potential stabilised versions to use; otherwise, it uses the original version.
+The library is implemented in a custom class, which can be found in \ref{sec:code-stabilise-query-video}. A ``yes/no'' question is displayed on the console, giving a choice to stabilise the query video or not. If ``yes'' is chosen, the system first checks if a potential version of the video has already been previously stabilised and stabilises the query if it has not been stabilised already. Similarly to the previous phase, a spinner is used to indicate that the video is being stabilised as the process takes around twenty seconds for a ten second-long video. If ``no'' is chosen, then the system again checks for potential stabilised versions to use; otherwise, it uses the original version.
 
 \subsubsection{Region of Interest Selection}
 
@@ -229,33 +231,13 @@ Once these histograms are generated, they can be compared to the histograms of e
 
 \subsubsection{Distance Measurements}
 
-At this stage of the pipeline, all of the database videos and the query video have now been analysed to create the compact signatures required to compute the similarities between the query video and the database videos. The similarity measurements are done by measuring the distance between each of database videos histograms with the query video's histograms. An extensive collection of distance metrics can be used to calculate which histograms are closest to the query video's histograms, so the most prevalent techniques are used to achieve this. Six different distance metrics are used to compare the 2D greyscale and RGB histograms, while two different metrics are used to compare the 3D HSV histograms.\\
+At this stage of the pipeline, all of the database videos and the query video have now been analysed to create the compact signatures required to compute the similarities between the query video and the database videos. The similarity measurements are done by measuring the distance between each of the database videos' histograms with the query video's histograms. Four different distance metrics are used to compare the 2D greyscale and RGB histograms, while two distance metrics are used to calculate the similarities between the 3D HSV histograms.\\
 
 The calculations between two 2D histograms are achieved through OpenCV's \textit{cv2.compareHist()} function, where the two histograms to compare are passed along with the method of choice:
 
 \mint[fontsize=\footnotesize]{python}|comparison = cv2.compareHist(query_hist, rgb_video_hist, method)|
 
-For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. The eight different methods used are detailed below, where $d(H_1, H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, $I$ the number of bins in the histograms.
-
-% \begin{minted}
-% [
-% baselinestretch=0.9,
-% bgcolor=LightGray,
-% fontsize=\footnotesize,
-% linenos,
-% breaklines,
-% ]
-% {python}
-% comparison = 0
-% for h in range(0, self.bins[0]):  # loop through hue bins
-%     for s in range(0, self.bins[1]):  # loop through saturation bins
-%         query_hist_slice = hist_recording['hsv'][h][s]
-%         dbvideo_hist_slice = hist_hsv[h][s]
-%         if method == "WASSERSTEIN DISTANCE (EMD)":
-%             comparison += scipy.stats.wasserstein_distance(hist_recording_slice, hist_hsv_slice)
-%         elif method == "ENERGY DISTANCE":
-%             comparison += scipy.stats.energy_distance(hist_recording_slice, hist_hsv_slice)
-% \end{minted}
+For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. The six different methods used are detailed below, where $d(H_1, H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, and $I$ represents the number of bins in the histograms.
 
 \begin{enumerate}
 
@@ -277,32 +259,32 @@ For the 3D HSV histograms, SciPy's statistical distances are used to calculate t
     Intersection is implemented through OpenCV's \textit{cv2.HISTCMP\_INTERSECT} attribute:
     \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_INTERSECT)|
     
-    \item \underline{Chi-square}:\\ 
+    \item \underline{Chi-Square Distance}:\\ 
     This metric uses the chi-square test $\chi^2=\frac{(a-b)^2}{a}$ in the form of a distance function described by Equation \ref{eq:chi-square}. The lower the value, the more the data from $H_1$ fits the data from $H_2$ and vice versa, the higher the value, the less the data from $H_1$ fits the data from $H_2$.
     \begin{equation}
     \label{eq:chi-square}
         d(H_1,H_2)=\sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)}
     \end{equation}
-    Therefore, the database video that will match the query the most is the one with the lowest chi-square distance. The chi-square distance is implemented in OpenCV by using \textit{cv2.HISTCMP\_CHISQR}:
+    Therefore, the database video that will match the query the most is the one with the lowest chi-square distance. The chi-square distance is implemented in the code by using OpenCV's \textit{cv2.HISTCMP\_CHISQR}:
     \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_CHISQR)|
     
-    \item \underline{Alternative Chi-Square}:\\
-    This metric uses an alternative to the first chi-square test $\chi^2=2\cdot \frac{(a-b)^2}{a+b}$ with the same properties (see Equation \ref{eq:alternative-chi-square}).
-    \begin{equation}
-    \label{eq:alternative-chi-square}
-        d(H_1,H_2)=2\cdot \sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)+H_2(I)}
-    \end{equation}
-    This alternative to the first chi-square distance is implemented in OpenCV by using \textit{cv2.HISTCMP\_CHISQR\_ALT}:
-    \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_CHISQR_ALT)|
+    % \item \underline{Alternative Chi-Square}:\\
+    % This metric uses an alternative to the first chi-square test $\chi^2=2\cdot \frac{(a-b)^2}{a+b}$ with the same properties (see Equation \ref{eq:alternative-chi-square}).
+    % \begin{equation}
+    % \label{eq:alternative-chi-square}
+    %     d(H_1,H_2)=2\cdot \sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)+H_2(I)}
+    % \end{equation}
+    % This alternative to the first chi-square distance is implemented in OpenCV by using \textit{cv2.HISTCMP\_CHISQR\_ALT}:
+    % \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_CHISQR_ALT)|
     
-    \item \underline{Hellinger} (using Bhattacharyya coefficient):\\
+    \item \underline{Hellinger Distance} (using Bhattacharyya Coefficient):\\
     The Hellinger distance is used to quantify the difference between two discrete probability distributions (see Equation \ref{eq:hellinger}). The smaller the value, the closer the two histograms are to each other.
     \begin{equation}
     \label{eq:hellinger}
-        d(H_1,H_2)=\sqrt{1-\frac{1}{\sqrt{\bar{H_1}\bar{H_2}N^2}}\sum_i\sqrt{H_1(I)\cdot H_2(I)}}
+        d(H_1,H_2)=\sqrt{1-\frac{1}{\sqrt{\bar{H_1}\bar{H_2}N^2}}\sum_I\sqrt{H_1(I)\cdot H_2(I)}}
     \end{equation}
-    where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. The Hellinger metric is implemented in the code through OpenCV's \textit{cv2.HISTCMP\_BHATTACHARYYA} (although the OpenCV method is named Bhattacharyya, it actually uses the Hellinger distance but was named Bhattacharyya by the library developers because it uses the Bhattacharyya coefficient):
-    \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_BHATTACHARYYA)|
+    where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. The Hellinger metric is implemented in the code through OpenCV's \textit{cv2.HISTCMP\_HELLINGER} (although the OpenCV method is named Bhattacharyya, it actually uses the Hellinger distance but was named Bhattacharyya by the library developers because it uses the Bhattacharyya coefficient):
+    \mint[fontsize=\footnotesize,breaklines]{python}|comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_HELLINGER)|
     
     % \item \underline{Kullback Leibler Divergence}:\\
     % The KL Divergence is normally used to calculate how much information is lost between two distributions 
@@ -310,11 +292,40 @@ For the 3D HSV histograms, SciPy's statistical distances are used to calculate t
     %     d_{KL}(H_1||H_2)=\sum_I H_1(I)\cdot log(\frac{H_1(I)}{H_2(I)})
     % \end{equation}
     
-    \item \underline{Wassertein Distance} (Earth's Mover Distance):\\
-    add equation
+    \item \underline{Earth's Mover Distance} (Wassertein Distance):\\
+    The Earth's Mover Distance, also known as Wassertein Distance, is a metric used to measure the dissimilarity between two distributions. The EMD depicted in Equation \ref{eq:emd} is calculated by measuring the least amount of moves required to transform one histogram into the other. Therefore, the smaller the EMD is, the more similar two histograms are to one another.
+    \begin{equation}
+    \label{eq:emd}
+        EMD(H_1,H_2)=\sum_I |EMD_I(H_1,H_2)|
+    \end{equation}
+    where:
+        \begin{itemize}
+            \item $EMD_0 = 0$
+            \item $EMD_{I+1}(H_1,H_2) = H_1(I)+EMD_I-H_2(I)$
+        \end{itemize}
+    The EMD between two histograms is implemented by looping through each slice of the 3D HSV histogram and using SciPy's \textit{scipy.stats.wasserstein\_distance()} function on each slice:
     
+\begin{minted}[baselinestretch=0.9,bgcolor=LightGray,fontsize=\footnotesize,linenos,breaklines]{python}
+comparison = 0
+for h in range(0, self.bins[0]):  # loop through hue bins
+    for s in range(0, self.bins[1]):  # loop through saturation bins
+        comparison += wasserstein_distance(query_histogram['hsv'][h][s], dbvideo_hsv_histogram[h][s])
+\end{minted}
+        
     \item \underline{Energy Distance}:\\
-    add equation
+    The Energy Distance is a metric used the cumulative distribution functions of two distributions to measure the distance between two histograms (see Equation \ref{eq:energy-distance}). The smaller the distance is, the closer the two histograms are, with $d(H_1,H_2)=0$ being identical histograms.
+    \begin{equation}
+    \label{eq:energy-distance}
+        d(H_1,H_2) = \sqrt{2\mathbf{E}|X-Y|-\mathbf{E}|X-X'|-\mathbf{E}|Y-Y'|)}
+    \end{equation}
+    where: $X$ and $X'$ are independent random variables with the probability distribution $H_1$ and $Y$ and $Y'$ are independent random variables with the probability distribution $H_2$.  The Energy Distance between two histograms is implemented by looping through each slice of the 3D HSV histogram and using SciPy's \textit{scipy.stats.energy\_distance()} function on each slice:
+    
+\begin{minted}[baselinestretch=0.9,bgcolor=LightGray,fontsize=\footnotesize,linenos,breaklines]{python}
+comparison = 0
+for h in range(0, self.bins[0]):  # loop through hue bins
+    for s in range(0, self.bins[1]):  # loop through saturation bins
+        comparison += energy_distance(query_histogram['hsv'][h][s], dbvideo_hsv_histogram[h][s])
+\end{minted}
     
 \end{enumerate}
 
@@ -338,16 +349,6 @@ This dictionary is used at the end of the pipeline to determine which video was 
 \end{figure}
 
 Once this figure with the final results is displayed, the program exits, marking the end of the pipeline. The online retrieval phase can be repeated any number of times using different query recordings of one of the database videos, without the need to run the offline colour-based extraction phase again.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsubsection{Result Display}
-
-\begin{itemize}
-    \item Matplotlib histogram plotting (with an option to show each generated histogram or to hide them)
-    \item spinners to show calculations are being done when training the system or stabilising videos 
-    \item argument parsing
-\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
