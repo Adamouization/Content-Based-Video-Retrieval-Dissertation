@@ -49,7 +49,106 @@ Applies a shot boundary detection algorithm to a video for segmentation.
 \clearpage
 \section{Histograms Module}
 
-todo
+describe module
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{High Level Module Overview}
+\label{sec:code-high-level-module-overview}
+
+A high-level overview of the module's classes and functions.
+
+\lstinputlisting{code-listings/histogram/histogram_module_high_level.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Single Greyscale Histogram Generation}
+\label{sec:code-single_grey_histogram_generation}
+
+describe
+
+\lstinputlisting{code-listings/histogram/single_grey_histogram_generation.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Single RGB Histogram Generation}
+\label{sec:code-single_rgb_histogram_generation}
+
+describe
+
+\lstinputlisting{code-listings/histogram/single_rgb_histogram_generation.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Single HSV Histogram Generation}
+\label{sec:code-average_and}
+
+describe
+
+\lstinputlisting{code-listings/histogram/single_hsv_histogram_generation.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Average \& Store Greyscale Histogram}
+\label{sec:code-generate_and_store_average_grey_histogram}
+
+describe
+
+\lstinputlisting{code-listings/histogram/generate_and_store_average_grey_histogram.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Average \& Store RGB Histogram}
+\label{sec:code-generate_and_store_average_rgb_histogram}
+
+describe
+
+\lstinputlisting{code-listings/histogram/generate_and_store_average_rgb_histogram.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Average \& Store HSV Histogram}
+\label{sec:code-generate_and_store_average_hsv_histogram}
+
+describe
+
+\lstinputlisting{code-listings/histogram/generate_and_store_average_hsv_histogram.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Matching 2D Histograms}
+\label{sec:code-match_2D_histograms}
+
+describe
+
+\lstinputlisting{code-listings/histogram/match_2D_histograms.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Matching 3D Histograms}
+\label{sec:code-match_3D_histograms}
+
+describe
+
+\lstinputlisting{code-listings/histogram/match_3D_histograms.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Shot Boundary Algorithm}
+\label{sec:code-shot_boundary_detection}
+
+describe
+
+\lstinputlisting{code-listings/histogram/shot_boundary_detection.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Frames Pre-Selection Function}
+\label{sec:code-get_frames_to_process}
+
+Returns the IDs of the frames to calculate a histogram for (1 frame per second).
+
+\lstinputlisting{code-listings/histogram/get_frames_to_process.py}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VIDEO OPERATIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,31 +184,13 @@ Class for selecting a region of interest on a frame by click and dropping the mo
 \clearpage
 \section{Helpers Module}
 
-\section{Generate And Store Greyscale Histogram}
-\label{sec:code-generate-and-store-greyscale-histogram}
-
-\lstinputlisting[caption=Test]{code-listings/generate_and_store_greyscale_histogram.py}
+describe module
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Generate Single Histogram}
-\label{sec:code-generate-single-histogram}
+% \section{Generate Single Histogram}
+% \label{sec:code-generate-single-histogram}
 
-\lstinputlisting[caption=Function generating histograms for the pre-selected frames and adding them to lists before averaging them to create a video's compact signature.]{code-listings/generate_single_histogram.py}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Get Frames To Process}
-\label{sec:code-listings-get-frames-to-process}
-
-\lstinputlisting[caption=Function used to process one frame every second.]{code-listings/get_frames_to_process.py}
-
+% \lstinputlisting[caption=Function generating histograms for the pre-selected frames and adding them to lists before averaging them to create a video's compact signature.]{code-listings/generate_single_histogram.py}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Normalise Histograms}
-
-\lstinputlisting[caption=Normalise histograms using OpenCV's \textit{normalize} function.]{code-listings/normalise_histogram.py}
-
-
-
