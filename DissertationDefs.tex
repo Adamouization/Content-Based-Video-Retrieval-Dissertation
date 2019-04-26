@@ -3,8 +3,7 @@
 \usepackage{graphicx}   	% Permits import of various graphics formats
 \usepackage{multicol}   	% Provides ability to split output into columns
 \usepackage{listings}   	% Provides styled code listings
-\usepackage{minted}         % Minted theme for code listings
-\usepackage{xcolor}         % Set background colours for code listings
+\usepackage{color}          % Set background colours for code listings
 \usepackage{float}      	% Suppresses floating for tables and figures when using "H"
 \usepackage{etoolbox}   	% enable bibliography to be added to the table of contents
 \usepackage{comment}    	% enable block of comments
@@ -31,8 +30,44 @@
 %% Break long urls with the following characters
 \def\UrlBreaks{\do\/\do-\do.\do0}
 
-%% Light grey background colour for code listings
-\definecolor{LightGray}{gray}{0.9}
+%% New colours defined for the code listings (https://latexcolor.com/)
+\definecolor{backcolour}{gray}{0.9}
+\definecolor{palatinateblue}{rgb}{0.15, 0.23, 0.89}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{dartmouthgreen}{rgb}{0.05, 0.5, 0.06}
+\definecolor{davysgrey}{rgb}{0.33, 0.33, 0.33}
+\definecolor{cornellred}{rgb}{0.7, 0.11, 0.11}
+\definecolor{deepmagenta}{rgb}{0.8, 0.0, 0.8}
+
+%% Custom listing style for Python code
+\lstloadlanguages{Python}
+\lstdefinestyle{myPythonStyle}{
+  language=Python,
+  backgroundcolor=\color{backcolour},   
+  commentstyle=\color{airforceblue},
+  basicstyle=\footnotesize,
+  keywordstyle=[1]\color{dartmouthgreen}\bfseries,  % Python keywords in bold and blue
+  keywordstyle=[2]\color{deepmagenta},              % Python functions in magenta
+  keywordstyle=[3]\color{blue}\bfseries\underbar,   % User functions bold/underlined and blue
+  morekeywords=[1]{self},
+  morekeywords=[2]{},
+  morekeywords=[3]{generate_and_store_average_greyscale_histogram},
+  numberstyle=\tiny\color{davysgrey},
+  stringstyle=\color{cornellred}\bfseries,
+  showspaces=false,   
+  showstringspaces=false,
+  showtabs=true,
+  numbers=left,  
+  captionpos=b,  
+  frame=single,
+  breakatwhitespace=true,         
+  breaklines=true,                 
+  keepspaces=true,                 
+  numbersep=5pt,                  
+  tabsize=4,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+\lstset{style=myPythonStyle}
 
 %% Definitions to provide layout in the dissertation title pages
 \newenvironment{spaced}[1]

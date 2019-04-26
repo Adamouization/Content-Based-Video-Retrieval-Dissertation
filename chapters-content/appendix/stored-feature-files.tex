@@ -1,5 +1,6 @@
 Examples of the different compact features stored in text file using the butterfly video as an example. These correspond to averaged histograms in greyscale, RGB and HSV colour models.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Greyscale Histogram Features}
 \label{sec:appendix-txt-greyscale}
@@ -8,15 +9,7 @@ The averaged greyscale histogram only has one channel, represented by 255 values
 
 File: \underline{\textit{butterfly.mp4/hist-gray}}
 
-\begin{minted}
-[
-baselinestretch=0.9,
-bgcolor=LightGray,
-fontsize=\footnotesize,
-linenos,
-breaklines
-]
-{text}
+\begin{lstlisting}
 # Greyscale Histogram (255 bins) [normalised]
 0.000677
 0.000453
@@ -35,8 +28,9 @@ breaklines
 0.000087
 0.000080
 0.000128
-\end{minted}
+\end{lstlisting}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{RGB Histogram Features (Red channel only)}
 \label{sec:appendix-txt-rgb}
@@ -45,15 +39,7 @@ The averaged RGB histogram has three channels, each represented by 255 values fo
 
 File: \underline{\textit{butterfly.mp4/hist-r}}
 
-\begin{minted}
-[
-baselinestretch=0.9,
-bgcolor=LightGray,
-fontsize=\footnotesize,
-linenos,
-breaklines
-]
-{text}
+\begin{lstlisting}
 # 'R' channel of RGB histogram (255 bins) [normalised]
 0.001610
 0.000436
@@ -72,8 +58,9 @@ breaklines
 0.003141
 0.003351
 0.003299
-\end{minted}
+\end{lstlisting}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{HSV Histogram Features}
 \label{sec:appendix-txt-hsv}
@@ -82,15 +69,7 @@ The averaged HSV histogram has 8 total slices for the 8 different hue bins. Each
 
 File: \underline{\textit{butterfly.mp4/hist-hsv}}
 
-\begin{minted}
-[
-baselinestretch=0.9,
-bgcolor=LightGray,
-fontsize=\footnotesize,
-linenos,
-breaklines
-]
-{text}
+\begin{lstlisting}
 # HSV Histogram shape: (8, 12, 3) [normalised]
 # New slice
 1.690998567606915226e-03 9.581707232758741389e-04 1.511106754399158718e-03
@@ -133,4 +112,4 @@ breaklines
 7.060457216787406187e-04 7.275994308160575492e-05 1.679020986722951645e-03
 2.139106257924471488e-04 7.810963734300457872e-05 1.976605589416894021e-04
 2.936312653632326707e-04 3.317900460718771412e-05 1.067189321640233325e-05
-\end{minted}
+\end{lstlisting}
