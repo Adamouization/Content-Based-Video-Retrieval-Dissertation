@@ -249,6 +249,7 @@ def generate_video_rgb_histogram(self, is_query=False, cur_ref_points=None):
 Once these histograms are generated, they can be compared to the histograms of each database videos.
 
 \subsubsection{Distance Measurements}
+\label{sec:implementation-distance-measurements}
 
 At this stage of the pipeline, all of the database videos and the query video have now been analysed to create the compact signatures required to compute the similarities between the query video and the database videos. The similarity measurements are done by measuring the distance between each of the database videos' histograms with the query video's histograms. Four different distance metrics are used to compare the 2D greyscale and RGB histograms, while two distance metrics are used to calculate the similarities between the 3D HSV histograms.\\
 
@@ -280,9 +281,9 @@ comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_
         d(H_1,H_2)=\sum_Imin(H_1(I),H_2(I))
     \end{equation}
     Intersection is implemented through OpenCV's \textit{cv2.HISTCMP\_INTERSECT} attribute:
-    \begin{lstlisting}
-    comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_INTERSECT)
-    \end{lstlisting}
+\begin{lstlisting}
+comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_INTERSECT)
+\end{lstlisting}
 
     \item \underline{Chi-Square Distance}:\\ 
     This metric uses the chi-square test $\chi^2=\frac{(a-b)^2}{a}$ in the form of a distance function described by Equation \ref{eq:chi-square}. The lower the value, the more the data from $H_1$ fits the data from $H_2$ and vice versa, the higher the value, the less the data from $H_1$ fits the data from $H_2$.
@@ -310,17 +311,11 @@ comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_
     \label{eq:hellinger}
         d(H_1,H_2)=\sqrt{1-\frac{1}{\sqrt{\bar{H_1}\bar{H_2}N^2}}\sum_I\sqrt{H_1(I)\cdot H_2(I)}}
     \end{equation}
-    where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. The Hellinger metric is implemented in the code through OpenCV's \textit{cv2.HISTCMP\_HELLINGER} (although the OpenCV method is named Bhattacharyya, it actually uses the Hellinger distance but was named Bhattacharyya by the library developers because it uses the Bhattacharyya coefficient):
+    where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. The Hellinger metric is implemented in the code through OpenCV's \textit{cv2.HISTCMP\_HELLINGER}:
 \begin{lstlisting}
 comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_HELLINGER)
 \end{lstlisting}
 
-    % \item \underline{Kullback Leibler Divergence}:\\
-    % The KL Divergence is normally used to calculate how much information is lost between two distributions 
-    % \begin{equation}
-    %     d_{KL}(H_1||H_2)=\sum_I H_1(I)\cdot log(\frac{H_1(I)}{H_2(I)})
-    % \end{equation}
-    
     \item \underline{Earth's Mover Distance} (Wassertein Distance):\\
     The Earth's Mover Distance, also known as Wassertein Distance, is a metric used to measure the dissimilarity between two distributions. The EMD depicted in Equation \ref{eq:emd} is calculated by measuring the least amount of moves required to transform one histogram into the other. Therefore, the smaller the EMD is, the more similar two histograms are to one another.
     \begin{equation}
@@ -332,7 +327,7 @@ comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_
             \item $EMD_0 = 0$
             \item $EMD_{I+1}(H_1,H_2) = H_1(I)+EMD_I-H_2(I)$
         \end{itemize}
-    The EMD between two histograms is implemented by looping through each slice of the 3D HSV histogram and using SciPy's \textit{scipy.stats.wasserstein\_distance()} function on each slice:
+    The EMD between two histograms is implemented by looping through each slice of the 3D HSV histogram and using SciPy's \textit{scipy.stats.wasserstein\_distance()} function on each slice (the Wassertein Distance is referred to as Earth's Mover Distance in Computer Science, the SciPy method named Wassertein Distance is a synonym for EMD):
 \begin{lstlisting}[caption=Python example]
 comparison = 0
 for h in range(0, self.bins[0]):  # loop through hue bins
@@ -384,31 +379,74 @@ Once this figure with the final results is displayed, the program exits, marking
 \section{Database Pre-Processing}
 \label{sec:database-pre-processing}
 
-This section details the steps that go towards processing the database of videos with a shot boundary detection algorithm in order to segment a long video, e.g. feature-length movies.\\
-
-The RGB histograms of two consecutive frames are generated and compared using the Kullback Leibler Divergence metric for each colour channel in the histogram (see Equation \ref{eq:shot-boundary-detection}). If the sum of the three distances is greater than a global pre-defined threshold, then the two consecutive frames are different enough to be interpreted as a shot change, and the frame index is added to a list of detected shot boundaries. A global threshold of 10 is used to detect shot boundaries, which was determined by running the code multiple times to determine a value that detects most transitions. This is implemented in the code using the same techniques mentioned in the previous techniques, employing the \textit{cv2.calcHist()} function to generate the histograms for the three colour channels and \textit{cv2.compareHist()} to compare the RGB histograms. 
-
-\begin{equation}
-\label{eq:shot-boundary-detection}
-\begin{aligned}
-    detection \quad if \sum_{h}^{(r,g,b)}d(H_1,H_2) & > 10 \\
-    \sum_{h}^{(r,g,b)} (\sum_I H_{1,h}(I)\cdot log(\frac{H_{1,h}(I)}{H_{2,h}(I)}) & > 10
-\end{aligned}
-\end{equation}
-
-Once the video has been processed, all of the frames with a KL divergence superior to the threshold are marked as shot boundaries. The KL divergence between the consecutive frames from a test video with a hard cut transition \textit{(A)}, a dissolve transition \textit{(B)} and a fade to black transition \textit{(C-E)}, portrayed in Figure \ref{fig:shot_boundary_detection_frames}, are plotted using Matplotlib, with the results depicted in Figure \ref{fig:shot_boundary_detection_example}.\\
+This section details the steps that go towards processing the database of videos with a shot boundary detection algorithm in order to segment a video. This is a necessary step when dealing with long videos e.g. feature-length movies, but not in this case as the database videos are all between 7 to 14 seconds long. A short video 12 seconds long video made up of four shots is used for this phase of the system, which contains three different types of transitions between each shot, as depicted in Figure \ref{fig:shot_boundary_detection_frames}:
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/shot_boundary_detection_frames.png}}
 \caption{\label{fig:shot_boundary_detection_frames}Video frames used for the shot boundary detection algorithm.}
 \end{figure}
 
+\begin{itemize}
+    \item Quick cut between the butterfly video and the traffic video,
+    \item Dissolve cut between the traffic video and the autumn video,
+    \item Fade to black cut between the autumn video and the jellyfish video.
+\end{itemize}
+
+The shot boundary detection algorithm is implemented using similar techniques described in the two previous phases. RGB histograms are generated for consecutive frames before being compared using distance metrics. The first metric used is the Kullback-Leibler Divergence, followed by the Intersection metric.
+
+\subsubsection{Kullback-Leibler Divergence}
+
+The Kullback-Leibler Divergence is normally used to calculate how much information is lost between two distributions, based on Equation \ref{eq:kl-divergence}, but it can nevertheless be used to detect when two consecutive histograms are too distant from one another.
+\begin{equation}
+\label{eq:kl-divergence}
+    d_{KL}(H_1||H_2)=\sum_I H_1(I)\cdot log(\frac{H_1(I)}{H_2(I)})
+\end{equation}
+Therefore, the RGB histograms of two consecutive frames are generated and compared using the KL Divergence metric for each colour channel in the histogram, which is adapted to the shot boundary detection algorithm in Equation \ref{eq:shot-boundary-detection-kldivergence}. 
+\begin{equation}
+\label{eq:shot-boundary-detection-kldivergence}
+\begin{aligned}
+    detection \quad if & \sum_{h}^{(r,g,b)}d_{KL}(H_1||H_2) > t \\
+    & \sum_{h}^{(r,g,b)} (\sum_I H_{1,h}(I)\cdot log(\frac{H_{1,h}(I)}{H_{2,h}(I)})) > t
+\end{aligned}
+\end{equation}
+where $t$ is the threshold. If the sum of the three distances is greater the global pre-defined threshold $t=10$, then the two consecutive frames are different enough to be interpreted as a shot change, and the frame index is added to a list of detected shot boundaries. The global threshold of 10 was determined by running the code multiple times to determine a value that detects most of transitions mentioned earlier. This is implemented in the code using the same techniques mentioned in the previous techniques, employing the \textit{cv2.calcHist()} function to generate the histograms for the three colour channels and \textit{cv2.compareHist()} to compare the RGB histograms:
+
+\begin{lstlisting}
+comparison_r = cv2.compareHist(prev_rgb_hist['r'][0], cur_rgb_hist['r'][0], cv2.HISTCMP_KL_DIV)
+comparison_g = cv2.compareHist(prev_rgb_hist['g'][0], cur_rgb_hist['g'][0], cv2.HISTCMP_KL_DIV)
+comparison_b = cv2.compareHist(prev_rgb_hist['b'][0], cur_rgb_hist['b'][0], cv2.HISTCMP_KL_DIV)
+comparison = (comparison_b + comparison_g + comparison_r) / 3
+\end{lstlisting}
+
+Once the video has been processed, all of the frames with a KL divergence superior to the threshold are marked as shot boundaries. The KL divergence between the consecutive frames from the test video are plotted using Matplotlib, with the results depicted in Figure \ref{fig:shot_boundary_detection_example}.
+
 \begin{figure}[h] 
 \centerline{\includegraphics[width=0.70\textwidth]{figures/implementation/shot_boundary_detection_example.png}}
-\caption{\label{fig:shot_boundary_detection_example}Example of the shot boundary detection algorithm on the test video from Figure \ref{fig:shot_boundary_detection_frames} using the Kullback Leibler Divergence to compare the RGB histograms between consecutive frames.}
+\caption{\label{fig:shot_boundary_detection_example}Example of the shot boundary detection algorithm on the test video from Figure    \ref{fig:shot_boundary_detection_frames} using the Kullback-Leibler Divergence to compare the RGB histograms between consecutive frames.}
 \end{figure}
 
-Using a global threshold approach to process consecutive frames detects hard cuts \textit{(A)} and fading to black cuts \textit{(C \& E)}, but does not detect a dissolve cut \textit{(B)} and detects the black frames in a fading to black transition as shot \textit{(D)}. However, this is a satisfying method to use for long videos as the goal is to extract a fraction of the frames rather than generate an exhaustive list of all the shots and scenes in a video. As mentioned earlier in Section \ref{sec:implementation-greyscale-histogram}, this algorithm is not included in the actual pipeline as short videos made of single shots and ranging from 7 to 14 seconds are used. However, it is used when testing with longer videos comprised of multiple shots.
+This global threshold approach using KL Divergence to process consecutive frames detects hard cuts \textit{(A)} and fading to black cuts \textit{(C \& E)}, but does not detect a dissolve cut \textit{(B)}. It also detects the black frames in a fading to black transition as a new shot \textit{(D)}.
+
+\subsubsection{Intersection}
+
+The Intersection metric previously explained in Section \ref{sec:implementation-distance-measurements} with Equation \ref{eq:intersection} is also used to calculate the similarities between two consecutive frames in a video, as shown in Equation \ref{eq:shot-boundary-detection-intersection}:
+\begin{equation}
+\label{eq:shot-boundary-detection-intersection}
+\begin{aligned}
+    detection \quad if & \sum_{h}^{(r,g,b)}d(H_1,H_2) < t \\
+    & \sum_{h}^{(r,g,b)} (\sum_Imin(H_{1,h}(I),H_{2,h}(I))) < t
+\end{aligned}
+\end{equation}
+where $t$ is the threshold. In this case, if the sum of the three distances is smaller than then global threshold $t=7$, then the two consecutive frames are not similar enough to be considered as the same shot, and the frame index is also added to a list of detected shot boundaries. Similarly to the previous technique, the global threshold of 7 was determined by running the code multiple times to find a value than could detect most transitions. \textit{cv2.calcHist()} and \textit{cv2.compareHist()} are once again used to generate and compare the RGB histograms. Once the video has been processed, all the frames with an intersection value smaller than the threshold are marked as shot boundaries, with the results depicted in Figure \ref{fig:shot_boundary_detection_intersection}.\\
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=0.70\textwidth]{figures/implementation/shot_boundary_detection_intersection.png}}
+\caption{\label{fig:shot_boundary_detection_intersection}Example of the shot boundary detection algorithm on the test video from Figure \ref{fig:shot_boundary_detection_frames} using the Intersection metric to compare the RGB histograms between consecutive frames.}
+\end{figure}
+
+This global threshold approach using the Intersection metric to process consecutive frames detects all the transitions in the test video, including the hard cuts \textit{(A)}, the dissolving cut \textit{(B)} and the fading to black cuts \textit{(C \& E)}. However, it also detects the black frames in a fading to black transition as a new shot \textit{(D)}.\\
+
+Despite not being 100\% accurate, with the dissolve cut \textit{(B)} not being detected and the black frames being detected as a new shot, the shot boundary detection algorithm this is a satisfying method irregardless of the metric being used (KL Divergence and Intersection both worked well with the test video).It is especially efficient when using for long videos as the goal is to extract a fraction of the frames rather than generate an exhaustive list of all the shots and scenes in a video. As mentioned earlier in Section \ref{sec:implementation-greyscale-histogram}, this algorithm is not included in the actual pipeline as short videos made of single shots and ranging from 7 to 14 seconds are used. However, it is used when testing with longer videos comprised of multiple shots.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
