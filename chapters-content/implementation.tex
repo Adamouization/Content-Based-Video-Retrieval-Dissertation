@@ -9,7 +9,7 @@ This chapter presents an overview of the different steps taken to fully implemen
 \section{Offline Colour-Based Feature Extraction}
 \label{sec:implementation-offline-colour-based-feature-extraction}
 
-This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual example of inner pipeline of this phase with RGB histograms only. This phase is repeated for greyscale and HSV histograms as well).\\
+This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the compact signature used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual example of inner pipeline of this phase with RGB histograms only. This phase is repeated for greyscale and HSV histograms as well). The function controlling the execution process of this phase can be found in Appendix \ref{sec:code-off_line_colour_based_feature_extraction_phase}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=1.2\textwidth,center]{figures/implementation/rgb_average_histogram_pipeline.png}}
@@ -31,7 +31,7 @@ As described in Section \ref{sec:color-based-features}, a histogram represents t
 
 The first type of histogram that is generated is the greyscale histogram, also known as an intensity-based histogram. This type of histogram is used with frames that are first converted to a black \& white colour space (see Figure \ref{fig:rgb_to_greyscale}), and thus has a single channel rather than the three traditional RGB channels found in colour images. The conversion is done using OpenCV's \textit{cv2.cvtColor()} function along with the \textit{cv2.COLOR\_BGR2GRAY} attribute: 
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 \end{lstlisting}
 
@@ -48,7 +48,7 @@ Because the video frames are 8-bit images, the spectrum of the potential pixel v
 
 The implementation of the greyscale histogram generation in the system is carried out through OpenCV's \textit{calcHist()} method, with the result portrayed in Figure \ref{fig:implementation-greyscale_not_normalised}. The grey frame is passed to the function, along with the number of channels to use, which is a single one in this case ($[0]$), an empty mask $None$ since the histogram is being calculated for the full frame, the number of bins $[256]$, and the range of values $[0, 256]$:
 
-\begin{lstlisting}[caption=Python example]
+\begin{lstlisting}[numbers=none]
 histogram = cv2.calcHist([grey_frame], [0], None, [256], [0,256])
 \end{lstlisting}
 
@@ -83,7 +83,7 @@ In contrast to the greyscale histograms, frames do not need to be converted to a
 
 To implement RGB histograms in the system, OpenCV's \textit{calcHist()} is once again used. In an identical manner to the greyscale histogram, the frame is passed to the function along with the colour channel \textit{[i]}, which are all placed inside a for-loop to generate a histogram for the three colour channels:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 histogram = cv2.calcHist([frame], [i], None, [256], [0, 256])
 \end{lstlisting}
 
@@ -102,7 +102,7 @@ Now that RGB histograms have been generated for each of the pre-selected frames 
 
 With the greyscale and RGB histograms now formed, the HSV histograms can finally be generated. HSV histograms make use of the HSV colour space, requiring the video frames to be converted from the original RGB colour space to the HSV colour space (see Figure \ref{fig:rgb_to_hsv}). The conversion is done using OpenCV's \textit{cv2.cvtColor()} function along with the \textit{cv2.COLOR\_BGR2HSV} attribute:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 \end{lstlisting}
 
@@ -127,7 +127,7 @@ The number of pixels in this bin will be $N(1,11,2)$ (0-based indexes).\\
 
 Implementing the calculation of an HSV histogram in the system is again achieved through the use of OpenCV's \textit{calcHist()} function, with the result shown in Figure \ref{fig:implementation-hsv_not_normalised}. Similar arguments are passed such as the frame and an empty mask, but the arguments controlling the size of the histogram are different. In the code snippet below, \textit{[0, 1, 2]} indicates that the histogram has three channels (H, S and V), \textit{(8, 12, 3)} specifies the number of bins for each channel, and \textit{[0, 180, 0, 256, 0, 256]} marks the ranges of these bins:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 histogram = cv2.calcHist([hsv_frame], [0, 1, 2], None, (8, 12, 3), [0, 180, 0, 256, 0, 256])
 \end{lstlisting}
 
@@ -155,7 +155,7 @@ The averaged value is then stored into the corresponding $i_{th}$ bin of the new
 
 Once all the bins have been averaged and added to the new histogram, that averaged histogram is normalised to obtain scale invariance between the histograms of the different videos. Instead of representing the number of pixels that fall into a bin, a normalised histogram represents a relative percentage count of the number of pixels in each bin, as depicted in Figure \ref{fig:implementation-normalise-histogram}. This is a necessary step in cases where the video frames have different sizes (the larger frames to have more pixels than the smaller frames) as the histograms can be more accurately compared when they represent a relative percentage rather than an integer count. The normalisation is achieved through OpenCV's \textit{cv2.normalize()} function:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 histogram = cv2.normalize(histogram, histogram)
 \end{lstlisting}
 
@@ -166,7 +166,7 @@ histogram = cv2.normalize(histogram, histogram)
 
 Finally, the averaged and normalised histogram values are stored in a plain text file as float values to maintain the precision, which is implemented using NumPy's \textit{np.savetxt()} function:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 np.savetxt("../histogram_data/{}/hist-{}".format(self.file_name, "gray"), avg_histogram, fmt='%f'))
 \end{lstlisting}
 
@@ -203,7 +203,7 @@ With the colour-based features now saved in text files, they can be used multipl
 
 \section{Online Retrieval}
 
-This section details the different steps that go towards matching a query video to one of the database videos using the colour-based features extracted in Section \ref{sec:implementation-offline-colour-based-feature-extraction}. The first step consists in processing the recorded query video to get rid of undesired artefacts such as poor framing (e.g. camera not properly positioned) and unwanted camera movements (e.g. shaky camera). Once the query is finished being processed, the same colour-based features previously extracted for all the database videos in the form of greyscale, RGB and HSV histograms are used to compute the similarities between the query video and each database video by measuring the distance between the histograms. The video with the highest score will be the match found by the system, which can be displayed to the screen to show the final result.
+This section details the different steps that go towards matching a query video to one of the database videos using the colour-based features extracted in Section \ref{sec:implementation-offline-colour-based-feature-extraction}. The first step consists in processing the recorded query video to get rid of undesired artefacts such as poor framing (e.g. camera not properly positioned) and unwanted camera movements (e.g. shaky camera). Once the query is finished being processed, the same colour-based features previously extracted for all the database videos in the form of greyscale, RGB and HSV histograms are used to compute the similarities between the query video and each database video by measuring the distance between the histograms. The video with the highest score will be the match found by the system, which can be displayed to the screen to show the final result. The function controlling the execution process of this phase can be found in Appendix \ref{sec:code-on_line_retrieval_phase}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -213,7 +213,7 @@ This section details the different steps that go towards matching a query video 
 
 The first improvement that can be made to the query is video stabilisation. Video stabilisation is implemented through the VidStab\footnote{Python Video Stabilisation: \url{https://github.com/AdamSpannbauer/python_video_stab}} third-party library, which is a quick solution to prune query videos with shaky movements. Additionally, an option to extend the query's borders to maintain the original frame size is available to prevent losing information.\\
 
-The library is implemented in a custom class, which can be found in \ref{sec:code-stabilise-query-video}. A ``yes/no'' question is displayed on the console, giving a choice to stabilise the query video or not. If ``yes'' is chosen, the system first checks if a potential version of the video has already been previously stabilised and stabilises the query if it has not been stabilised already. Similarly to the previous phase, a spinner is used to indicate that the video is being stabilised as the process takes around twenty seconds for a ten second-long video. If ``no'' is chosen, then the system again checks for potential stabilised versions to use; otherwise, it uses the original version.
+The library is implemented in a custom class, which can be found in \ref{sec:code-VideoStabiliser}. A ``yes/no'' question is displayed on the console, giving a choice to stabilise the query video or not. If ``yes'' is chosen, the system first checks if a potential version of the video has already been previously stabilised and stabilises the query if it has not been stabilised already. Similarly to the previous phase, a spinner is used to indicate that the video is being stabilised as the process takes around twenty seconds for a ten second-long video. If ``no'' is chosen, then the system again checks for potential stabilised versions to use; otherwise, it uses the original version.
 
 \subsubsection{Region of Interest Selection}
 
@@ -221,11 +221,11 @@ The second improvement that can be carried out to the query is selecting a Regio
 
 ROI selection is achieved through OpenCV's GUI functionality, which is employed through multiple functions such as a function to display images using \textit{cv2.imshow()}, draw on them using \textit{cv2.rectangle()}, and record mouse events by writing a callback function named \textit{click\_and\_crop()}:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 cv2.setMouseCallback("Select ROI", self.click_and_crop)
 \end{lstlisting}
 
-These three functionalities are combined in the system to display the first frame of the query video and allow a manual selection of two points on the frame. The first point is selected when the left mouse button is pressed using \textit{cv2.EVENT\_LBUTTONDOWN}, and the second point is selected when the button is unpressed using \textit{cv2.EVENT\_LBUTTONUP}. With these two points, a rectangle can be drawn on the frame to indicate the area that was selected. If the rectangle is correctly drawn, the \textit{`C'} key can be pressed to perform the cropping action; otherwise the \textit{`R'} key can be pressed to erase the rectangle and attempt to re-draw it until a satisfactory ROI is selected. The point coordinates are then used to ignore all the pixels outside the drawn rectangle when generating the compact histogram signatures of the query video, as sketched in Figure \ref{fig:implementation-roi_selection}. The full implementation of the code can be found in Appendix \ref{sec:code-roi-selection}.\\
+These three functionalities are combined in the system to display the first frame of the query video and allow a manual selection of two points on the frame. The first point is selected when the left mouse button is pressed using \textit{cv2.EVENT\_LBUTTONDOWN}, and the second point is selected when the button is unpressed using \textit{cv2.EVENT\_LBUTTONUP}. With these two points, a rectangle can be drawn on the frame to indicate the area that was selected. If the rectangle is correctly drawn, the \textit{`C'} key can be pressed to perform the cropping action; otherwise the \textit{`R'} key can be pressed to erase the rectangle and attempt to re-draw it until a satisfactory ROI is selected. The point coordinates are then used to ignore all the pixels outside the drawn rectangle when generating the compact histogram signatures of the query video, as sketched in Figure \ref{fig:implementation-roi_selection}. The full implementation of the code can be found in Appendix \ref{sec:code-ClickAndDrop}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/roi_selection.png}}
@@ -242,7 +242,7 @@ Once the video query has been processed for stability and ROI selection, the sam
 
 In order to compare the query video to all the database videos, the same colour-based features described in Section \ref{sec:implementation-offline-colour-based-feature-extraction} need to be extracted first. A compact signature is generated for the query video in the form of an averaged greyscale histogram, an averaged RGB histogram and an averaged HSV histogram. The identical functions written for the offline colour-based feature extraction phase are re-used to generate the query video's histograms. This is achieved through a function parameter named \textit{is\_query}, which is a boolean that enters more sections of the function when it is true, such as selecting an ROI:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 def generate_video_rgb_histogram(self, is_query=False, cur_ref_points=None):
 \end{lstlisting}
 
@@ -255,7 +255,7 @@ At this stage of the pipeline, all of the database videos and the query video ha
 
 The calculations between two 2D histograms are achieved through OpenCV's \textit{cv2.compareHist()} function, where the two histograms to compare are passed along with the method of choice:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 comparison = cv2.compareHist(query_hist, rgb_video_hist, method)
 \end{lstlisting}
 
@@ -270,7 +270,7 @@ For the 3D HSV histograms, SciPy's statistical distances are used to calculate t
         d(H_1,H_2)=\frac{\sum _I(H_1(I)-\bar{H_1})(H_2(I)-\bar{H_2})}{\sqrt{\sum _I(H_1(I)-\bar{H_1})^2(H_2(I)-\bar{H_2})^2}}
     \end{equation}
     where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. This metric is available through OpenCV's \textit{cv2.HISTCMP\_CORREL} attribute:
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_CORREL)
 \end{lstlisting}
 
@@ -281,7 +281,7 @@ comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_
         d(H_1,H_2)=\sum_Imin(H_1(I),H_2(I))
     \end{equation}
     Intersection is implemented through OpenCV's \textit{cv2.HISTCMP\_INTERSECT} attribute:
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_INTERSECT)
 \end{lstlisting}
 
@@ -292,7 +292,7 @@ comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_
         d(H_1,H_2)=\sum_I\frac{(H_1(I)-H_2(I))^2}{H_1(I)}
     \end{equation}
     Therefore, the database video that will match the query the most is the one with the lowest chi-square distance. The chi-square distance is implemented in the code by using OpenCV's \textit{cv2.HISTCMP\_CHISQR}:
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_CHISQR)
 \end{lstlisting}
 
@@ -312,7 +312,7 @@ comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_
         d(H_1,H_2)=\sqrt{1-\frac{1}{\sqrt{\bar{H_1}\bar{H_2}N^2}}\sum_I\sqrt{H_1(I)\cdot H_2(I)}}
     \end{equation}
     where $\bar{H_k}=\frac{1}{N}\sum_JH_k(J)$ and $N$ is equal to the total number of bins in the histogram. The Hellinger metric is implemented in the code through OpenCV's \textit{cv2.HISTCMP\_HELLINGER}:
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_HELLINGER)
 \end{lstlisting}
 
@@ -328,7 +328,7 @@ comparison = cv2.compareHist(query_hist['grey'], dbvideo_hist_grey, cv2.HISTCMP_
             \item $EMD_{I+1}(H_1,H_2) = H_1(I)+EMD_I-H_2(I)$
         \end{itemize}
     The EMD between two histograms is implemented by looping through each slice of the 3D HSV histogram and using SciPy's \textit{scipy.stats.wasserstein\_distance()} function on each slice (the Wassertein Distance is referred to as Earth's Mover Distance in Computer Science, the SciPy method named Wassertein Distance is a synonym for EMD):
-\begin{lstlisting}[caption=Python example]
+\begin{lstlisting}[numbers=none]
 comparison = 0
 for h in range(0, self.bins[0]):  # loop through hue bins
     for s in range(0, self.bins[1]):  # loop through saturation bins
@@ -342,7 +342,7 @@ for h in range(0, self.bins[0]):  # loop through hue bins
         d(H_1,H_2) = \sqrt{2\mathbf{E}|X-Y|-\mathbf{E}|X-X'|-\mathbf{E}|Y-Y'|)}
     \end{equation}
     where: $X$ and $X'$ are independent random variables with the probability distribution $H_1$ and $Y$ and $Y'$ are independent random variables with the probability distribution $H_2$.  The Energy Distance between two histograms is implemented by looping through each slice of the 3D HSV histogram and using SciPy's \textit{scipy.stats.energy\_distance()} function on each slice:
-\begin{lstlisting}[caption=Python example]
+\begin{lstlisting}[numbers=none]
 comparison = 0
 for h in range(0, self.bins[0]):  # loop through hue bins
     for s in range(0, self.bins[1]):  # loop through saturation bins
@@ -379,7 +379,7 @@ Once this figure with the final results is displayed, the program exits, marking
 \section{Database Pre-Processing}
 \label{sec:database-pre-processing}
 
-This section details the steps that go towards processing the database of videos with a shot boundary detection algorithm in order to segment a video. This is a necessary step when dealing with long videos e.g. feature-length movies, but not in this case as the database videos are all between 7 to 14 seconds long. A short video 12 seconds long video made up of four shots is used for this phase of the system, which contains three different types of transitions between each shot, as depicted in Figure \ref{fig:shot_boundary_detection_frames}:
+This section details the steps that go towards processing the database of videos with a shot boundary detection algorithm in order to segment a video. The function controlling the execution process of this phase can be found in Appendix \ref{sec:code-database_preprocessing_phase}. This is a necessary step when dealing with long videos e.g. feature-length movies, but not in this case as the database videos are all between 7 to 14 seconds long. A short video 12 seconds long video made up of four shots is used for this phase of the system, which contains three different types of transitions between each shot, as depicted in Figure \ref{fig:shot_boundary_detection_frames}:
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/shot_boundary_detection_frames.png}}
@@ -411,7 +411,7 @@ Therefore, the RGB histograms of two consecutive frames are generated and compar
 \end{equation}
 where $t$ is the threshold. If the sum of the three distances is greater the global pre-defined threshold $t=10$, then the two consecutive frames are different enough to be interpreted as a shot change, and the frame index is added to a list of detected shot boundaries. The global threshold of 10 was determined by running the code multiple times to determine a value that detects most of transitions mentioned earlier. This is implemented in the code using the same techniques mentioned in the previous techniques, employing the \textit{cv2.calcHist()} function to generate the histograms for the three colour channels and \textit{cv2.compareHist()} to compare the RGB histograms:
 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 comparison_r = cv2.compareHist(prev_rgb_hist['r'][0], cur_rgb_hist['r'][0], cv2.HISTCMP_KL_DIV)
 comparison_g = cv2.compareHist(prev_rgb_hist['g'][0], cur_rgb_hist['g'][0], cv2.HISTCMP_KL_DIV)
 comparison_b = cv2.compareHist(prev_rgb_hist['b'][0], cur_rgb_hist['b'][0], cv2.HISTCMP_KL_DIV)

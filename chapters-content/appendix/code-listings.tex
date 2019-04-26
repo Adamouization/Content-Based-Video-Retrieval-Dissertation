@@ -1,3 +1,90 @@
+This appendix includes the main code sections of the system in a lightweight form, with omitted comments and condensed formats. The code is organised by module.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MAIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Main Module}
+
+The \textit{main.py} module contains the program entry point that parses the command line argument in order to decide which phase to execute. Contains the three functions to begin each phase, include the off-line colour-based feature extraction, the on-line retrieval and database pre-processing phases.
+
+\subsection{Argument Parsing}
+\label{sec:code-listings-argument-parsing}
+
+The program entry point. Parses command line input to decide which phase of the system to run.
+
+\lstinputlisting{code-listings/main/argument_parsing.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Initial Off-line Colour-based Feature Extraction Phase Function}
+\label{sec:code-off_line_colour_based_feature_extraction_phase}
+
+Generates and stores averaged greyscale, RGB and HSV histograms for all the videos in the directory-based database.
+
+\lstinputlisting{code-listings/main/off_line_colour_based_feature_extraction_phase.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Initial On-line Retrieval Phase Function}
+\label{sec:code-on_line_retrieval_phase}
+
+Prompts the user to stabilise and crop the query video before generating the same averaged greyscale, RGB and HSV histograms to compare with the database videos' previously stored histograms using distance metrics.
+
+\lstinputlisting{code-listings/main/on_line_retrieval_phase.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Initial Database Pre-Processing Phase}
+\label{sec:code-database_preprocessing_phase}
+
+Applies a shot boundary detection algorithm to a video for segmentation.
+
+\lstinputlisting{code-listings/main/database_preprocessing_phase.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HISTOGRAMS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\section{Histograms Module}
+
+todo
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VIDEO OPERATIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\section{Video Operations Module}
+
+The \textit{video\_operations.py} module contains the code used to perform operations on the query video. It takes care of the pre-processing steps, including video stabilisation and manual ROI selection. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{VideoStabiliser Class}
+\label{sec:code-VideoStabiliser}
+
+Class used to stabilise the recorded video for more optimal matching.
+
+\lstinputlisting{code-listings/video_operations/VideoStabiliser.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{ClickAndDrop Class for Manual ROI Selection}
+\label{sec:code-ClickAndDrop}
+
+Class for selecting a region of interest on a frame by click and dropping the mouse over the desired area, and cropping that frame to include the pixels inside the ROI only.
+
+\lstinputlisting{code-listings/video_operations/ClickAndDrop.py}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HELPERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\section{Helpers Module}
+
 \section{Generate And Store Greyscale Histogram}
 \label{sec:code-generate-and-store-greyscale-histogram}
 
@@ -24,16 +111,5 @@
 
 \lstinputlisting[caption=Normalise histograms using OpenCV's \textit{normalize} function.]{code-listings/normalise_histogram.py}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Stabilise Query Video}
-\label{sec:code-stabilise-query-video}
 
-\lstinputlisting[caption=Stabilise query video.]{code-listings/video_stabiliser.py}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{ROI Selection}
-\label{sec:code-roi-selection}
-
-\lstinputlisting[caption=Manually select ROI.]{code-listings/roi_selection.py}
