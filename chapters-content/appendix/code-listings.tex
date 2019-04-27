@@ -49,7 +49,7 @@ Applies a shot boundary detection algorithm to a video for segmentation.
 \clearpage
 \section{Histograms Module}
 
-describe module
+The \textit{histogram.py} module contains the HistogramGenerator class with functions to generate, average, store and compare greyscale, RGB and HSV histograms.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -65,7 +65,7 @@ A high-level overview of the module's classes and functions.
 \subsection{Single Greyscale Histogram Generation}
 \label{sec:code-single_grey_histogram_generation}
 
-describe
+Generates multiple greyscale histograms (one every second) for a video.
 
 \lstinputlisting{code-listings/histogram/single_grey_histogram_generation.py}
 
@@ -74,7 +74,7 @@ describe
 \subsection{Single RGB Histogram Generation}
 \label{sec:code-single_rgb_histogram_generation}
 
-describe
+Generates multiple RGB histograms (one every second) for a video.
 
 \lstinputlisting{code-listings/histogram/single_rgb_histogram_generation.py}
 
@@ -83,7 +83,7 @@ describe
 \subsection{Single HSV Histogram Generation}
 \label{sec:code-average_and}
 
-describe
+Generates multiple HSV histograms (one every second) for a video.
 
 \lstinputlisting{code-listings/histogram/single_hsv_histogram_generation.py}
 
@@ -92,7 +92,7 @@ describe
 \subsection{Average \& Store Greyscale Histogram}
 \label{sec:code-generate_and_store_average_grey_histogram}
 
-describe
+Generates a single greyscale histogram by averaging all histograms of a video before normalising it and saving the results to a plain text file.
 
 \lstinputlisting{code-listings/histogram/generate_and_store_average_grey_histogram.py}
 
@@ -101,7 +101,7 @@ describe
 \subsection{Average \& Store RGB Histogram}
 \label{sec:code-generate_and_store_average_rgb_histogram}
 
-describe
+Generates a single RGB histogram by averaging all histograms of a video before normalising it and saving the results to a plain text file.
 
 \lstinputlisting{code-listings/histogram/generate_and_store_average_rgb_histogram.py}
 
@@ -110,7 +110,7 @@ describe
 \subsection{Average \& Store HSV Histogram}
 \label{sec:code-generate_and_store_average_hsv_histogram}
 
-describe
+Generates a single HSV histogram by averaging all histograms of a video before normalising it and saving the results to a plain text file.
 
 \lstinputlisting{code-listings/histogram/generate_and_store_average_hsv_histogram.py}
 
@@ -137,7 +137,7 @@ describe
 \subsection{Shot Boundary Algorithm}
 \label{sec:code-shot_boundary_detection}
 
-describe
+Compares consecutive frames' RGB histograms using the Intersection metric with a global threshold approach. If the metric is smaller than the specified threshold, then a shot boundary has been detected.
 
 \lstinputlisting{code-listings/histogram/shot_boundary_detection.py}
 
