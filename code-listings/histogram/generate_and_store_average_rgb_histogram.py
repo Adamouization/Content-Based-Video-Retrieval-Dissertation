@@ -15,7 +15,7 @@ def generate_and_store_average_rgb_histogram(self):
         # write to file
         if not os.path.exists("../histogram_data/{}/".format(self.file_name)):
             os.makedirs("../histogram_data/{}/".format(self.file_name))
-        with open("../histogram_data/{}/hist-{}".format(self.file_name, col), 'w') as file:
+        with open("../histogram_data/{}/hist-{}.txt".format(self.file_name, col), 'w') as file:
             file.write("# '{}' channel of RGB histogram ({} bins) [normalised]\n".format(
                 col.upper(),
                 avg_histogram.shape[0]

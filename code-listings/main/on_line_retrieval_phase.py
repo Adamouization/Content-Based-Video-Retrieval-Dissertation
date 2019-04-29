@@ -14,7 +14,8 @@ def on_line_retrieval_phase():
     histogram_generator_rgb.generate_video_rgb_histogram( is_query=True, cur_ref_points=cur_reference_points)
     histogram_generator_hsv = HistogramGenerator(directory, file)
     histogram_generator_hsv.generate_video_hsv_histogram( is_query=True, cur_ref_points=cur_reference_points)
-    histogram_generator_gray.match_histograms(cur_all_model='gray')
+    
+    histogram_generator_gray.match_histograms( cur_all_model='gray')
     histogram_generator_rgb.match_histograms(cur_all_model='rgb')
     histogram_generator_hsv.match_histograms(cur_all_model='hsv')
 
