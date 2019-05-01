@@ -36,21 +36,21 @@ The system is first tested with down-scaled queries recorded at a straight angle
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/evaluation/downscaled-queries.png}}
-\caption{\label{fig:evaluation-downscaled-queries}Down-scaled Queries.}
+\caption{\label{fig:evaluation-downscaled-queries}Examples of results using down-scaled queries (recorded at a distance).}
 \end{figure}
 
 Next, skewed queries recorded at an angle from the screen playing the database video are tested. These tested queries also include all of the challenges mentioned in the first test, such as down-scaling (recording at a distance) and unstable footage. Despite the increased challenge presented by the skewed query, the accuracy of the matches still exceed 50\% and reach as high as 75\% despite poor quality queries. Figure \ref{fig:evaluation-skewed-queries} portrays examples of skewed queries. The first query filmed from the left side of the screen is identified as the correct match with 56.82\% accuracy, while the second query filmed from the right wide of the screen is identified as the correct match with 75\% accuracy. Observing at the left-hand side histograms in Figure \ref{fig:evaluation-skewed-queries}, it can be noticed that skewed queries cause the system to produce more potential video matches. Indeed, the first query produces six potential videos matches, which are quite different from the mainly-green \textit{``butterfly''} query, e.g. the main colours in the \textit{``autumn''} and \textit{``dunes''} are not green. This contrasts with the non-skewed queries that produce less potential matches. Nevertheless, the probability of the closest match remains greater than the probability of the second closest match despite the skewed query. % recording3 and recording8
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/evaluation/skewed-queries.png}}
-\caption{\label{fig:evaluation-skewed-queries}Skewed Queries.}
+\caption{\label{fig:evaluation-skewed-queries}Examples of results using skewed queries (recorded at an angle).}
 \end{figure}
 
 Although, the results demonstrated in the first two tests using down-scaled and skewed queries portrayed positive results with more than 50\% true positives, some queries result in a poorer accuracy, reaching a minimum of 45.5\% for a correct match, as shown in Figure \ref{fig:evaluation-poor-accuracy-query}. This low accuracy is partly caused by a combination of factors that are further explored in the next paragraph. % recording5
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/evaluation/poor-accuracy-query.png}}
-\caption{\label{fig:evaluation-poor-accuracy-query}Poor accuracy Query.}
+\caption{\label{fig:evaluation-poor-accuracy-query}Examples of results with poor accuracy.}
 \end{figure}
 
 %%%%%%%%%%%%%%%
@@ -60,20 +60,20 @@ Although, the results demonstrated in the first two tests using down-scaled and 
 
 External factors directly affecting the quality of the query can drastically influence the accuracy of the system, and even produce wrong matches. These factors are causes by the conditions of the environment rather than by the actual recording's quality.\\
 
-The first noticeable environmental factor that causes the system to produce low-accuracy results and possibly wrong matches is the lighting in the room. While testing the system with different queries, the system had trouble coping with queries recorded at night-time in low luminosity environments. Indeed, during the filming of the queries at night-time, the lamps in the room produced warm white light with colour temperatures ranging between 2000K and 3000K\footnote{What is colour temperature? \url{http://www.westinghouselighting.com/color-temperature.aspx}}, which corresponds to orange/yellow light. These caused an alteration of the overall colour of the recorded screen, leading to the histograms to shift towards yellow/orange colours. This shift provoked the query's average histograms to be very disparate from the original database video's histograms, ultimately causing the system to generate the wrong input. Two cases of the consequences of this type of environment are illustrated in Figure \ref{fig:evaluation-yellow-light-queries}. % recording4 and mismatch1
+The first noticeable environmental factor that causes the system to produce low-accuracy results and possibly wrong matches is the lighting in the room. While testing the system with different queries, the system had trouble coping with queries recorded at night-time in low luminosity environments. Indeed, during the filming of the queries at night-time, the lamps in the room produced warm white light with colour temperatures ranging between 2000K and 3000K\footnote{What is colour temperature? \url{http://www.westinghouselighting.com/color-temperature.aspx}}, which corresponds to orange/yellow light. These caused an alteration of the overall colour of the recorded screen, leading to the histograms to shift towards yellow/orange colours. This shift provoked the query's average histograms to be very disparate from the original database video's histograms, ultimately causing the system to generate the wrong input. Two cases of the consequences of this type of environment are illustrated in Figure \ref{fig:evaluation-yellow-light-queries}.\\ % recording4 and mismatch1
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/evaluation/yellow-light-queries.png}}
-\caption{\label{fig:evaluation-yellow-light-queries}Yellow light Queries.}
+\caption{\label{fig:evaluation-yellow-light-queries}Examples of results using queries recorded in a low-light environment.}
 \end{figure}
 
 The query from the first case (top of Figure \ref{fig:evaluation-yellow-light-queries}) is matched to the correct database video, but with a very low accuracy of 45.45\%. Furthermore, the system found five other potential matches, most with shades of yellow/orange colours (e.g. \textit{``dunes''}, \textit{``bird-walking''} and \textit{``offroad-car''}). The second query used from Figure \ref{fig:evaluation-yellow-light-queries} does not even find the correct match, pairing the \textit{``butterfly''} query to the \textit{``bird-walking''} video. The system does not even list the correct video as a potential match and moreover places the closest and second closest matches near each other (within 5\%). After watching the second query of the butterfly in more detail, it can be noticed that the dark environment is source to another factor. Due to the poorly lighted room, the luminosity of the screen stands out more, which can in turn shift the intensity of the pixels in the histogram towards the right (toward a value of 255). This contributes to the poor accuracy of the system in such conditions.\\
 
-The second noticeable external factor is the presence of light reflections on the screen displaying the database videos. This factor, which is already probed in Section \ref{sec:design-query-video-processing} Figure \ref{fig:difference-query-video-issues}, depends on the positioning of the light source and the camera recording the query. Based on these, light glares might appear on the screen, greatly affecting the accuracy of the system as new colours appear on the screen, causing the histograms' pixel intensities to converge towards that new colour. Two cases reproducing the consequences of the light glares on the screen are represented in Figure \ref{fig:evaluation-light-reflection-queries}. % recording7 and mismatch2
+The second noticeable external factor is the presence of light reflections on the screen displaying the database videos. This factor, which is already probed in Section \ref{sec:design-query-video-processing} Figure \ref{fig:difference-query-video-issues}, depends on the positioning of the light source and the camera recording the query. Based on these, light glares might appear on the screen, greatly affecting the accuracy of the system as new colours appear on the screen, causing the histograms' pixel intensities to converge towards that new colour. Two cases reproducing the consequences of the light glares on the screen are represented in Figure \ref{fig:evaluation-light-reflection-queries}.\\ % recording7 and mismatch2
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/evaluation/light-reflection-queries.png}}
-\caption{\label{fig:evaluation-light-reflection-queries}Light Reflection Queries.}
+\caption{\label{fig:evaluation-light-reflection-queries}Examples of results using queries recorded with light reflections on the screen.}
 \end{figure}
 
 The first query of \textit{``people-dancing''} is correctly matched to its database video regardless of the light glare on the right-hand side of the screen (highlighted in red), but again with a low accuracy of 45.45\%. The system detects potential matches in videos that are quite distant to the query video, such as \textit{``airplane-window''} or \textit{``flower''} which both have shades of blue similar to the glare. The second query of \textit{``spaghetti''} is matched to the wrong video, and is not even listed as a potential match despite its unique combination of yellow and pink colours because of the larger light glare in the bottom right of the screen (highlighted in red).\\
@@ -101,7 +101,7 @@ The runtime of each of the ten query videos used to test the system in the previ
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/evaluation/runtime_plot.png}}
-\caption{\label{fig:evaluation-runtime_plot}Runtime plot.}
+\caption{\label{fig:evaluation-runtime_plot}Graph depicting the runtime for each query used to test the system, along with the resolution of each query.}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
