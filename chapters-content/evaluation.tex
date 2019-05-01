@@ -76,7 +76,7 @@ The second noticeable external factor is the presence of light reflections on th
 \caption{\label{fig:evaluation-light-reflection-queries}Light Reflection Queries.}
 \end{figure}
 
-The first query of \textit{``people-dancing''} is correctly matched to its database video regardless of the light glare on the right-hand side of the screen (highlighted in red), but again with a low accuracy of 45,45\%. The system detects potential matches in videos that are quite distant to the query video, such as \textit{``airplane-window''} or \textit{``flower''} which both have shades of blue similar to the glare. The second query of \textit{``spaghetti''} is matched to the wrong video, and is not even listed as a potential match despite its unique combination of yellow and pink colours because of the larger light glare in the bottom right of the screen (highlighted in red).\\
+The first query of \textit{``people-dancing''} is correctly matched to its database video regardless of the light glare on the right-hand side of the screen (highlighted in red), but again with a low accuracy of 45.45\%. The system detects potential matches in videos that are quite distant to the query video, such as \textit{``airplane-window''} or \textit{``flower''} which both have shades of blue similar to the glare. The second query of \textit{``spaghetti''} is matched to the wrong video, and is not even listed as a potential match despite its unique combination of yellow and pink colours because of the larger light glare in the bottom right of the screen (highlighted in red).\\
 
 This section depicted the worst case performances of the system under difficult conditions, all caused by different lighting factors such as the colour of the light or the reflection of light on the screen playing the database videos. The next section critiques the combination of histogram models and distance metrics in more detail.
 
@@ -127,19 +127,16 @@ These results clearly betray the demand of processing large databases of videos.
 
 \section{Database Pre-Processing Test: Movie Segmentation}
 
-The shot boundary detection algorithm is used on a feature-length movie. The movie used for the test is Inception\footnote{Inception IMDb page: \url{https://www.imdb.com/title/tt1375666/}}. The movie is composed of 213098 frames.
-
-The shot boundary detection algorithm is used once with the KL Divergence and once with the Intersection metric..
-
-\begin{itemize}
-    \item KL Divergence: a global threshold of 10 using the KL Divergence detects 661 shot boundaries (0,31\%) in 149.7 minutes.
-    \item Intersection: A global threshold of 7 using the Intersection metric detects 1730 shot boundaries (0.81\%).
-\end{itemize}
+The initial motivation behind the project being to create a CBVR system for feature-length movies, the phase dedicated to pre-process the database of movies is tested with a feature-length movie to observe how it can be segmented using the implemented shot boundary detection. The movie used for the test is Inception\footnote{Inception IMDb page: \url{https://www.imdb.com/title/tt1375666/}}, a 2h28 movie composed of 213098 frames in total. The shot boundary detection algorithm is tested once with the KL Divergence and once with the Intersection metric, as depicted in Figure \ref{fig:evaluation-inception_shot_boundary_detection_test}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=1.15\textwidth]{figures/evaluation/inception_shot_boundary_detection_test.png}}
 \caption{\label{fig:evaluation-inception_shot_boundary_detection_test}Result of the shot boundary detection algorithm on the Inception movie using the KL Divergence (left) and Intersection metric (right) between consecutive frames' RGB histograms.}
 \end{figure}
+
+The first test uses the KL Divergence to detect the difference between consecutive frames while employing a global threshold $t=10$, which detects a total of 661 different shot boundaries throughout the entire film in 2h29. Alternatively, the second test uses the Intersection metric while employing a global threshold $t=7$, which detects a total of 1730 shot boundaries 2h41. Although the difference between the two results seems considerable as the Intersection metric detects almost three times more shot boundaries than the KL Divergence, the difference between the two is actually quite small when considering the bigger picture. Indeed, the 661 shot boundaries represent only 0.31\% of the movie, while the 1730 shot boundaries represent 0.81\% of the movie. When considering that the goal of the database pre-processing is to segment the database videos in order to have less frames to process in the offline feature extraction phase, then cutting down the number of frames to process to less than 1\% is a satisfactory result that will greatly improve the results when working with long videos.\\
+
+% In terms of runtime, the KL Divergence shot boundary detection took 2h29 to complete, while the intersection shot boundary detection test took 2h41 to complete. With the movie lasting 2h28, it takes slightly longer than the movie itself to process it for shot boundary detection. Therefore, treating a large database  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -147,15 +144,16 @@ The shot boundary detection algorithm is used once with the KL Divergence and on
 
 \section{Comparison With Ground Truth Experiment}
 
-online classification experiment:
-    \begin{itemize}
-        \item Google Survey experiment results 
-        \item Compare experiment results with the algorithm results
-        \item use a plot to visualise experiment results
-        \item link to appendix (Ethics Checklist Appendix \ref{ch:appendix-ethics-checklist}, Experiment Script Appendix \ref{ch:appendix-experiment-survey}, and Raw Results)
-    \end{itemize}
-    
-mention ground truth (https://en.wikipedia.org/wiki/Ground\_truth) (https://www.techopedia.com/definition/32514/ground-truth)
+An experiment with 20 participants was conducted to establish ground truth video matching. The experiment was conducted online through the use of Google Forms\footnote{Google Forms: \url{https://www.google.com/forms/about/}}. During the experiment, the users were first presented six different database videos to simulate the offline colour-based feature extraction phase. Next, they were shown one query video and asked to match the six videos they watched from most likely to least likely to match the query video in order to simulate the online retrieval phase. The results of the online experiment along with the results of the system are plotted in Figure \ref{fig:evaluation-ground_truth_vs_system_results}.
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=\textwidth]{figures/evaluation/ground_truth_vs_system_results.png}}
+\caption{\label{fig:evaluation-ground_truth_vs_system_results}Comparison of the online experiment results and the system's results.}
+\end{figure}
+
+todo: compare the two
+
+Supporting documents covering the online experiment can be found in the appendix, including the Ethics Checklist in Appendix \ref{ch:appendix-ethics-checklist}, the Experiment Survey in Appendix \ref{ch:appendix-experiment-survey} and the experiments results in Appendix \ref{ch:appendix-survey-results}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
