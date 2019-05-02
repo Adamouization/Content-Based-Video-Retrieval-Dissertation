@@ -84,14 +84,22 @@ This section depicted the worst case performances of the system under difficult 
 
 \subsection{Histogram Models and Distance Metrics Analysis}
 
+Reflecting on the results laid out in the previous section, a few analytical words can be shared regarding the combination of the histogram models and the distance metrics used to compute the results.\\
+
+First, regarding the histogram models, the HSV histogram model was by far the most performant, followed by the RGB histogram model in some cases and the least performant greyscale histogram model. 
+
+\begin{comment}
 analyse results of RGB, grey scale and HSV histograms with the 6 different histogram matching methods. which work best? in which scenarios? (use the 10 previous results to show this)
+
+EMD and energy dist always find correct asnswer (explains the 45.45\% as lowest accurcy)
 
 removing KL divergence metric greatly improved accuracy. (using less metric to use the ones for the job). KL divergence NEVER found correct match, not meant to be used a distance metric (show example of removing KL div and alternate chi square with past examples and new one)
 
 improved cloudy-sky,
 improved butterfly skewed
 
-histograms allow for any video quality as long as it is acceptable (quicker processingm same results)
+greyscale almost never finds a correct matc. Out of the 4 measurements, the maximum it finds is 2
+\end{comment}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
