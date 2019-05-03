@@ -86,7 +86,9 @@ This section depicted the worst case performances of the system under difficult 
 
 Reflecting on the results laid out in the previous section, a few analytical words can be shared regarding the combination of the histogram models and the distance metrics used to compute the results.\\
 
-First, regarding the histogram models, the HSV histogram model was by far the most performant, followed by the RGB histogram model in some cases and the least performant greyscale histogram model. 
+First, regarding the histogram models, the HSV histogram model was by far the most performant one, followed by the RGB histogram model in some cases and the least performant greyscale histogram model. 
+
+Regarding the distance metrics used to calculate the difference between the query's histograms and the database videos' histograms, some performed better than others
 
 \begin{comment}
 analyse results of RGB, grey scale and HSV histograms with the 6 different histogram matching methods. which work best? in which scenarios? (use the 10 previous results to show this)
@@ -134,6 +136,7 @@ These results clearly betray the demand of processing large databases of videos.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Database Pre-Processing Test: Movie Segmentation}
+\label{sec:evaluation-movie-segmentation-test}
 
 The initial motivation behind the project being to create a CBVR system for feature-length movies, the phase dedicated to pre-process the database of movies is tested with a feature-length movie to observe how it can be segmented using the implemented shot boundary detection. The movie used for the test is Inception\footnote{Inception IMDb page: \url{https://www.imdb.com/title/tt1375666/}}, a 2h28 movie composed of 213098 frames in total. The shot boundary detection algorithm is tested once with the KL Divergence and once with the Intersection metric, as depicted in Figure \ref{fig:evaluation-inception_shot_boundary_detection_test}.\\
 
