@@ -1,24 +1,26 @@
 %% Package to includes to provide additional functionality to the dissertation document
-\usepackage{harvard}    	% Uses harvard style referencing
-\usepackage{graphicx}   	% Permits import of various graphics formats
-\usepackage{multicol}   	% Provides ability to split output into columns
-\usepackage{listings}   	% Provides styled code listings
-\usepackage{color}          % Set background colours for code listings
-\usepackage{float}      	% Suppresses floating for tables and figures when using "H"
-\usepackage{etoolbox}   	% enable bibliography to be added to the table of contents
-\usepackage{comment}    	% enable block of comments
-\usepackage{enumitem}       % resume enumerations
-\usepackage{amsmath}        % align equations
-\usepackage{breakurl}       % used to break long url links
-\usepackage{pdfpages}       % include pdfs in the document (used for console output)
-\usepackage{multirow}       % cell merging in tables
-\usepackage{longtable}      % span tables through multiple pages. Note: It may be necessary to compile the document several times to get a multi-page table to line up properly
-\usepackage[export]{adjustbox}      % allows figures to be positioned (left-center-right)
+\usepackage{harvard}        	% Uses harvard style referencing
+\usepackage{graphicx}       	% Permits import of various graphics formats
+\usepackage{multicol}   	    % Provides ability to split output into columns
+\usepackage{listings}       	% Provides styled code listings
+\usepackage{color}              % Set background colours for code listings
+\usepackage{float}      	    % Suppresses floating for tables and figures when using "H"
+\usepackage{etoolbox}   	    % enable bibliography to be added to the table of contents
+\usepackage{comment}    	    % enable block of comments
+\usepackage{enumitem}           % resume enumerations
+\usepackage{amsmath}            % align equations
+\usepackage{breakurl}           % used to break long url links
+\usepackage{pdfpages}           % include pdfs in the document (used for console output)
+\usepackage{multirow}           % cell merging in tables
+\usepackage{longtable}          % span tables through multiple pages. Note: It may be necessary to compile the document several times to get a multi-page table to line up properly
+\usepackage[export]{adjustbox}  % allows figures to be positioned (left-center-right)
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[inner=4cm,outer=4cm]{geometry}  % Set some page size changes from the standard article class
 \usepackage[breaklinks]{hyperref}   % Provides hyperlinks to sections automatically
 
+%% Offset the thermal binding on odd pages
+% \geometry{bindingoffset=1cm}    
 
 %% Format definitions for the style
 \bibliographystyle{agsm} %{alpha}
