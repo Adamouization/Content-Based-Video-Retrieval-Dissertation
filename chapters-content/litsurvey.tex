@@ -169,7 +169,9 @@ Texture-based features are often used in parallel with colour-based features. Th
 
 \subsubsection{Shape-based Features}
 
-Shape-based features are used to describe the overall shape of objects present in the image. The most common approach consists in computing an EHD\footnote{Edge Histogram Descriptor}, which consists in detecting the edges present in the image (see Section edges) and then plot their spatial distribution in a histogram by counting the number of pixels for each edge \cite{hauptmann2004informedia}. The same image segmentation technique can be used to localise the EHD. These shape-based features have many applications but are harder to extract and require more computing power than colour-based features and texture-based features.
+Shape-based features are used to describe the overall shape of objects present in the image. The most common approach consists in computing an Edge Histogram Descriptor, which consists in detecting the edges present in the image using edge detectors and then plot their spatial distribution in a histogram by counting the number of pixels for each edge \cite{hauptmann2004informedia}. Edges can be detected by applying Sobel operators through convolution, which are filters that detect horizontal and vertical edges, or by using more advanced algorithms such as the Canny edge detector.\\ 
+
+These shape-based features have many desired properties, such as identifiability, translation/rotation/scale invariance and noise resistance, but are thus harder to extract and require more computing power than colour-based features and texture-based features \cite{park2011shapefeatures}.
 
 % ----------------------------------------------------
 
