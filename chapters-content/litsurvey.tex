@@ -154,11 +154,18 @@ Typically, for an RGB colour histogram, 256 bins are used to accurately represen
 
 One of the inaccuracies with colour histograms lies within the scope of the distribution. If the histogram represents the global distribution of all the pixels in the still, then two images might have very similar histograms \cite{petkovic2000}. For example, a histogram containing 60\% white pixels and 40\% blue pixels could either describe both a blue sky with white clouds or a snowy landscape with a blue sky. Despite both histograms being good colour-based features, the actual result is still poor when it will be used for matching the histograms. A solution consists in segmenting the still into multiple local images, and extract the local colour-based features for each segment. For example, the still could be partitioned into a 5x5 grid, and a colour histogram could then be computed for each grid \cite{yan2007review}. This would enable colour-based features to represent specific regions of the still rather than globally describing an image. However, the same problem mentioned earlier could occur if the still is segmented into too many regions, causing the overall histogram to be coarse.\\
 
-Other types of colour-based features can be extracted from images and videos such as colour moments, colour correlograms \cite{huang1997correlograms} and Gaussian models. However, colour-based features have their limitations as they cannot describe textures and shapes, rendering them inefficient in certain applications \cite{hu2011survey}.
+Other types of colour-based features can be extracted from images and videos such as colour moments and colour correlograms \cite{huang1997correlograms}. However, colour-based features have their limitations as they cannot describe textures and shapes, thus rendering them inefficient in certain applications \cite{hu2011survey}.
 
 \subsubsection{Texture-based Features}
 
-Texture-based features are often used in parallel with colour-based features. The aforesaid problem where two different objects might share a similar histogram can be solved by using texture-based features to differentiate them e.g. green tree leaves and green grass. These can be discerned by using a variety of features such as Tamura features, which extract information including coarseness, contrast, and directionality of the objects \cite{amir2003ibm}. 
+Texture-based features are another type of static features, often used to detect patterns in images. Textures in images correspond to similar patterns over an area. Based on this definition, an image can be considered as a mosaic of textures. Therefore, texture features aim to outline the areas of an image with similar patterns, which can be used to query a database and retrieve content with similar patterns \cite{manjunath1996texture}. An example of image areas with similar patterns that could eventually be extracted as texture-based features can be found in Figure \ref{fig:litsurvey-texture-feature-example}.
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/texture-feature-example.jpg}}
+\caption{\label{fig:litsurvey-texture-feature-example}Examples of potential areas with similar patterns that could be extracted as texture features.}
+\end{figure}
+
+Texture-based features are often used in parallel with colour-based features. The aforesaid problem from Section \ref{sec:color-based-features} where two different objects might share a similar histogram can be solved by using texture-based features to differentiate them, e.g. green tree leaves and green grass. These can be discerned by using a variety of features such as Tamura features, which extract information including coarseness, contrast, directionality, linelikeness, regularity and roughness of the objects \cite{amir2003ibm} or Gabor filters, which filter the frequency content in specific directions to detect similar patterns in localised regions \cite{manjunath1996texture}. 
 
 \subsubsection{Shape-based Features}
 
