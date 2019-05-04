@@ -87,24 +87,14 @@ This section depicted the worst case performances of the system under difficult 
 
 Reflecting on the results laid out in the previous section, a few analytical words can be shared regarding the combination of the histogram models and the distance metrics used to compute the results.\\
 
-First, regarding the histogram models, the HSV histogram model was by far the most performant one, followed by the RGB histogram model in some cases and the least performant greyscale histogram model. 
+First, regarding the histogram models, the HSV histogram model was by far the most performant one, followed by the RGB histogram model in some cases and the least performant greyscale histogram model. For every single correct result depicted in the previous chapter, the HSV histogram models coupled with the Earth Mover's Distance and the Energy Distance always found the correct match\footnote{Excluding the two mismatches caused by yellow light and light reflections on the screen.}. The main cause of false positives originates from the greyscale and RGB histograms often mismatching the query video. This explains the reason why 45.45\% is the minimum accuracy in the results, as the combined weight of the two HSV models is worth 20 according to Table \ref{tab:distance-metric-weights}. With 44 different weights assigned across the models and distance metrics, $20/44=0.4545$, which corresponds to the minimum. If only the HSV were to be used, then results with 45.45\% accuracy would reach 100\%.
 
-Regarding the distance metrics used to calculate the difference between the query's histograms and the database videos' histograms, some performed better than others
+\begin{figure}[h] 
+\centerline{\includegraphics[width=0.9\textwidth]{figures/evaluation/comparison_before_after_removing_metrics.png}}
+\caption{\label{fig:evaluation-comparison_before_after_removing_metrics}Comparison of the accuracy before and after removing metrics such as the KL Divergence and alternative Chi-Square distance.}
+\end{figure}
 
-\begin{comment}
-analyse results of RGB, grey scale and HSV histograms with the 6 different histogram matching methods. which work best? in which scenarios? (use the 10 previous results to show this)
-
-EMD and energy dist always find correct asnswer (explains the 45.45\% as lowest accurcy)
-
-removing KL divergence metric greatly improved accuracy. (using less metric to use the ones for the job). KL divergence NEVER found correct match, not meant to be used a distance metric (show example of removing KL div and alternate chi square with past examples and new one)
-
-improved cloudy-sky,
-improved butterfly skewed
-
-greyscale almost never finds a correct matc. Out of the 4 measurements, the maximum it finds is 2
-
-using only HSV: the 45.45\% would become 100\% because HSv outweight greycale and RGB
-\end{comment}
+Regarding the distance metrics used to calculate the difference between the query's histograms and the database videos' histograms, some performed better than others. EMD and Energy Distance obviously performed better than the Correlation, Intersection, Chi-Square and Hellinger Distance due to their association to the HSV histogram models. However, all of these performed efficiently to some extend. The interesting results to analyse are the metrics excluded from the system that were used in earlier versions before being removed. Amongst these distances were the Kullback-Leibler Divergence and an alternative to the Chi-Square distance. These metrics never found the correct match, thus lowering the overall accuracy of the system due to the higher number of false positives. Significant improvements were made, with some queries resulting in 21\% increases in true positives. An example of the improvement made by removing these metrics can be seen in Figure \ref{fig:evaluation-comparison_before_after_removing_metrics}, as they were not meant to be used as distance metrics for colour features. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -113,7 +103,7 @@ using only HSV: the 45.45\% would become 100\% because HSv outweight greycale an
 The runtime of each of the ten query videos used to test the system in the previous sections is plotted in a graph which can be found in Figure \ref{fig:evaluation-runtime_plot}. A few points can be made based on this graph. First, the runtime never exceeds 10s, thus fulfilling requirement F13. Second, the difference between the 1080p query videos and lower-quality 720p query videos' runtime is almost halved, with the runtime of 720p queries averaging 4.89 seconds and the runtime of 1080p queries averaging 8.91 seconds. However, the accuracy of system when processing the 720p queries is as high as the accuracy of the 1080p queries. Indeed, the \textit{``cloudy-sky''} query yields an accuracy of 93.18\%, while the accuracy of the \textit{``jellyfish''} query yield 75\% true positives. This crucial measurement reveals that using higher-quality does not necessarily translate to better results, meaning that any decent mobile device camera can be used with the system to generate descriptive histograms.
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=\textwidth]{figures/evaluation/runtime_plot.png}}
+\centerline{\includegraphics[width=0.9\textwidth]{figures/evaluation/runtime_plot.png}}
 \caption{\label{fig:evaluation-runtime_plot}Graph depicting the runtime for each query used to test the system, along with the resolution of each query.}
 \end{figure}
 
@@ -128,7 +118,7 @@ Evaluating the offline colour-based feature extraction phase is more tricky than
 The measure used to estimate the scalability of the system is the runtime of the phase. The mean runtime for generating the three averaged histograms for each video in a database of 50 videos is 163 seconds. With the way the features are extracted and the feature vectors are generate, the growth of the system is linear as it is equal to $163/50=3.26$ seconds per video. Adding a 51st video to the database will increase the runtime by 3.26 seconds. To predict how large the database of videos can be, the runtime in hours is plotted in a graph starting with 50 videos and growing up to one million videos based on the previous linear calculations. The results can be found in Figure \ref{fig:evaluation-offline_phase_runtime_trendline}.
 
 \begin{figure}[h]
-\centerline{\includegraphics[width=\textwidth]{figures/evaluation/offline_phase_runtime_trendline.png}}
+\centerline{\includegraphics[width=0.9\textwidth]{figures/evaluation/offline_phase_runtime_trendline.png}}
 \caption{\label{fig:evaluation-offline_phase_runtime_trendline}Prediction of the offline colour-based feature extraction phase runtime for different database sizes. A trendline $y=0.021e^{0.7667x}$ can be fitted to the resulting series to determine the demand }
 \end{figure}
 
@@ -149,8 +139,6 @@ The initial motivation behind the project being to create a CBVR system for feat
 \end{figure}
 
 The first test uses the KL Divergence to detect the difference between consecutive frames while employing a global threshold $t=10$, which detects a total of 661 different shot boundaries throughout the entire film in 2h29. Alternatively, the second test uses the Intersection metric while employing a global threshold $t=7$, which detects a total of 1730 shot boundaries 2h41. Although the difference between the two results seems considerable as the Intersection metric detects almost three times more shot boundaries than the KL Divergence, the difference between the two is actually quite small when considering the bigger picture. Indeed, the 661 shot boundaries represent only 0.31\% of the movie, while the 1730 shot boundaries represent 0.81\% of the movie. When considering that the goal of the database pre-processing is to segment the database videos in order to have less frames to process in the offline feature extraction phase, then cutting down the number of frames to process to less than 1\% is a satisfactory result that will greatly improve the results when working with long videos.\\
-
-% In terms of runtime, the KL Divergence shot boundary detection took 2h29 to complete, while the intersection shot boundary detection test took 2h41 to complete. With the movie lasting 2h28, it takes slightly longer than the movie itself to process it for shot boundary detection. Therefore, treating a large database  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -180,4 +168,4 @@ Supporting documents covering the online experiment can be found in the appendix
 
 \section{Summary}
 
-todo
+This chapter analysed the different results obtained when testing the system. The system was tested with a database of fifty short videos, with the runtime used to measure the scalability of the offline feature extraction phase. Next, nine different queries were used to test the online retrieval phase through different conditions before using a feature-length movie to test the database pre-processing phase. With the system successfully tested and objectively evaluated, the final chapter of this report will look back upon the different stages of the project to discuss what was successful and what could be improved.
