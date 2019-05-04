@@ -257,7 +257,7 @@ The calculations between two 2D histograms are achieved through OpenCV's \textit
 comparison = cv2.compareHist(query_hist, rgb_video_hist, method)
 \end{lstlisting}
 
-For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. The six different methods used are detailed below, where $d(H_1, H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, and $I$ represents the number of bins in the histograms.
+For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. Different functions are used between the 2D and 3D histograms as OpenCV's \textit{cv2.compareHist()} function does not work with 3D arrays, whereas SciPy's statistical distances does. The six different methods used are detailed below, where $d(H_1, H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, and $I$ represents the number of bins in the histograms.
 
 \begin{enumerate}
 
