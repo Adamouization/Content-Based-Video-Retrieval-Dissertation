@@ -6,7 +6,7 @@ This appendix includes the main code sections of the system in a lightweight for
 
 \section{Main Module}
 
-The \textit{main.py} module contains the program entry point that parses the command line argument in order to decide which phase to execute. Contains the three functions to begin each phase, include the off-line colour-based feature extraction, the on-line retrieval and database pre-processing phases.
+The \textit{main.py} module contains the program entry point that parses the command line argument in order to decide which phase to execute. The module the three functions to start running each phase, include the off-line colour-based feature extraction, the on-line retrieval and database pre-processing phases.
 
 \subsection{Argument Parsing}
 \label{sec:code-listings-argument-parsing}
@@ -17,7 +17,7 @@ The program entry point. Parses command line input to decide which phase of the 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Initial Off-line Colour-based Feature Extraction Phase Function}
+\subsection{Initial Off-line Feature Extraction Phase Function}
 \label{sec:code-off_line_colour_based_feature_extraction_phase}
 
 Generates and stores averaged greyscale, RGB and HSV histograms for all the videos in the directory-based database.
@@ -26,6 +26,7 @@ Generates and stores averaged greyscale, RGB and HSV histograms for all the vide
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\clearpage
 \subsection{Initial On-line Retrieval Phase Function}
 \label{sec:code-on_line_retrieval_phase}
 
@@ -81,7 +82,7 @@ Generates multiple RGB histograms (one every second) for a video.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Single HSV Histogram Generation}
-\label{sec:code-average_and}
+\label{sec:code-single_hsv_histogram_generation}
 
 Generates multiple HSV histograms (one every second) for a video.
 
@@ -116,25 +117,28 @@ Generates a single HSV histogram by averaging all histograms of a video before n
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Matching 2D Histograms}
+\subsection{Histogram Matching}
+\label{sec:code-histogram-matching-2d-and-3d}
+
+Compares the greyscale, RGB and HSV histograms of the query video with each of the saved average histograms using different distance metrics such as the Correlation, Intersection, Chi-Square Distance, Hellinger Distance, Earth's Mover Distance and Energy Distance metrics. Finally, prints the results for each histogram model and metric in a console table and writes the data to a CSV file.
+    
+\subsubsection{2D Histogram matching}
 \label{sec:code-match_2D_histograms}
 
-describe
+Compares 2D histograms, concerning the greyscale and RGB histograms only using \textit{OpenCV's} compareHist function.
 
 \lstinputlisting{code-listings/histogram/match_2D_histograms.py}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Matching 3D Histograms}
+\subsubsection{Matching 3D Histograms}
 \label{sec:code-match_3D_histograms}
 
-describe
+Compares 3D histograms, concerning the HSV histograms only using \textit{SciPy's} statistical distances functions.
 
 \lstinputlisting{code-listings/histogram/match_3D_histograms.py}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Shot Boundary Algorithm}
+\subsection{Shot Boundary Detection Algorithm}
 \label{sec:code-shot_boundary_detection}
 
 Compares consecutive frames' RGB histograms using the Intersection metric with a global threshold approach. If the metric is smaller than the specified threshold, then a shot boundary has been detected.
@@ -183,14 +187,8 @@ Class for selecting a region of interest on a frame by click and dropping the mo
 
 \clearpage
 \section{Helpers Module}
+\label{sec:code-helpers-module}
 
-describe module
+This module contains multiple general-use functions with various uses. For example, functions for retrieving file names, removing file extensions from filenames, displaying the final results results in the form of plots or console outputs, parsing command line input and getting video information can be found in this module.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \section{Generate Single Histogram}
-% \label{sec:code-generate-single-histogram}
-
-% \lstinputlisting[caption=Function generating histograms for the pre-selected frames and adding them to lists before averaging them to create a video's compact signature.]{code-listings/generate_single_histogram.py}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lstinputlisting{code-listings/helpers/helpers.py}
