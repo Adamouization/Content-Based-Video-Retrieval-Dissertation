@@ -6,9 +6,11 @@ The following requirements are divided between non-functional and functional sec
 
 \subsection{System Requirements}
 
+To establish the system requirements, the system can be broken down into three phases. Based on the models described in the Literature \& Technology Survey in Section \ref{sec:color-based-features} and Section \ref{sec:litsurvey-models-pattern-matching}, and taking into consideration the time constraints and scope of the project, a training/testing approach is adopted. For each database video, features are extracted and stored in the first phase before being compared to a query's features in the second phase. A third phase can be added based on the video processing techniques stated in Section \ref{sec:movie-pre-processing}.
+
 \subsubsection{Off-line Feature Extraction Phase}
 
-These requirements concern the off-line feature extraction phase\footnote{The learning phase in a classifier ingesting static unsupervised data.} of the system, where static database videos are ingested by the system and features are extracted from each video and stored in files for the next phase.
+These requirements concern the off-line feature extraction phase where the system learns by ingesting static unsupervised data corresponding to the database videos. In this phase, features are extracted from each video to generate feature vectors which are stored in files for the next phase.
 
 \begin{enumerate}[label=F\arabic*]
 
@@ -36,7 +38,7 @@ These requirements concern the off-line feature extraction phase\footnote{The le
 
 \subsubsection{On-line Retrieval Phase}
 
-These requirements concern the retrieval phase\footnote{The matching phase of a classifier where the extracted features of a query video are compared to each database video's extracted feature.} of the system, where the same extracted features from the previous phase are extracted from the query video and compared to the stored features from each database video by calculating the distance between between these features.
+These requirements concern the retrieval of the system, where the same extracted features from the previous phase are extracted from the query video and compared to the stored features from each database video by calculating the distance between between these features.
 
 \begin{enumerate}[label=F\arabic*,resume]
 
@@ -60,13 +62,6 @@ These requirements concern the retrieval phase\footnote{The matching phase of a 
     The accuracy of the system should be calculated for different queries.
     Priority 1.
     
-    % The accuracy of the system can be measured through a confusion matrix (or contigency table) to calculate the acusing the number of true positives and:
-    % \begin{itemize}
-    %     \item True Positives:
-    %     \item False Positives:
-    % \end{itemize}
-    % Additionally, the runtime can be measure\\
-    
     \item \textbf{The system \underline{should} stabilise the query video before extracting its features.}\\
     The stabilised video will diminish the effects of camera movement and increase the similarities between the video's extracted features and the database videos' features.\\
     Priority 2.
@@ -83,7 +78,7 @@ These requirements concern the retrieval phase\footnote{The matching phase of a 
 
 \subsubsection{Database Pre-processing}
 
-These requirements concern the database pre-processing phase of the system. This phase would be used before the two previously mentioned phases, and concerns the operations to carry out the the database videos to improve the off-line feature extraction and on-line retrieval phases.
+These requirements concern the database pre-processing phase of the system. This phase concerns the operations to carry out the the database videos to improve the off-line feature extraction and on-line retrieval phases.
 
 \begin{enumerate}[label=F\arabic*,resume]
 
@@ -188,4 +183,4 @@ These requirements concern the database pre-processing phase of the system. This
 
 \section{Summary}
 
-This chapter has summarised the requirements needed to design and implement a successful system based on the problems formulated in Chapter \ref{ch:chapter1} and the Literature and Technology Survey in Chapter \ref{ch:chapter2}. Now that the requirements have been established, different potential solutions will be explored in the next chapter, including the benefits and disadvantages of each method, before one solution can be chosen and implemented.
+This chapter has summarised the requirements needed to design and implement a successful system based on the problems formulated in Chapter \ref{ch:chapter1} Section \ref{sec:problem-description} and the Literature and Technology Survey from Chapter \ref{ch:chapter2}. Now that the requirements have been established, different potential solutions will be explored in the next chapter, including the benefits and disadvantages of each method, before one global solution can be chosen and implemented.

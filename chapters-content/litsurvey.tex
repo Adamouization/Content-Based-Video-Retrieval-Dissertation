@@ -1,6 +1,6 @@
 A full spectrum of different techniques can potentially be used to build a content-based video retrieval system. Grasping the theory behind these various techniques is primordial to establish the requirements and conceptualise the design in the next chapters. This chapter will thus study the literature surrounding three crucial areas that are necessary to understand what is required for a content-based video retrieval system targeting long videos.\\
 
-The first section will address general content-based retrieval systems concepts, retracing the evolution of these visual search systems for videos and addressing the challenges posed by targeting a content-based retrieval system for videos and recording queries through mobile devices. The second section will focus on extracting visual content from videos, starting with the different types of static features, followed by dynamic features, and ending with models used for pattern matching. Finally, the third section targets how the structure of videos can be used to segment and densely represent them in order to optimise the system.
+The first section will address general content-based retrieval systems concepts, retracing the evolution of these visual search systems for videos and addressing the challenges posed by targeting a content-based retrieval system for videos. The second section will focus on extracting visual content from videos, starting with the different types of static features, followed by dynamic features, and ending with models used for pattern matching. Finally, the third section targets how the structure of videos can be used to segment and densely represent them in order to optimise the system.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1 - CONTENT-BASED RETRIEVAL 
@@ -9,7 +9,7 @@ The first section will address general content-based retrieval systems concepts,
 
 Content-based retrieval is a type of visual search technique where large databases of either images or videos are queried to find the closest match to an input query. Although this project focuses on content-based video retrieval, also referred to as CBVR\footnote{Content-Based Video Retrieval}, image retrieval techniques (CBIR\footnote{Content-Based Image Retrieval}) will be discussed as well due to their relevance in video retrieval.\\
 
-This section will first review the different video retrieval methods and their evolution, starting from text-based retrieval to content-based retrieval, before addressing the various challenges that exist in video retrieval, such as the difficulty caused by the temporal aspect of videos compared to images, and the complications of targeting mobile devices for such a system.
+This section will first review the different video retrieval methods and their evolution, starting from text-based retrieval to content-based retrieval, before addressing the various challenges that exist in video retrieval, such as the difficulty caused by the temporal aspect of videos compared to images.
 
 % ----------------------------------------------------
 
@@ -77,27 +77,6 @@ Figure \ref{fig:forrest_gump_frames} shows six frames from Forrest Gump's famous
 \centerline{\includegraphics[width=\textwidth]{figures/litsurvey/forrest_gump_shot.jpg}}
 \caption{\label{fig:forrest_gump_frames}Frames from the famous running scene in Forrest Gump extracted at intervals of 10 seconds. Video frames courtesy of \textit{``Forrest Gump long run scene''} YouTube video available online: \url{https://youtu.be/QgnJ8GpsBG8?t=325}.}
 \end{figure}
-
-\subsection{CBVR for Mobile Devices}
-\label{sec:litsurvey-cbvr-4-mobile-devices}
-
-The aforementioned project aim is for the system to work on mobile devices for two reasons. The first reason is to allow users to directly use their mobile phone to record the query video by pointing their camera to a screen displaying a movie, which will, in turn, tell them which movie is being played (see the wireframe in Figure \ref{fig:wireframe}). Additional information retrieved from IMDb\footnote{Internet Movie Database}, such as cast, crew, ratings, runtime and synopsis could also be displayed. The second reason is the popularity of mobile devices, which may be due to the improvements made on mobile phones' processing power, allowing more tasks to be carried out through this medium. However, such a system on a mobile device causes many problems regarding the query video recording method and the computational power available on mobile devices.\\
-
-\subsubsection{Query Video Quality}
-
-Large visual differences are caused between the query clip and the actual clip stored in the database due to the capture conditions \cite{liu2014mobilevideosearch} \cite{wang2016actionregonition} such as:
-\begin{itemize}
-    \item Undesired camera movements due to unstable recording, e.g. unstable recording, shaky hands.
-    \item Low-quality recording due to poor user recording, e.g. scaling and rotation, and due to the environmental conditions, e.g. lighting, reflections, blurring.
-    \item Video noise because of the camera sensor.
-    \item Decoding artefacts caused by various file compression.
-\end{itemize}
-
-These low-quality conditions add difficulty to the pattern matching phase where the similarities between the query video and database videos have to be computed. Indeed, if the query video is very different from the actual video, then the noisy elements of the video query must be filtered out. For example, if the recorded video is shaky, then this shaking motion has to be pruned before analysing the recorded clip's motion. However, processing power must be used from the actual visual content extraction and pattern matching phases to be used for video noise filtering.
-
-\subsubsection{User Experience}
-
-According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile device users expect a polished product with quick video query and instant or progressive results, meaning that the searching algorithms must be efficient. However, one of the downsides of mobile devices is the computation power constraints. Despite the improvements in mobile processors, desktop devices still remain more powerful than mobile ones. A solution that Liu et al. suggest is to retrieve the low-level visual content locally on the mobile device and send the query to a server where the pattern matching will take place \cite{liu2014mobilevideosearch}. This allows heavy computations to be off-loaded from the mobile device. Once a match is found, the result is returned to the user on his mobile device. A downside to this approach is the new constraint on network bandwidth rather than computational power.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 2 - VISUAL CONTENT EXTRACTION
