@@ -1,4 +1,4 @@
-This chapter establishes the requirements of the system. These requirements were devised in response to the problems mentioned in Section \ref{sec:problem-description} of Chapter \ref{ch:chapter1} and to the results of an experiment conducted through an online survey, and builds upon the information provided by the Literature and Technology Survey in Chapter \ref{ch:chapter2}.\\
+This chapter establishes the requirements of the system. These requirements were devised in response to the problems mentioned in Section \ref{sec:problem-description} of Chapter \ref{ch:chapter1} and builds upon the information provided by the Literature and Technology Survey in Chapter \ref{ch:chapter2}.\\
 
 The following requirements are divided between non-functional and functional sections, which are further split into more specific sections. They are prioritised using the words \textit{must} (Priority 1), \textit{should} (Priority 2) and \textit{may} (Priority 3); where \textit{must} indicates a crucial requirement to the system, \textit{should} an optimal requirement and \textit{may} a beneficial requirement.
 
@@ -6,9 +6,9 @@ The following requirements are divided between non-functional and functional sec
 
 \subsection{System Requirements}
 
-\subsubsection{Offline Feature Extraction Phase}
+\subsubsection{Off-line Feature Extraction Phase}
 
-These requirements concern the offline feature extraction phase\footnote{The learning phase in a classifier ingesting static unsupervised data.} of the system, where static database videos are ingested by the system and features are extracted from each video and stored in files for the next phase.
+These requirements concern the off-line feature extraction phase\footnote{The learning phase in a classifier ingesting static unsupervised data.} of the system, where static database videos are ingested by the system and features are extracted from each video and stored in files for the next phase.
 
 \begin{enumerate}[label=F\arabic*]
 
@@ -20,7 +20,7 @@ These requirements concern the offline feature extraction phase\footnote{The lea
     Due to the nature of the project, a line must be drawn between the complexity of the feature being extracted to represent the videos and the efficiency of working with such a feature. For example, if the feature is very complicated to extract and use, but does not offer many more advantages than a simpler feature to extract and use, then the simpler feature should be used.\\
     Priority 1.
     
-    \item \textbf{The system \underline{must} store the extracted features it used for learning in files for future re-use in the online retrieval phase.}\\
+    \item \textbf{The system \underline{must} store the extracted features it used for learning in files for future re-use in the on-line retrieval phase.}\\
     Files can be saved either in plain text ``\textit{.txt}'' file format to be human-readable, or in other file formats such as binary ``\textit{.dat}'' files.\\
     Priority 1.
     
@@ -34,7 +34,7 @@ These requirements concern the offline feature extraction phase\footnote{The lea
     
 \end{enumerate}
 
-\subsubsection{Online Retrieval Phase}
+\subsubsection{On-line Retrieval Phase}
 
 These requirements concern the retrieval phase\footnote{The matching phase of a classifier where the extracted features of a query video are compared to each database video's extracted feature.} of the system, where the same extracted features from the previous phase are extracted from the query video and compared to the stored features from each database video by calculating the distance between between these features.
 
@@ -83,7 +83,7 @@ These requirements concern the retrieval phase\footnote{The matching phase of a 
 
 \subsubsection{Database Pre-processing}
 
-These requirements concern the database pre-processing phase of the system. This phase would be used before the two previously mentioned phases, and concerns the operations to carry out the the database videos to improve the offline feature extraction and online retrieval phases.
+These requirements concern the database pre-processing phase of the system. This phase would be used before the two previously mentioned phases, and concerns the operations to carry out the the database videos to improve the off-line feature extraction and on-line retrieval phases.
 
 \begin{enumerate}[label=F\arabic*,resume]
 
@@ -91,7 +91,7 @@ These requirements concern the database pre-processing phase of the system. This
     A single frame must be used to represent each shot of a long video. However, this is not required if the video is short enough to be a shot by itself.\\
     Priority 1.
     
-    \item \textbf{The same features from the offline feature extraction and online retrieval phases \underline{should} be used for the shot boundary detection algorithm.}\\
+    \item \textbf{The same features from the off-line feature extraction and on-line retrieval phases \underline{should} be used for the shot boundary detection algorithm.}\\
     This would ensure cohesion between different phases of the program and allow code to be re-used.
     Priority 2.
     
