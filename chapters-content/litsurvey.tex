@@ -216,7 +216,10 @@ Motion features are a unique characteristic of videos that are absent from image
     \item \textit{Statistics-based} motion features are extracted to model the local and global distributions of motion points in the video. For example, a causal Gibbs model can be used to represent the spatio-temporal distribution of local motion measurements in a shot once the trajectory-based motion features have been used to prune undesired camera motions \cite{fablet2002gibbsmodel}. This type of motion features is very cheap to extract but lacks depth as they cannot represent object actions and object relationships accurately.
     \item \textit{Trajectory-based} motion features are extracted by representing object trajectories in a shot. A long list of algorithms exist to obtain these features such as the, but this section will focus on differentiating sparse and dense techniques with one of the most popular methods: optical flow. Optical flow can be defined as the relative motion between the visual content in a shot and the camera \cite{bradski2008opencv}:
     
-    In \textit{sparse optical flow}, only a few pixels from the frames in a shot are used. Features describing objects, such as corners, are used to track an object's motion across the shot. However, these only give information about where certain parts of the object are going, which are then used to estimate where the overall object is moving towards. Sparse optical flows. For example, Figure \ref{fig:optical_flow} indicates the overall motion of a car by tracking only a few pixels from it. On the other hand, \textit{dense optical flow} calculates the optical flow for every pixel in the frame. At each pixel of the frame, the direction and magnitude of that specific location are represented by an arrow, which can variate in direction and length (see Figure \ref{fig:dense_optical_flow_representation}).
+    \begin{itemize}
+        \item In \textit{sparse optical flow}, only a few pixels from the frames in a shot are used. Features describing objects, such as corners, are used to track an object's motion across the shot. However, these only give information about where certain parts of the object are going, which are then used to estimate where the overall object is moving towards. Sparse optical flows. For example, Figure \ref{fig:optical_flow} indicates the overall motion of a car by tracking only a few pixels from it.
+        \item On the other hand, \textit{dense optical flow} calculates the optical flow for every pixel in the frame. At each pixel of the frame, the direction and magnitude of that specific location are represented by an arrow, which can variate in direction and length (see Figure \ref{fig:dense_optical_flow_representation}).
+    \end{itemize}
         
     \begin{figure}[h] 
     \centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/dense_optical_flow_representation.png}}
@@ -230,7 +233,7 @@ Motion features are a unique characteristic of videos that are absent from image
 
 \subsection{Models for Pattern Matching}
 
-So far, the simplest model that can be used for pattern matching has been introduced in Section \ref{sec:color-based-features}, which is the histogram model. Distributions of features are represented in the form of histograms and used to calculate the similarities between each other by using simple distance measuring algorithms adopting nearest neighbour approaches. More advanced and efficient models are briefly reviewed in this section, ranging from Bags-of-Visual-Words models to Deep Learning era models such as Neural Networks.
+So far, the simplest model that can be used for pattern matching has been introduced in Section \ref{sec:color-based-features}, which is the histogram model. Distributions of features are represented in the form of histograms and used to calculate the similarities between each other by using simple distance measuring algorithms adopting nearest neighbour approaches. More advanced and efficient models are briefly reviewed in this section, ranging from Bags-of-Visual-Words models before ending with a quick word on deep learning models.
 
 \subsubsection{Bag-of-Visual-Words}
 
@@ -245,14 +248,13 @@ This concept of BoW can be applied to images in the form of BoVW. Rather than de
 
 With the BoVW now built, the image can be represented by a histogram counting the number of occurrences of each code word in the image, in a similar fashion that the frequency of keywords is counted for a text document. However, a large number of visual words need to be defined to avoid losing information when representing the image with the histogram; if there are too few visual words, then the histogram will be too coarse. With a dictionary of visual words, a classifier can be trained by ingesting multiple images, or video frames, and generating the histogram of occurrences of visual words in each image. Once this step is done, a new training image can be used as input to generate its histogram, which can then be compared to each previously trained image to find the closest match \cite{wang2016actionregonition}.
 
-\subsubsection{Deep Learning}
+\subsubsection{Deep Learning Systems}
 
-\begin{itemize}
-    \item Classical Neural Networks
-    \item Convolutional Neural Networks
-    \item State of the art: AlexNet, VGG, Inception
-\end{itemize}
+The conventional models stated earlier are naturally limited by their inability to process raw data. Indeed, raw data (e.g. the pixels in an image) cannot be directly processed by machine learning systems, including the aforementioned ones. Complex feature extractors need to be designed to transform the raw data into suitable feature vector representations. Only then can learning systems such as classifiers ingest the data pattern match it \cite{lecun2015deeplearning}.\\
 
+Deep learning models are a much more efficient as they are based on representation learning methods, which allows raw data to be directly used. Representation learning methods enable deep learning systems to automatically discover and learn the features through the use of multiple levels of representation that transform the data as it goes down the layers, starting with the raw data that is transformed into more and more abstract representations. For example, a deep learning system using an image (a matrix of pixels) as input would perhaps detect edge features in the first layer, followed by detecting the arrangement of these edges in the second layer, before combining them to assemble motifs in the third layer and eventually detect objects in deeper layers. All of these layers that learn how to extract features are not influenced by humans, they are learned based on the data \cite{lecun2015deeplearning}.\\
+
+These deep learning models, with the most popular ones being neural networks, have a lot of potential. Due to their nature that requires little manual engineering, they work very efficiently when dealing with large amounts of data, which fits perfectly with content-based retrieval systems.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 3 - STRUCTURAL MOVIE PRE-PROCESSING
@@ -269,7 +271,7 @@ The database of videos can be pre-processed to optimise the visual content extra
 The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be extremely similar in another frame from the same shot. Detecting shot boundaries would allow the movie to be segmented and organised by shots, as depicted in Figure \ref{fig:shot_boundary_detection}. These boundaries are defined by the type of transition between two different shots, which can either be defined as a quick cut when the transition is direct, or as gradual when it is a dissolve or a fade in/out transition that runs over multiple frames \cite{yuan2007shotboundary}, as shown in Figure \ref{fig:video_transitions}.
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/shot_boundary_detection.png}}
+\centerline{\includegraphics[width=0.70\textwidth]{figures/litsurvey/shot_boundary_detection.png}}
 \caption{\label{fig:shot_boundary_detection}Shot boundary detection example of a video scene made up of two shots with a gradual transition between the two shots. Figure courtesy of Michael Gygli available online at: \url{https://medium.com/gifs-ai/ridiculously-fast-shot-boundary-detection-with-fully-convolutional-neural-networks-da9d8c73e86c}}
 \end{figure}
 
