@@ -1,15 +1,15 @@
-A full spectrum of different techniques can potentially be used. Grasping the theory behind these various techniques is primordial when making decisions to establish the requirements and conceptualise the design. Therefore, this chapter will study the literature surrounding three crucial areas that are necessary to understand what is required for a content-based video retrieval system targeting long videos.\\
+A full spectrum of different techniques can potentially be used to build a content-based video retrieval system. Grasping the theory behind these various techniques is primordial to establish the requirements and conceptualise the design in the next chapters. This chapter will thus study the literature surrounding three crucial areas that are necessary to understand what is required for a content-based video retrieval system targeting long videos.\\
 
-The first section will address general content-based retrieval systems concepts, retracing the evolution of such systems for videos and addressing the challenges posed by targeting a content-based retrieval system for videos and recording queries through mobile devices. The second section will focus on extracting visual content from videos, starting with the different types of static features and ending with dynamic features. Finally, the third section targets how the structure of videos can be used to segment and extract individual frames to densely represent them in order to optimise the system.
+The first section will address general content-based retrieval systems concepts, retracing the evolution of these visual search systems for videos and addressing the challenges posed by targeting a content-based retrieval system for videos and recording queries through mobile devices. The second section will focus on extracting visual content from videos, starting with the different types of static features, followed by dynamic features, and ending with models used for pattern matching. Finally, the third section targets how the structure of videos can be used to segment and densely represent them in order to optimise the system.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1 - CONTENT-BASED RETRIEVAL 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Concepts Behind a Content-Based Video Retrieval System}
+\section{Content-Based Retrieval System Concepts}
 
-Content-based retrieval is a type of visual search technique where large databases of either images or videos are queried to find the closest match to a query image or video. Although this project focuses on content-based video retrieval, also referred to as CBVR\footnote{Content-Based Video Retrieval}, image retrieval techniques (CBIR\footnote{Content-Based Image Retrieval}) will be discussed as well due to their relevance in video retrieval.\\
+Content-based retrieval is a type of visual search technique where large databases of either images or videos are queried to find the closest match to an input query. Although this project focuses on content-based video retrieval, also referred to as CBVR\footnote{Content-Based Video Retrieval}, image retrieval techniques (CBIR\footnote{Content-Based Image Retrieval}) will be discussed as well due to their relevance in video retrieval.\\
 
-This section will first review the different video retrieval methods and their evolution, starting from text-based retrieval to content-based retrieval, before addressing the various challenges that exist in video retrieval, such as the additional difficulty caused by the temporal aspect of videos compared to images, and the complications of targeting mobile devices for such a system.
+This section will first review the different video retrieval methods and their evolution, starting from text-based retrieval to content-based retrieval, before addressing the various challenges that exist in video retrieval, such as the difficulty caused by the temporal aspect of videos compared to images, and the complications of targeting mobile devices for such a system.
 
 % ----------------------------------------------------
 
@@ -18,18 +18,23 @@ This section will first review the different video retrieval methods and their e
 
 Drastic advances in video capturing technology have caused important amounts of unstructured data in the form of videos to be produced in recent years. This has lead to a high-demand to develop new efficient solutions for processing this data, with video retrieval being the answer.\\
 
-Throughout the years, video retrieval has improved in parallel with the breakthroughs in video recording devices. Early video retrieval techniques used a text-based approach where the system accepted text input to search the database of videos \cite{lai2015trajectory}, as seen in Figure \ref{fig:text_vs_content_retrieval}.\emph{a}. For example, the user would input the string query \textit{``De Niro''}, which would return all movies in which Robert De Niro starred or \textit{``Coppola''} to find all movies directed by Francis Ford Coppola. Unique aspects of the video clip such as movie credits or sports scores were often analysed using OCR\footnote{Optical Character Recognition} technology \cite{li2002text}. The query text was then compared to a video file's content, such as colours, shapes, texture, luminance or objects, or to the file's metadata\footnote{The data associated to a video file}, such as the video title, author, date, content description, commentaries, captions or keywords \cite{li2002text} \cite{feng2011} \cite{patel2012}. However, these techniques were highly inefficient compared to content-based techniques as they often relied on manually noted annotations and textual descriptions to find similarities for matching the query video to a video in the database and did not make use of the actual visual content that describes a video.\\
+Throughout the years, video retrieval has improved in parallel with the breakthroughs in video recording devices. Early video retrieval techniques used a text-based approach where the system accepted text input to search the database of videos \cite{lai2015trajectory}, as seen in Figure \ref{fig:text_vs_content_retrieval}.\emph{a}. For example, the user would input the string query \textit{``De Niro''}, which would return all movies in which Robert De Niro starred; or \textit{``Coppola''} to find all movies directed by Francis Ford Coppola. Unique textual aspects of a videos such as movie credits or sports scores were often analysed using Optical Character Recognition algorithms \cite{li2002text}. The query text was then compared to a video file's content, such as colours, shapes, texture, luminance or objects, or to the file's metadata\footnote{The data associated to a video file}, such as the video title, author, date, content description, commentaries, captions or keywords \cite{li2002text} \cite{feng2011} \cite{patel2012}. However, these techniques were highly inefficient compared to content-based techniques as they often relied on manually noted annotations and textual descriptions to find similarities used to match the query video to a video in the database. Most importantly, they did not make use of the actual visual content that describes a video.\\
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=\textwidth]{figures/litsurvey/content_text-retrieval_comparison.png}}
 \caption{\label{fig:text_vs_content_retrieval}Illustrations of a text-based content-retrieval system \emph{(a)} and a content-based video retrieval system \emph{(b)}.}
 \end{figure}
 
-Content-based retrieval techniques quickly replaced text-based retrieval techniques towards the end of the 20th century by making use of the visual content to compute similarities between videos \cite{lai2015trajectory}. Instead of accepting a text string, the system takes a video as input to extract its visual contents, as shown in Figure \ref{fig:text_vs_content_retrieval}.\emph{b}. According to Petković et al. \cite{petkovic2000}, this visual content can be broken down into three different categories:
+Content-based retrieval techniques quickly replaced text-based retrieval techniques towards the end of the 20th century by making use of the visual content to compute similarities between videos \cite{lai2015trajectory}. Instead of accepting a text string, the system accepts a video as input to extract its visual contents, as shown in Figure \ref{fig:text_vs_content_retrieval}.\emph{b}. According to Petković et al. \cite{petkovic2000}, this visual content can be broken down into three different categories:
+
 \begin{itemize}
+    
     \item \textit{Raw data}, which corresponds to individual raw video frames and the video file's attributes such as the frame rate per seconds, the number of bits per pixel or the colour model used.
-    \item \textit{Low-level visual content}  consists of the visual features that describe a video. This content includes colours, shapes, textures and motion. Low-level visual content can be extracted into static features such as histograms (see Section \ref{sec:color-based-features}) or dynamic features such as objects or motion (see Section \ref{sec:dynamic-features}) using a wide variety of existing techniques. Once the content has been extracted, it can be used to first compute similarities between videos \cite{lai2015trajectory} and later pattern match them.
+    
+    \item \textit{Low-level visual content} consists of the visual features that describe a video. This content includes colours, shapes, textures and motion. Low-level visual content can be extracted into static features such as histograms (see Section \ref{sec:color-based-features}) or into dynamic features such as objects or motion (see Section \ref{sec:dynamic-features}) using a wide variety of existing techniques. Once the content has been extracted, it can be used to compute similarities between videos and pattern match them \cite{lai2015trajectory}.
+    
     \item \textit{Semantic content} contains the high-level concepts that are present in a video. These high-level concepts can be described as objects or events using the features. To extract semantic content from a video, a grammar of rules for objects must be provided. An example of an object rule could be ``if the shape is round, the colour is orange, and the object is moving, then that object is a basketball''.
+
 \end{itemize}
 
 In comparison to raw data, low-level visual content provides the most relevant visual information that can be extracted from a video for the purpose of a CBVR system. Semantic content extraction adds an additional layer of complexity compared to low-level visual content extraction as it requires domain knowledge and user interaction \cite{petkovic2000}. Therefore, this project will focus on using low-level visual content to extract information about the video and compute the similarities between the query video and database videos. It is important to note that this project's goal differs from classic CBVR systems where a list of videos is returned (see in Figure \ref{fig:text_vs_content_retrieval}.\emph{b}), as it must return a specific video that matches the most the query video. To improve the pattern matching accuracy phase, raw data (e.g. audio) and metadata (e.g. captions) may be used to improve the pattern matching accuracy \cite{patel2012}.\\
@@ -41,19 +46,20 @@ In comparison to raw data, low-level visual content provides the most relevant v
 
 \subsubsection{Temporal Structure of a Video}
 
-The most important difference between content-based image retrieval and video retrieval lies within the temporal aspect of the video. Naturally, the temporal aspect of a video clip stores supplementary information about the content, including dynamic low-level visual content, e.g. an object's motion, and semantic content, e.g. actions and events. According to A. Araujo et al. \cite{araujo2017i2v}, a video's temporal structure can be subdivided into three units, as shown in Figure \ref{fig:temporal_structure}:
-\begin{itemize}
-    \item \textit{Frames} correspond to the smallest temporal unit of a video file. A single segment of a video is referred to as a frame. Frames are also used to describe the frame rate (the frequency at which consecutive stills appear on a screen every second), e.g. ``24 fps'' corresponds to a video made up of 24 stills per second.
-    \item \textit{Shots} are grouped sequences of visually similar frames. They are usually described in seconds.
-    \item \textit{Scenes} are collections of shots which are related based on the action and objects present in the shot, thus giving them a semantic aspect. The length of a scene is generally calculated in minutes rather than seconds.
-\end{itemize}
+The most important difference between content-based image retrieval and video retrieval lies within the temporal aspect of the video. Naturally, the temporal aspect of a video clip stores supplementary information about the content, including dynamic low-level visual content, e.g. an object's motion, and semantic content, e.g. actions and events. A video's temporal structure can be subdivided into three units, as shown in Figure \ref{fig:temporal_structure} \cite{araujo2017i2v}:
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/temporal_structure_videos.png}}
 \caption{\label{fig:temporal_structure}Temporal structure of videos, including the different terms used to describe video temporal units. Figure courtesy of A. Araujo et al.}
 \end{figure}
 
-Because this project will explore possible solutions to create a CBVR system targeting databases of feature-length movies, a fourth video temporal structure category relevant to this project can be added to Araujo et al.'s initial list:
+\begin{itemize}
+    \item \textit{Frames} correspond to the smallest temporal unit of a video file. A single segment of a video is referred to as a frame. Frames are also used to describe the frame rate (the frequency at which consecutive stills appear on a screen every second), e.g. ``24 fps'' corresponds to a video made up of 24 stills per second.
+    \item \textit{Shots} are grouped sequences of visually similar frames. They are usually described in seconds.
+    \item \textit{Scenes} are collections of shots which are related based on the action and objects present in the shot, thus giving them a semantic aspect. The length of a scene is generally calculated in minutes rather than seconds.
+\end{itemize}
+
+Because this project will explore possible solutions to create a CBVR system with feature-length movies in mind, a fourth video temporal structure category relevant to this project can be added to Araujo et al.'s initial list:
 \begin{itemize}
     \item \textit{Movies} can be described as a large group of scenes that are used to tell a story. Movie durations commonly range from one to three hours.
 \end{itemize}
@@ -65,19 +71,12 @@ Multiple challenges arise when dealing with CBVR systems in contrast to CBIR sys
 
 Because videos are made up of numerous stills, usually around 24 frames per second \cite{brownlow1980silentfilm}, two consecutive frames are near-identical. The pixels describing an object in one frame will remain the same in the next frame, except for the edge pixels perpendicular to the motion's trajectory \cite{bradski2008opencv}.\\
 
-Figure \ref{fig:forrest_gump_frames} shows six frames from Forrest Gump's famous running shot, which lasts 44 seconds, making up a total of 1056 frames. Each frame in the figure was captured with 10-second intervals, meaning 240 frames separate each still. In the first three frames, the group of people running in the background barely moves in the space of 20 seconds. The pixels that describe the group in the shot remain mostly unchanged for all of the frames between the 3 samples, equivalent to 480 frames, with a few additional pixels describing the group as it advances towards the camera. The same can be said about the red cap in the last two frames. Most of the pixels making up the cap in the fifth frame remain the same in the sixth frame. This example perfectly betrays the reason why analysing a video frame by frame would be extremely inefficient when it comes to CBVR. Due to the similarities between consecutive frames, these should be aggregated \cite{araujo2017i2v} to describe a shot by using a selection of frames, such as taking the six frames in Figure \ref{fig:forrest_gump_frames} to describe the entire 44 seconds of video, rather than keeping the original 1056 frames to describe it.
+Figure \ref{fig:forrest_gump_frames} shows six frames from Forrest Gump's famous running shot, which lasts forty-four seconds, making up a total of 1056 frames. Each frame in the figure was captured with ten-seconds intervals, meaning 240 frames separate each still. In the first three frames, the group of people running in the background barely moves in the space of twenty seconds. The pixels that describe the group in the shot remain mostly unchanged for all of the frames between the three samples, equivalent to 480 frames, with a few additional pixels describing the group as it advances towards the camera. The same can be said about the red cap in the last two frames. Most of the pixels making up the cap in the fifth frame remain the same in the sixth frame. This example perfectly betrays the reason why analysing a video frame by frame would be extremely inefficient when it comes to a CBVR system. Due to the similarities between consecutive frames, these should be aggregated \cite{araujo2017i2v} to describe a shot by using a selection of frames, such as taking the six frames in Figure \ref{fig:forrest_gump_frames} to describe the entire 44 seconds of video, rather than keeping the original 1056 frames to describe it.
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=\textwidth]{figures/litsurvey/forrest_gump_shot.jpg}}
 \caption{\label{fig:forrest_gump_frames}Frames from the famous running scene in Forrest Gump extracted at intervals of 10 seconds. Video frames courtesy of \textit{``Forrest Gump long run scene''} YouTube video available online: \url{https://youtu.be/QgnJ8GpsBG8?t=325}.}
 \end{figure}
-
-\begin{comment}
-    On top project aim mobile device using a database of feature-length movies.\\
-    \cite{araujo2017i2v}One of the problems regarding video retrieval is the temporal aspect of the data. A solution to overcome the temporal aspect of the data is to aggregate each video into a compact signature to allow quicker and more efficient matching (when matching the query video to a video in the database).\\ 
-    temporal aggregation problem of videos compared to images
-\end{comment}
-
 
 \subsection{CBVR for Mobile Devices}
 \label{sec:litsurvey-cbvr-4-mobile-devices}
@@ -100,18 +99,6 @@ These low-quality conditions add difficulty to the pattern matching phase where 
 
 According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile device users expect a polished product with quick video query and instant or progressive results, meaning that the searching algorithms must be efficient. However, one of the downsides of mobile devices is the computation power constraints. Despite the improvements in mobile processors, desktop devices still remain more powerful than mobile ones. A solution that Liu et al. suggest is to retrieve the low-level visual content locally on the mobile device and send the query to a server where the pattern matching will take place \cite{liu2014mobilevideosearch}. This allows heavy computations to be off-loaded from the mobile device. Once a match is found, the result is returned to the user on his mobile device. A downside to this approach is the new constraint on network bandwidth rather than computational power.
 
-\begin{comment}
-    % todo - spread in sections above
-    \subsubsection{Computational efficiency and database size}
-    
-    At the early stages of the development phase of the project, the database of videos for the system will be made up of shots only, lasting on average ten seconds. Longer videos will be used progressively based on the system's progress with shorter videos.\\
-    mention \cite{hanjalic1999moviesegmentation}
-    
-    \cite{wang2016actionregonition}
-    A challenge also lies within the computational power needed to process all the data in a database efficiently.\\
-\end{comment}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 2 - VISUAL CONTENT EXTRACTION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,7 +107,7 @@ According to Liu et al. \cite{liu2014mobilevideosearch}, the majority of mobile 
 
 Extracting the visual content from a video allows this content to be used to describe videos and compute similarities between them. This visual content is extracted from the aforementioned low-level visual content (see Section \ref{sec:cbvr-methods}) \cite{petkovic2000} and stored in the form features, also referred to as visual descriptors. The term ``features'' is very broad and can be used to describe many different visual aspects in an image or in a video, ranging from colours, shapes and textures to points, edges, objects and motion.\\
 
-These features can be divided into two categories: static features and dynamic features \cite{petkovic2000}. This section will first survey examples of static visual descriptors and methods to extract them from videos, and will then focus on examples and methods of extracting dynamic visual descriptors from videos.
+These features can be divided into two categories: static features and dynamic features \cite{petkovic2000}. This section will first survey examples of static visual descriptors and methods to extract them from videos, and will then focus on examples and methods of extracting dynamic visual descriptors from videos, before ending on a brief overview of efficient learning models to pattern match images and videos using these features.
 
 % ----------------------------------------------------
 
@@ -144,29 +131,29 @@ The main colour-based features model are colour histograms. In general, a histog
 \caption{\label{fig:histogram-general-example}Example of a histogram counting the location of points relative to a vertical grid. Image courtesy of Bradski and Kaehler.}
 \end{figure}
 
-In the case of a colour histogram, the underlying data that the histogram is trying to represent is the distribution of the colour pixels throughout an image or a video frame. Different kinds of colour histograms exist as they depend on the chosen colour space, which includes RGB\footnote{Red Green Blue}, HSV\footnote{Hue Saturation Value}, HSL\footnote{Hue Saturation Light} or YPbPr colour spaces to name a few. These may vary based on the applications of the colour histograms.\\
+In the case of a colour histogram, the underlying data that the histogram is representing is the distribution of the colour pixels throughout an image or a video frame. Different kinds of colour histograms exist as they depend on the chosen colour space, which includes greyscale\footnote{Black \& White, single channel}, RGB\footnote{Red Green Blue, three channels}, HSV\footnote{Hue Saturation Value} or HSL\footnote{Hue Saturation Light} colour spaces to name a few. These vary based on the applications of the colour histograms.\\
 
-Typically, for an RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which are then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represent the distribution efficiently. If the range of pixels that defined the bins is wider, meaning there are less overall bins, then the histogram's distribution would be too coarse-grained, and the general structure of the histogram would be lost, as pointed out by the left half of Figure \ref{fig:histogram-bin-size}. On the other hand, if the range of the bins is too narrow, meaning there are more overall bins, then the histogram's distribution would not be represented accurately and there would be many spiky cells, as betrayed in the right half of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.
+Typically, for an RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which are then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represent the distribution efficiently. If the range of pixels that defining the bins is too wide, meaning there are less overall bins, then the histogram's distribution would be too coarse-grained, and the general structure of the histogram would be lost, as pointed out by the left-hand side of Figure \ref{fig:histogram-bin-size}. On the other hand, if the bins' range is too narrow, meaning there are more overall bins, then the histogram's distribution would not be represented accurately and there would be many spiky cells, as betrayed in the right-hand side of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=0.85\textwidth]{figures/litsurvey/histogram_bin_size.png}}
 \caption{\label{fig:histogram-bin-size}If the range of the bins is too large, then the distribution is coarse (left). If the range of the bins is too small, then the distribution is not accurately represented and spikes cells appear (right). Image courtesy of Bradski and Kaehler.}
 \end{figure}
 
-One of the inaccuracies with colour histograms lies within the scope of the distribution. If the histogram represents the global distribution of all the pixels in the still, then two images might have very similar histograms \cite{petkovic2000}. For example, a histogram containing 60\% white pixels and 40\% blue pixels could either describe both a blue sky with white clouds or a snowy landscape with a blue sky. Despite both histograms being good colour-based features, the actual result is still poor when it will be used for matching the histograms. A solution consists in segmenting the still into multiple local images, and extract the local colour-based features for each segment. For example, the still could be partitioned into a 5x5 grid, and a colour histogram could then be computed for each grid \cite{yan2007review}. This would enable colour-based features to represent specific regions of the still rather than globally describing an image. However, the same problem mentioned earlier could occur if the still is segmented into too many regions, causing the overall histogram to be coarse.\\
+One of the inaccuracies with colour histograms lies within the scope of the distribution. If the histogram represents the global distribution of all the pixels in the still, then two images might have very similar histograms \cite{petkovic2000}. For example, a histogram containing 60\% white pixels and 40\% blue pixels could either describe both a blue sky with white clouds or a snowy landscape with a blue sky. Despite both histograms being good colour-based features, the actual result is still poor when it will be used for matching the histograms. A solution consists in segmenting the still into multiple local images, and extract the local colour-based features for each segment. For example, the still could be partitioned into a 5x5 grid, and a colour histogram could then be computed for each grid \cite{yan2007review}. This would enable colour-based features to represent specific regions of the still rather than globally describing an image. However, the same problem mentioned earlier could occur if the frame is segmented into too many regions, causing the overall histogram to be coarse.\\
 
 Other types of colour-based features can be extracted from images and videos such as colour moments and colour correlograms \cite{huang1997correlograms}. However, colour-based features have their limitations as they cannot describe textures and shapes, thus rendering them inefficient in certain applications \cite{hu2011survey}.
 
 \subsubsection{Texture-based Features}
 
-Texture-based features are another type of static features, often used to detect patterns in images. Textures in images correspond to similar patterns over an area. Based on this definition, an image can be considered as a mosaic of textures. Therefore, texture features aim to outline the areas of an image with similar patterns, which can be used to query a database and retrieve content with similar patterns \cite{manjunath1996texture}. An example of image areas with similar patterns that could eventually be extracted as texture-based features can be found in Figure \ref{fig:litsurvey-texture-feature-example}.
+Texture-based features are another type of static features, often used to detect patterns in images. Textures in images correspond to similar patterns over an area. Based on this definition, an image can be considered as a mosaic of similar patterns. Therefore, texture-based features aim to outline the areas of an image with similar patterns, which can then be used to query a database and retrieve content with similar patterns \cite{manjunath1996texture}. An example of image areas with similar patterns that could potentially be extracted as texture-based features can be found in Figure \ref{fig:litsurvey-texture-feature-example}.
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/texture-feature-example.jpg}}
 \caption{\label{fig:litsurvey-texture-feature-example}Examples of potential areas with similar patterns that could be extracted as texture features.}
 \end{figure}
 
-Texture-based features are often used in parallel with colour-based features. The aforesaid problem from Section \ref{sec:color-based-features} where two different objects might share a similar histogram can be solved by using texture-based features to differentiate them, e.g. green tree leaves and green grass. These can be discerned by using a variety of features such as Tamura features, which extract information including coarseness, contrast, directionality, linelikeness, regularity and roughness of the objects \cite{amir2003ibm} or Gabor filters, which filter the frequency content in specific directions to detect similar patterns in localised regions \cite{manjunath1996texture}. 
+Texture-based features are often used in parallel with colour-based features. The aforesaid problem from Section \ref{sec:color-based-features}, where two different objects might share a similar histogram, can be solved by using texture-based features to differentiate them, e.g. green tree leaves and green grass. These can be discerned by using a variety of features such as Tamura features, which extract information including coarseness, contrast, directionality, linelikeness, regularity and roughness of the objects \cite{amir2003ibm} or Gabor filters, which filter the frequency content in specific directions to detect similar patterns in localised regions \cite{manjunath1996texture}. 
 
 \subsubsection{Shape-based Features}
 
@@ -179,7 +166,7 @@ These shape-based features have many desired properties, such as identifiability
 \subsection{Dynamic Features}
 \label{sec:dynamic-features}
 
-In contrast to static features, which can be extracted from individual video frames, dynamic features require the continuity between consecutive frames to extract relevant visual descriptors, making use of the temporal aspect of the video mentioned in section \ref{sec:temporal-aspect-videos}). These features can be divided into two subcategories: object features and motion features. However, before reviewing the techniques used to extract these features, it is important to specify what defines a good visual feature.
+In contrast to static features, which can be extracted from individual video frames, dynamic features require the continuity between consecutive frames to extract relevant visual descriptors, making use of the temporal aspect of the video mentioned in section \ref{sec:temporal-aspect-videos}). These features, which both rely on features that can be tracked across frames, can be divided into two subcategories: object features and motion features. However, before reviewing the techniques used to extract these features, it is important to specify what defines a good visual feature that can be tracked.
 
 \subsubsection{Points of Interest}
 
@@ -195,43 +182,48 @@ Figure \ref{fig:monaco_palace_features} shows an image with coloured windows use
 \caption{\label{fig:monaco_palace_features}An image of the Palace of Monaco with coloured windows representing poor features in blue (flat), edges in green, and good features in red (corners).}
 \end{figure}
 
-Once expressive and unique descriptors like corners are detected, they can be used to extract object features and motion features, and to compute similarities between the query video and the videos in the database.\\
-
-Many different algorithms exist to find robust features and interest points. For example, Sobel operators can be used to detect edges, and Shi and Tomasi algorithms and Harris operators can be used to detect corners \cite{bradski2008opencv}. Combinations of both can be used, by detecting edges to facilitate corner detection.
+Once expressive and unique descriptors like corners are detected, they can be used to extract object features and motion features, and to compute similarities between the query video and the videos in the database. Many different algorithms exist to find robust features and interest points. For example, Sobel operators can be used to detect edges, and Shi and Tomasi algorithms and Harris operators can be used to detect corners \cite{bradski2008opencv}. Combinations of both can be used, by detecting edges to facilitate corner detection.
 
 \subsubsection{Object Features}
 
-Object features correspond to objects that are detected using the colour, texture and size of image regions. Some of the most common objects usually detected in videos are faces, as many CBVR systems use them to compute similarities between videos \cite{sivic2005face}. However, extracting object features is time-consuming and expensive in terms of required processing power, which is why CBVR algorithms either focus on detecting specific sets of objects rather than general objects that may be present in a scene, or on static features.
+Object features correspond to objects that are detected using the colour, texture and size of image regions. Some of the most common objects usually detected in videos are faces, as many CBVR systems use them to compute similarities between videos \cite{sivic2005face}. However, extracting object features is time-consuming and expensive in terms of required processing power, which is why CBVR algorithms either focus on detecting specific sets of objects rather than general objects that may be present anywhere in an image; or focus on extracting static features.
 
 \subsubsection{Motion Features}
 
-Motion features are a unique characteristic of videos that are absent from images. All of the above-mentioned features can be extracted from images, apart from motion features, which are unique to videos. These can originate from two sources: either background camera movement or foreground object movement. Motion features can therefore be classified into two categories: camera-based motion features and object-based motion features. \textit{Camera-based motion features} include movement such as camera zooms, pannings and tiltings. \textit{Object-based motion features} are more interesting than the former since they can describe key objects in the shot, which can be further classified into \cite{hu2011survey}:
-
-\begin{figure}[h] 
-    \centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/optical_flow.png}}
+Motion features are a unique characteristic of videos that are absent from images. All of the above-mentioned features can be extracted from images, apart from motion features, which are unique to videos. These can originate from two sources: either background camera movement or foreground object movement. Motion features can therefore be classified into two categories: camera-based motion features and object-based motion features. \textit{Camera-based motion features} include movement such as camera zooms, pannings and tiltings. \textit{Object-based motion features} are more interesting than the former since they can describe key objects in the shot, which can be further classified into statistics-based and trajectory-based features \cite{hu2011survey}:
+    
+\begin{itemize}
+    
+    \item \textit{Statistics-based} motion features are extracted to model the local and global distributions of motion points in the video. For example, a causal Gibbs model can be used to represent the spatiotemporal distribution of local motion measurements in a shot once the trajectory-based motion features have been used to prune undesired camera motions \cite{fablet2002gibbsmodel}. This type of motion features is very cheap to extract but lacks depth as they cannot represent object actions and object relationships accurately.
+    
+    \item \textit{Trajectory-based} motion features are extracted by representing object trajectories in a shot. Despite the long list of algorithms that exist to obtain these features, this section will focus on differentiating sparse and dense techniques with one of the most popular methods: optical flow. Optical flow can be defined as the relative motion between the visual content in a shot and the camera \cite{bradski2008opencv}:
+    
+    \begin{figure}[h] 
+    \centerline{\includegraphics[width=0.7\textwidth]{figures/litsurvey/optical_flow.png}}
     \caption{\label{fig:optical_flow}Visualisation of sparse and dense optical flow algorithms on different shots.}
     \end{figure}
     
-\begin{itemize}
-    \item \textit{Statistics-based} motion features are extracted to model the local and global distributions of motion points in the video. For example, a causal Gibbs model can be used to represent the spatiotemporal distribution of local motion measurements in a shot once the trajectory-based motion features have been used to prune undesired camera motions \cite{fablet2002gibbsmodel}. This type of motion features is very cheap to extract but lacks depth as they cannot represent object actions and object relationships accurately.
-    \item \textit{Trajectory-based} motion features are extracted by representing object trajectories in a shot. A long list of algorithms exist to obtain these features such as the, but this section will focus on differentiating sparse and dense techniques with one of the most popular methods: optical flow. Optical flow can be defined as the relative motion between the visual content in a shot and the camera \cite{bradski2008opencv}:
-    
     \begin{itemize}
-        \item In \textit{sparse optical flow}, only a few pixels from the frames in a shot are used. Features describing objects, such as corners, are used to track an object's motion across the shot. However, these only give information about where certain parts of the object are going, which are then used to estimate the direction the overall object is moving towards. Sparse optical flows. For example, Figure \ref{fig:optical_flow} indicates the overall motion of a car by tracking only a few pixels from it.
-        \item On the other hand, \textit{dense optical flow} calculates the optical flow for every pixel in the frame. At each pixel of the frame, the direction and magnitude of that specific location are represented by an arrow, which can variate in direction and length (see Figure \ref{fig:dense_optical_flow_representation}).
-    \end{itemize}
         
-    \begin{figure}[h] 
-    \centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/dense_optical_flow_representation.png}}
-    \caption{\label{fig:dense_optical_flow_representation}A 3D and a 2D representation of dense optical flow. Each arrow represents the direction and magnitude of a specific pixel location, which can variate in direction and length.}
-    \end{figure}
-    
-    Object-based motion features have many applications outside of CBVR systems. One of these applications is calculating the optical flow of a shot to prune camera movements caused by unstable recording e.g. shaking hands movement \cite{wang2016actionregonition}. Compared to statistics-based features, trajectory-based features can be used to describe object actions, but they rely on multiple challenging tasks to function efficiently such as correct object tracking and automatic trajectory recording. Finally, object-based motion features can also be classified in a third category: objects' relationship-based motion features. However, these are not described in this literature review as they make use of the objects' symbolic representations, which is not relevant to this topic.
+        \item In \textit{sparse optical flow}, only a few pixels from the frames in a shot are used. Features describing objects, such as corners, are used to track an object's motion across the shot. However, these only give information about where certain parts of the object are going, which are then used to estimate the direction the overall object is moving towards. Sparse optical flows. For example, Figure \ref{fig:optical_flow} indicates the overall motion of a car by tracking only a few pixels from it.
+        
+        \item On the other hand, \textit{dense optical flow} calculates the optical flow for every pixel in the frame. At each pixel of the frame, the direction and magnitude of that specific location are represented by an arrow, which can variate in direction and length (see Figure \ref{fig:dense_optical_flow_representation}).
+        
+    \end{itemize}
+
 \end{itemize}
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/dense_optical_flow_representation.png}}
+\caption{\label{fig:dense_optical_flow_representation}A 3D and a 2D representation of dense optical flow. Each arrow represents the direction and magnitude of a specific pixel location, which can variate in direction and length.}
+\end{figure}
+
+Object-based motion features have many applications outside of CBVR systems. One of these applications is calculating the optical flow of a shot to prune camera movements caused by unstable recording e.g. shaking hands movement \cite{wang2016actionregonition}. Compared to statistics-based features, trajectory-based features can be used to describe object actions, but they rely on multiple challenging tasks to function efficiently such as correct object tracking and automatic trajectory recording. Finally, object-based motion features can also be classified in a third category: objects' relationship-based motion features. However, these are not described in this literature review as they make use of the objects' symbolic representations, which is not relevant to this topic.
 
 % ----------------------------------------------------
 
 \subsection{Models for Pattern Matching}
+\label{sec:litsurvey-models-pattern-matching}
 
 So far, the simplest model that can be used for pattern matching has been introduced in Section \ref{sec:color-based-features}, which is the histogram model. Distributions of features are represented in the form of histograms and used to calculate the similarities between each other by using simple distance measuring algorithms adopting nearest neighbour approaches. More advanced and efficient models are briefly reviewed in this section, ranging from Bags-of-Visual-Words models before ending with a quick word on deep learning models.
 

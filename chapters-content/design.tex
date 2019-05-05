@@ -1,4 +1,4 @@
-Now that the requirements necessary to build the system have been formulated, potential solutions to fulfil the list of requirements from Chapter \ref{ch:chapter3} for each aspect of the system can now be analysed before choosing a final solution. Throughout this chapter, the requirements established from the previous chapter referred as ``F'' stand for functional requirements, while requirements referred as ``NF'' stand for non-functional requirements. The first section of this chapter will focus on the programming language that will be used to build the system. Next, the second section explores different solutions for the system's pipeline, starting with the off-line feature extraction phase, followed by the online retrieval phase, and ending with the database pre-processing phase. Finally, the last section will focus on general design decisions such as the type of interface, the type of file to store the features in and the type of videos to populate the database with. These two sections are used to conclude the chapter with a detailed outline of the final chosen solutions for each aspect of the system, which are all used to eventually bring the system to life.
+Now that the requirements necessary to build the system have been formulated, potential solutions to fulfil the list of requirements from Chapter \ref{ch:chapter3} for each aspect of the system can now be analysed before choosing a final solution. Throughout this chapter, the requirements established from the previous chapter referred as ``F'' stand for functional requirements, while requirements referred as ``NF'' stand for non-functional requirements. The first section of this chapter will focus on the programming language that will be used to build the system. Next, the second section explores different solutions for the system's pipeline, starting with the off-line feature extraction phase, followed by the on-line retrieval phase, and ending with the database pre-processing phase. Finally, the last section will focus on general design decisions such as the type of interface, the type of file to store the features in and the type of videos to populate the database with. These two sections are used to conclude the chapter with a detailed outline of the final chosen solutions for each aspect of the system, which are all used to eventually bring the system to life.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,17 +22,17 @@ For a complete review of the main pros and cons considered between when deciding
 
 \section{Pipeline Design Analysis}
 
-To chose a global design solution for the system, it is easier to break down the system's pipeline into different phases and review the numerous potential designs for each of these phases. The system pipeline can be split into three different phases, as shown in the concise diagram in Figure \ref{fig:basic-cbvr-diagram}:
+To chose a global design solution for the system, it is easier to break down the system's pipeline into different phases and review the numerous potential designs for each of these phases. Based on the models described in the Literature \& Technology Survey in Section \ref{sec:color-based-features} and Section \ref{sec:litsurvey-models-pattern-matching}, and taking into consideration the time constraints and scope of the project, histograms, which correspond to the simplest method listed, are used with a training/testing approach. Features are extracted and stored in histograms for database videos in the first phase before being compared to a query's histograms in the second phase. A third phase can be added for video processing techniques stated in Section \ref{sec:movie-pre-processing}. Therefore, the system pipeline can be split into three different phases, as shown in the concise diagram in Figure \ref{fig:basic-cbvr-diagram}:
 
 \begin{itemize}
-    \item \textbf{Off-line Feature Extraction Phase}. This phase corresponds to the ``training'' phase of the system, where features are extracted from each video in the database and then stored in data files to be later used in the retrieval phase.
-    \item \textbf{Online Retrieval Phase}. This phase is affiliated to the ``testing'' phase of the system, where a single video query is matched to one of the database videos by extracting the same features from the previous phase and comparing them to the stored features.
+    \item \textbf{Off-line Feature Extraction Phase}. This phase corresponds to the ``training'' phase of the system, where features are extracted from each video in the database and then stored in data files to be later used in the on-line retrieval phase.
+    \item \textbf{On-line Retrieval Phase}. This phase is affiliated to the ``testing'' phase of the system, where a single video query is matched to one of the database videos by extracting the same features from the previous phase and comparing them to the stored features.
     \item \textbf{Database Pre-processing Phase}. This is an optional phase where the database videos are processed before the off-line feature extraction phase to improve the accuracy and speed of the database videos feature extraction.
 \end{itemize}
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=1.1\textwidth]{figures/design/basic_cbvr_phases.png}}
-\caption{\label{fig:basic-cbvr-diagram}Basic CBVR system diagram.}
+\caption{\label{fig:basic-cbvr-diagram}Basic CBVR system diagram depicting a high-level pipeline separated into three phases.}
 \end{figure}
 
 \begin{comment}
@@ -45,18 +45,18 @@ Explore possible options for different sections of the system, such as:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Offline Feature Extraction Phase}
+\subsection{Off-line Feature Extraction Phase}
 \label{sec:design-offline-feature-extraction}
 
-Retracing the Section \ref{sec:visual-content-extraction} of Literature \& Technology Survey, the first distinction between the possible types of features that could be extracted from the videos is static and dynamic features. Because static features extraction is a much less challenging task to code and to compute than dynamic feature extraction, while providing almost as much information as dynamic features and being cheaper to compute, static features are therefore the logical choice for this project. However, there are many different choices of static features to extract, including colour-based, texture-based and shape-based features. Texture and shape-based features are more suitable for images than videos, while colour-based videos are suitable for both. Therefore, colour-based features are the features used to describe the videos, fulfilling requirement F2.\\
+Retracing the Section \ref{sec:visual-content-extraction} of Literature \& Technology Survey, the first distinction between the possible types of features that could be extracted from the videos is static and dynamic features. Because static features extraction is a much less challenging task to code and to compute than dynamic feature extraction, while providing almost as much information as dynamic features and being cheaper to compute \cite{hu2011survey}, static features are therefore the logical choice for this project. However, there are many different choices of static features to extract, including colour-based, texture-based and shape-based features. Texture and shape-based features are more suitable for images than videos, while colour-based videos are suitable for both. Therefore, colour-based features are the features used to describe the videos, fulfilling requirement F2.\\
 
-The most efficient type of model for storing colour-based features is histograms, which are described in Section \ref{sec:color-based-features}, Chapter \ref{ch:chapter2}. Different histograms exist for a variety of colour spaces depending on the application, with 2D histograms for \textit{greyscale} and \textit{RGB} colour spaces, and 3D histograms for the \textit{HSV} colour space. These are the three most used colour models for describing videos and their frames (which can be treated as images).\\ 
+The most efficient type of model for representing colour-based features is histograms, which are described in Section \ref{sec:color-based-features}, Chapter \ref{ch:chapter2}. Different histograms exist for a variety of colour spaces depending on the application, with 2D histograms for \textit{greyscale} and \textit{RGB} colour spaces, and 3D histograms for the \textit{HSV} colour space. Because these are the three most used colour models for describing videos and their frames, and the most accessible ones based on the third-party libraries available for Python, they are the three histograms models chosen for colour feature extraction.\\ 
 
-To maximise speed, a compact signature should be generated for each video. The inspiration of representing a video in a unique and compact signature originates from \cite{araujo2017i2v} who uses Fisher Vectors to construct compact signatures for the database videos and the query video. This project applies Araujo's idea of creating such a signature for the database videos and the query video to histograms, where histograms are generated for multiple frames of video and are then averaged into a single histogram for each model. Once generated, the condensed signatures are then stored in files in order to be easily re-used in the online retrieval phase rather than being re-calculated in this phase every time. The design choices for storing the compact signatures, also known as feature vectors, are explored in more detail in Section \ref{sec:design-feature-storing-file-type}. 
+To maximise speed, a compact signature should be generated for each video. The inspiration of representing a video in a unique and compact signature originates from \cite{araujo2017i2v} who uses fisher vectors to construct compact signatures for the database videos and the query video. This project applies Araujo's idea of creating such a signature for the database videos and the query video to histograms, where histograms are generated for multiple frames of video and are then averaged into a single histogram for each model. Once generated, the feature vectors are then stored in files in order to be easily re-used in the on-line retrieval phase rather than being re-calculated in this phase every time. The design choices for storing the compact signatures, also known as ``feature vectors'', are explored in more detail in Section \ref{sec:design-feature-storing-file-type}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Online Retrieval Phase}
+\subsection{On-line Retrieval Phase}
 \label{sec:design-online-retrieval}
 
 \subsubsection{Similarity Measurement}
@@ -95,7 +95,7 @@ Some metrics are more complex than others, which, coupled with the colour model 
 \subsubsection{Query Video Pre-processing}
 \label{sec:design-query-video-processing}
 
-Drastic improvements in accuracy can be found by pre-processing the query video. The query video corresponds to the video that a user records with a mobile-device and uses as input in the system in order to be matched with one of the database videos. A commercial application would allow the user to directly record a video from the application, which would, in turn, be used to extract its features and compare them to the features of the database videos. Based on current commercial computer vision systems, e.g. Shazam for music recognition, the system could even start processing the video as it is being written rather than waiting for it to be saved. However, these are design aspects that would be required if the system were to be released to the public on a large scale. This is not the case since the goal is to develop the matching algorithm and complete the pipeline, meaning the query video may be a recording of one of the database videos used as input once the program starts running in the online retrieval phase. To simulate a realistic query and a potential commercial system, the video should be pre-recorded through a mobile device and used , fulfilling requirement F6, rather than being recorded directly through a mobile application, as pointed out by the low-priority requirement F12.\\
+Drastic improvements in accuracy can be found by pre-processing the query video. The query video corresponds to the video that a user records with a mobile-device and uses as input in the system in order to be matched with one of the database videos. A commercial application would allow the user to directly record a video from the application, which would, in turn, be used to extract its features and compare them to the features of the database videos. Based on current commercial computer vision systems, e.g. Shazam for music recognition, the system could even start processing the video as it is being written rather than waiting for it to be saved. However, these are design aspects that would be required if the system were to be released to the public on a large scale. This is not the case since the goal is to develop the matching algorithm and complete the pipeline, meaning the query video may be a recording of one of the database videos used as input once the program starts running in the on-line retrieval phase. To simulate a realistic query and a potential commercial system, the video should be pre-recorded through a mobile device and used , fulfilling requirement F6, rather than being recorded directly through a mobile application, as pointed out by the low-priority requirement F12.\\
 
 Recording the query through a mobile device gives rise to multiple challenges, as specified in Section \ref{sec:litsurvey-cbvr-4-mobile-devices}. Indeed, some of those challenges include undesired camera movements due to shaking hands and the targeted screen itself not taking up the entire frame, resulting in queries of poor quality. The former can be fixed by applying video stabilisation to the video (requirement F11), while the latter can be solved by selecting a ROI\footnote{Region of Interest} (requirement F7). Nonetheless, selecting an ROI can be tricky as the query needs to be recorded in ideal conditions to maximise the matching accuracy. Four different types of query conditions are depicted in Figure \ref{fig:difference-query-video-issues}:
 \begin{itemize}
@@ -116,7 +116,7 @@ On the grounds that the system should expect the worst case query, down-scaled a
 
 \subsection{Database Pre-Processing Phase}
 
-The database pre-processing phase's aim is to modify the database videos to improve the efficiency and speed of the compact signature generation. To achieve this, a shot boundary detection algorithm can be applied to each database video to extract a single frame per shot. This would cut down the size of a video to a tiny fraction of the original frames (ideally, one frame per shot), translating into fewer frames to be analyse when generating the average histogram. The global threshold approach, which is the simplest and most efficient one (see Section \ref{sec:litsurvey-shot-boundary-detection}, can be used to extract those frames. One of the distance metrics mentioned earlier in Section \ref{sec:design-online-retrieval-similarity-measurement} can be used to compare the histograms from consecutive frames, and detect shot boundaries when the distance is larger than the global threshold.
+The database pre-processing phase's aim is to modify the database videos to improve the efficiency and speed of the feature vector generation. To achieve this, a shot boundary detection algorithm can be applied to each database video to extract a single frame per shot. This would cut down the size of a video to a tiny fraction of the original frames (ideally, one frame per shot), translating into fewer frames to be analyse when generating the average histogram. The global threshold approach, which is the simplest and most efficient one (see Section \ref{sec:litsurvey-shot-boundary-detection}, can be used to extract those frames. One of the distance metrics mentioned earlier in Section \ref{sec:design-online-retrieval-similarity-measurement} can be used to compare the histograms from consecutive frames, and detect shot boundaries when the distance is larger than the global threshold.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -134,7 +134,7 @@ With Python being the chosen programming language to implement the system and th
 
 The only pieces of information that need to be displayed are the following:
 \begin{itemize}
-    \item Progress of current phase, e.g. during the offline feature extraction phase, specify how many videos have been processed and how many are left (see requirement F5). Visual cues, such as spinners, to can be used to indicate that work is being carried out by the program.
+    \item Progress of current phase, e.g. during the off-line feature extraction phase, specify how many videos have been processed and how many are left (see requirement F5). Visual cues, such as spinners, to can be used to indicate that work is being carried out by the program.
     \item Histograms: display the generated histograms for each video.
     \item Manual Cropping: display the video to have the user manually select the region of interest.
     \item Results (see requirement F9):
@@ -152,13 +152,13 @@ Most of the information previously mentioned can be displayed directly in the co
 \subsection{Feature Storing File Type}
 \label{sec:design-feature-storing-file-type}
 
-The features extracted during the offline feature extraction phase (see Section \ref{sec:design-offline-feature-extraction}) and used during the online retrieval phase (see Section \ref{sec:design-online-retrieval}) can either be stored in text files or binary files. Due to the small amount of spread data (three histograms for each video) and the advantages of being able to view the data being written to the text files for debugging purposes, plain text files are the chosen file types for storing the features extracted from the database videos, satisfying requirement F3. Additionally, now that Python has been chosen as the programming language, functions from the NumPy library can be used to quick I/O operations when saving the data in plain text files, fulfilling requirement F4. For a complete review of the pros and cons between text files and binary files, see Appendix \ref{ch:appendix-comparison-text-vs-binary}.
+The features extracted during the off-line feature extraction phase (see Section \ref{sec:design-offline-feature-extraction}) and used during the on-line retrieval phase (see Section \ref{sec:design-online-retrieval}) can either be stored in text files or binary files. Due to the small amount of spread data (three histograms for each video) and the advantages of being able to view the data being written to the text files for debugging purposes, plain text files are the chosen file types for storing the features extracted from the database videos, satisfying requirement F3. Additionally, now that Python has been chosen as the programming language, functions from the NumPy library can be used to quick I/O operations when saving the data in plain text files, fulfilling requirement F4. For a complete review of the pros and cons between text files and binary files, see Appendix \ref{ch:appendix-comparison-text-vs-binary}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Database videos}
 
-Although the goal of the project is to eventually work with feature-length movies, the system will mainly be tested with short videos ranging between 7 and 14 seconds (see requirement F25). Indeed, using feature-length movies is not necessary to test the different stages of the system pipeline, and would not meet requirement F24 since they are copyrighted and not re-usable. A feature-length movie can be used to test the database pre-processing phase rather than the entire pipeline (see requirement F27), while the short videos can be used to test the combination of the offline feature extraction and online retrieval phases.
+Although the goal of the project is to eventually work with feature-length movies, the system will mainly be tested with short videos ranging between 7 and 14 seconds (see requirement F25). Indeed, using feature-length movies is not necessary to test the different stages of the system pipeline, and would not meet requirement F24 since they are copyrighted and not re-usable. A feature-length movie can be used to test the database pre-processing phase rather than the entire pipeline (see requirement F27), while the short videos can be used to test the combination of the off-line feature extraction and on-line retrieval phases.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -179,7 +179,7 @@ Although the goal of the project is to eventually work with feature-length movie
         \end{enumerate}
     \end{enumerate}
     
-    \item \underline{\textbf{Offline Feature Extraction Phase}}:
+    \item \underline{\textbf{Off-line Feature Extraction Phase}}:
     \begin{enumerate}
         \item \textbf{Types of feature}: static colour-based features in the form of colour histograms.
         \item \textbf{Types of Histograms Models}:
@@ -188,10 +188,10 @@ Although the goal of the project is to eventually work with feature-length movie
             \item RGB
             \item HSV
         \end{enumerate}
-        \item \textbf{Compact Signature / Feature Vector}: Averaged histogram (for each histogram model)
+        \item \textbf{Compact Signature / Feature Vector}: Averaged histogram (for each of the three histogram models)
     \end{enumerate}
     
-    \item \underline{\textbf{Online Retrieval}}: 
+    \item \underline{\textbf{On-line Retrieval}}: 
     \begin{enumerate}
         \item \textbf{Distance metrics}:
             \begin{enumerate}
