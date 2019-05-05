@@ -6,7 +6,7 @@ The following requirements are divided between non-functional and functional sec
 
 \subsection{System Requirements}
 
-To establish the system requirements, the system can be broken down into three phases. Based on the models described in the Literature \& Technology Survey in Section \ref{sec:color-based-features} and Section \ref{sec:litsurvey-models-pattern-matching}, and taking into consideration the time constraints and scope of the project, a training/testing approach is adopted. For each database video, features are extracted and stored in the first phase before being compared to a query's features in the second phase. A third phase can be added based on the video processing techniques stated in Section \ref{sec:movie-pre-processing}.
+To establish system requirements, the system can be broken down into three phases. Based on the models described in the Literature \& Technology Survey in Section \ref{sec:color-based-features} and Section \ref{sec:litsurvey-models-pattern-matching}, and taking into consideration the time constraints and scope of the project, a training/testing approach is adopted. For each database video, features are extracted and stored in the first phase before being compared to a query's features in the second phase. A third phase can be added based on the video processing techniques stated in Section \ref{sec:movie-pre-processing}.
 
 \subsubsection{Off-line Feature Extraction Phase}
 
@@ -15,11 +15,11 @@ These requirements concern the off-line feature extraction phase where the syste
 \begin{enumerate}[label=F\arabic*]
 
     \item \textbf{The system \underline{must} run this phase a single time without requiring to be executed again for the next phase}.\\
-    The features stored in files must be re-used in the next phase rather than being generated every time. The system \textbf{must} re-ingest the data whenever a change is carried out in the database e.g. a video has been added or a video has been removed.\\
+    The features stored in files must be re-used in the next phase rather than being generated every time. The system \textbf{must} re-ingest the data whenever a change is carried out in the database, e.g. a video has been added, or a video has been removed.\\
     Priority 1.
     
     \item \textbf{Simple features that are proven to work efficiently with videos \underline{must} be chosen to be extracted.}\\
-    Due to the nature of the project, a line must be drawn between the complexity of the feature being extracted to represent the videos and the efficiency of working with such a feature. For example, if the feature is very complicated to extract and use, but does not offer many more advantages than a simpler feature to extract and use, then the simpler feature should be used.\\
+    Due to the nature of the project, a line must be drawn between the complexity of the feature being extracted to represent the videos and the efficiency of working with such a feature. For example, if the feature is very complicated to extract and use, but does not offer many more advantages than a simpler feature to extract and use, then the more straightforward feature should be used.\\
     Priority 1.
     
     \item \textbf{The system \underline{must} store the extracted features it used for learning in files for future re-use in the on-line retrieval phase.}\\
@@ -38,7 +38,7 @@ These requirements concern the off-line feature extraction phase where the syste
 
 \subsubsection{On-line Retrieval Phase}
 
-These requirements concern the retrieval of the system, where the same extracted features from the previous phase are extracted from the query video and compared to the stored features from each database video by calculating the distance between between these features.
+These requirements concern the retrieval of the system, where the same extracted features from the previous phase are extracted from the query video and compared to the stored features from each database video by calculating the distance between these features.
 
 \begin{enumerate}[label=F\arabic*,resume]
 
@@ -51,11 +51,11 @@ These requirements concern the retrieval of the system, where the same extracted
     Priority 1.
     
     \item \textbf{The system \underline{must} use well-known distance metrics to calculate the distances between the query's feature vectors and the database videos' feature vectors.}\\
-    Hundreds of metrics exist, but some are more efficient for the task at hand. A good indication that a distance metric is good for the task at hand is its availability for popular programming languages and their mainstream third-party libraries.\\
+    Hundreds of metrics exist, but some are more efficient for the task at hand. A good indication that a distance metric is useful for the task at hand is its availability for popular programming languages and their mainstream third-party libraries.\\
     Priority 1.
     
     \item \textbf{The system \underline{must} display the results once the classification has been completed.}\\
-    The retrieved video \textbf{must} be emphasised over the other videos to clearly point out that the result has been found. Additional results such as individual distances between the query and each video can be displayed as well e.g. tables.\\
+    The retrieved video \textbf{must} be emphasised over the other videos to clearly point out that the result has been found. Additional results such as individual distances between the query and each video can be displayed as well, e.g. tables.\\
     Priority 1.
     
     \item \textbf{The system \underline{must} be evaluated using reliable performance measurements.}\\
@@ -78,7 +78,7 @@ These requirements concern the retrieval of the system, where the same extracted
 
 \subsubsection{Database Pre-processing}
 
-These requirements concern the database pre-processing phase of the system. This phase concerns the operations to carry out the the database videos to improve the off-line feature extraction and on-line retrieval phases.
+These requirements concern the database pre-processing phase of the system. This phase concerns the operations to carry out the database videos to improve the off-line feature extraction and on-line retrieval phases.
 
 \begin{enumerate}[label=F\arabic*,resume]
 
@@ -121,14 +121,14 @@ These requirements concern the database pre-processing phase of the system. This
     \item \textbf{The system's code \underline{must} be source controlled using Git and backed up on GitHub in a private repository.}\\
     This will enable the code to be safely backed and offer a timeline of the system's development phase.\\
     Priority 1.
-    	
-	\item \textbf{The system \underline{should} follow coding style guidelines set for the programming language of choice.}\\
-	This will ensure that the code will be written at the highest standard by following professional practices and will be more easily readable by industry experts.\\
-	Priority 2.
+        
+    \item \textbf{The system \underline{should} follow coding style guidelines set for the programming language of choice.}\\
+    This will ensure that the code will be written at the highest standard by following professional practices and will be more easily readable by industry experts.\\
+    Priority 2.
 
-	\item \textbf{The system \underline{should} use third-party libraries for complex aspects of the software to avoid rewriting complicated code that already exists and is easily accessible.}\\
-	Rewriting code that already exists could be a waste of time for a project with such as shirt time-frame. Therefore, using third-party libraries will mean more time can be spent designing and implementing high-level concepts of the system.\\
-	Priority 2.
+    \item \textbf{The system \underline{should} use third-party libraries for complex aspects of the software to avoid rewriting complicated code that already exists and is easily accessible.}\\
+    Rewriting code that already exists could be a waste of time for a project with such as shirt time-frame. Therefore, using third-party libraries will mean more time can be spent designing and implementing high-level concepts of the system.\\
+    Priority 2.
 
     \item \textbf{The system \underline{may} be covered with unit tests and integration tests.}\\
     To ensure that different core aspects of the system work as expected, unit tests can be written around these sections. Additionally, multiple core aspects can be tested as a whole with integration tests.\\
@@ -163,15 +163,15 @@ These requirements concern the database pre-processing phase of the system. This
 \begin{enumerate}[label=NF\arabic*]
 
     \item \textbf{The latest technologies \underline{must} be used to build the system.}\\
-	The latest versions of programming languages and libraries must be used to ensure that the system takes advantage of up-to-date technology.\\
-	Priority 1.
-	
-	\item \textbf{The system \underline{should} not be built with external users in mind.}\\
-	It should only be run by the system's creator or users with a background in computer science who could understand how to run it using the README file provided.\\
-	Priority 2.
+    The latest versions of programming languages and libraries must be used to ensure that the system takes advantage of up-to-date technology.\\
+    Priority 1.
+    
+    \item \textbf{The system \underline{should} not be built with external users in mind.}\\
+    It should only be run by the system's creator or users with a background in computer science who could understand how to run it using the README file provided.\\
+    Priority 2.
 
     \item \textbf{The interface \underline{should} make the results easy to read.}\\
-    This could be achieved with the use of large fonts, colours and bold text. Text used to discern the main results from less important output should be emphasized.
+    This could be achieved with the use of large fonts, colours and bold text. The text used to discern the main results from less important output should be emphasized.
     
     \item \textbf{The system \underline{may} run smoothly and uninterrupted.}\\
     Priority 3.

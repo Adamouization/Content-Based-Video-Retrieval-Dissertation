@@ -39,20 +39,14 @@ To chose a global design solution for the system, it is easier to break down the
 \caption{\label{fig:basic-cbvr-diagram}Basic CBVR system diagram depicting a high-level pipeline separated into three phases.}
 \end{figure}
 
-\begin{comment}
-Explore possible options for different sections of the system, such as:
-    \begin{itemize}
-        \item types of features to extract (why static colour features and not object/motion features) - histograms are very popular with videos, calculations are easier, implementation is easier, results are as efficient
-        \item types of learning models (histogram matching, BoW-approach VS Neural Network)
-    \end{itemize}
-\end{comment}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Off-line Feature Extraction Phase}
 \label{sec:design-offline-feature-extraction}
 
-Retracing the Section \ref{sec:visual-content-extraction} of Literature \& Technology Survey, the first distinction between the possible types of features that could be extracted from the videos is static and dynamic features. Because static features extraction is a much less challenging task to code and to compute than dynamic feature extraction, while providing almost as much information as dynamic features and being cheaper to compute \cite{hu2011survey}, static features are therefore the logical choice for this project. However, there are many different choices of static features to extract, including colour-based, texture-based and shape-based features. Texture and shape-based features are more suitable for images than videos, while colour-based videos are suitable for both. Therefore, colour-based features are the features used to describe the videos, fulfilling requirement F2.\\
+Retracing Section \ref{sec:visual-content-extraction} of the Literature \& Technology Survey, the first distinction between the possible types of features that could be extracted from the videos is static and dynamic features. Because static features extraction is a much less challenging task to code and to compute than dynamic feature extraction, while providing almost as much information as dynamic features and being cheaper to compute \cite{hu2011survey}, static features are therefore the logical choice for this project. However, there are many different choices of static features to extract, including colour-based, texture-based and shape-based features. Texture and shape-based features are more suitable for images than videos, while colour-based videos are suitable for both. Therefore, colour-based features are the features used to describe the videos, fulfilling requirement F2.\\
 
 The most efficient type of model for representing colour-based features is histograms, which are described in Section \ref{sec:color-based-features}, Chapter \ref{ch:chapter2}. Different histograms exist for a variety of colour spaces depending on the application, with 2D histograms for \textit{greyscale} and \textit{RGB} colour spaces, and 3D histograms for the \textit{HSV} colour space. Because these are the three most used colour models for describing videos and their frames, and the most accessible ones based on the third-party libraries available for Python, they are the three histograms models chosen for colour feature extraction.\\ 
 
@@ -92,19 +86,19 @@ Using these metrics from the OpenCV and SciPy libraries satisfies requirement F2
 
 Smaller results\footnote{or larger results, depending on the metric} between two histograms using the aforementioned metrics translates to similarities between those histograms. Once the distance between the query video and each database video has been calculated, the smallest or largest distance is used to find the best match. The number of correct matches made, also known as \textit{true positives}, and the number of incorrect matches, also known as \textit{false positives}, can be used to evaluate the system's accuracy (see requirement F10).\\
 
-A few metrics are more complex than others, which, coupled with the colour model used, means that some distances have more importance than others. Therefore, the importance of the distances depends on the colour space used. Following this logic, grey scale histograms have a low importance as they only use one channel, RGB histograms have a medium importance as they use three channels, and HSV histograms have the highest importance as they describe the colours in a frame with more detail than RGB.
+A few metrics are more complex than others, which, coupled with the colour model used, means that some distances have more importance than others. Therefore, the importance of distances depends on the colour space used. Following this logic, grey scale histograms have low importance as they only use one channel, RGB histograms have medium importance as they use three channels, and HSV histograms have the highest importance as they describe the colours in a frame with more detail than RGB.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Query Video Pre-processing}
 \label{sec:design-query-video-processing}
 
-Drastic improvements in accuracy can be made by pre-processing the query video in the on-line retrieval phase. The query video corresponds to the video that a user records with a mobile-device and uses as input in the system in order to be matched with one of the database videos. A commercial application would allow the user to directly record a video from the application, which would, in turn, be used to extract its features and generate its feature vectors before comparing them to the feature vectors of the database videos. Based on current commercial computer vision systems, e.g. Shazam for music recognition, the system could even start processing the video as it is being written rather than waiting for it to be saved. However, these are design aspects that would be required if the system were to be released to the public on a large scale. This is not the case since the goal is to develop the matching algorithm and complete a functional pipeline, meaning the query video may be a recording of one of the database videos used as input once the program starts running in the on-line retrieval phase. To simulate a realistic query and a potential commercial system, the video should be pre-recorded through a mobile device, fulfilling requirement F6, rather than being recorded directly through a mobile application, as pointed out by the low-priority requirement F12.\\
+Drastic improvements in accuracy can be made by pre-processing the query video in the on-line retrieval phase. The query video corresponds to the video that a user records with a mobile-device and uses as input in the system in order to be matched with one of the database videos. A commercial application would allow the user to directly record a video from the application, which would, in turn, be used to extract its features and generate its feature vectors before comparing them to the feature vectors of the database videos. Based on current commercial computer vision systems, e.g. Shazam for music recognition, the system could even start processing the video as it is being written rather than waiting for it to be saved. However, these are design aspects that would be required if the system were to be released to the public on a large scale. This is not the case since the goal is to develop the matching algorithm and complete a functional pipeline, meaning the query video may be a recording of one of the database videos used as an input once the program starts running in the on-line retrieval phase. To simulate a realistic query and a potential commercial system, the video should be pre-recorded through a mobile device, fulfilling requirement F6, rather than being recorded directly through a mobile application, as pointed out by the low-priority requirement F12.\\
 
 Recording the query through a mobile device's camera gives rise to multiple challenges. First, there is potential for large visual differences between the query clip and the database video due to the capture conditions \cite{liu2014mobilevideosearch} \cite{wang2016actionregonition}. Some unfavourable capture conditions include:
 \begin{itemize}
     \item Undesired camera movements due to unstable recording, e.g. unstable recording, shaking hands.
-    \item Low-quality query due to poor user recording, e.g. videos recorded at a distance (down-scaled) and skewed. Low-quality can also be caused by the environmental conditions, e.g. lighting and reflections.
+    \item Low-quality query due to poor user recording, e.g. videos recorded at a distance (down-scaled) and skewed. Low-quality can also be caused by environmental conditions, e.g. lighting and reflections.
     \item Video noise because of the camera sensor.
     \item Decoding artefacts caused by various file compression.
 \end{itemize}
@@ -128,7 +122,7 @@ The system should never expect ideal queries and always expect down-scaled and s
 
 \subsection{Database Pre-Processing Phase}
 
-The database pre-processing phase's aim is to modify the database videos to improve the efficiency and speed of the feature vector generation. To achieve this, a shot boundary detection algorithm can be applied to each database video to extract a single frame per shot. This would cut down the size of a video to a tiny fraction of the original frames (ideally, one frame per shot), translating into fewer frames to be analysed when generating the feature vectors. The global threshold approach, which is the simplest and most efficient one (see Section \ref{sec:litsurvey-shot-boundary-detection}, can be used to extract those frames. The distance metrics mentioned in Section \ref{sec:design-online-retrieval-similarity-measurement} can be used to compare consecutive frames' histograms and detect shot boundaries when the distance between two histograms is greater than the global threshold.
+The database pre-processing phase aims to modify the database videos to improve the efficiency and speed of the feature vector generation. To achieve this, a shot boundary detection algorithm can be applied to each database video to extract a single frame per shot. This would cut down the size of a video to a tiny fraction of the original frames (ideally, one frame per shot), translating into fewer frames to be analysed when generating the feature vectors. The global threshold approach, which is the simplest and most efficient one (see Section \ref{sec:litsurvey-shot-boundary-detection}, can be used to extract those frames. The distance metrics mentioned in Section \ref{sec:design-online-retrieval-similarity-measurement} can be used to compare consecutive frames' histograms and detect shot boundaries when the distance between two histograms is greater than the global threshold.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
