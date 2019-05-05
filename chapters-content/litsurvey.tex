@@ -230,20 +230,20 @@ Motion features are a unique characteristic of videos that are absent from image
 
 \subsection{Models for Pattern Matching}
 
-So far, only the simplest model that can be used for pattern matching has been discussed in Section \ref{sec:color-based-features}, which is the histogram model. Distributions of features represented in the form of histograms can be used to find the similarities using simple distance measuring algorithms adopting nearest neighbour approaches. More advanced and efficient models are briefly reviewed in this section, ranging from Bags-of-Visual-Words models to Deep Learning era models such as Neural Networks.
+So far, the simplest model that can be used for pattern matching has been introduced in Section \ref{sec:color-based-features}, which is the histogram model. Distributions of features are represented in the form of histograms and used to calculate the similarities between each other by using simple distance measuring algorithms adopting nearest neighbour approaches. More advanced and efficient models are briefly reviewed in this section, ranging from Bags-of-Visual-Words models to Deep Learning era models such as Neural Networks.
 
 \subsubsection{Bag-of-Visual-Words}
 
-The idea of a BoVW\footnote{Bag-of-Visual-Words} originates from text document analysis. Indeed, text documents can be represented as a bag of important keywords; excluding uninformative words such as ``the'' or ``it''. The BoW\footnote{Bag-of-Words} of the document is built by measuring the frequency of each keyword in the document. This BoW then allows the type of document to be predicted, e.g. a document with a high frequency of words such as ``racket'', ``serve'' and ``ball'' is likely to be a doucment about tennis. The opposite can be applied as well, with type of document predicting the frequency of words.\\
+The idea behind the BoVW\footnote{Bag-of-Visual-Words} model originates from the BoW\footnote{Bag-of-Words} model for text document analysis. Indeed, text documents can be represented as a bag of important keywords; excluding uninformative words such as ``the'' or ``it''. The BoW of the document is built by measuring the frequency of each keyword in the document. This BoW then allows the type of document to be predicted, e.g. a document with a high frequency of words such as ``racket'', ``serve'' and ``ball'' is likely to be a document about tennis. The opposite can be applied as well, where the type of the document can predict the frequency of keywords.\\
 
 This concept of BoW can be applied to images in the form of BoVW. Rather than describing actual words, the ``visual words'' correspond to features extracted from the image (the same features mentioned in Section \ref{sec:litsurvey-static-features} and Section \ref{sec:dynamic-features}), which are then clustered using algorithms such as k-means clustering or mean-shift. Once the features are grouped together, centroids (the middle of a cluster) can be extracted to represent a visual word \cite{yang2007bovw}, as shown in Figure \ref{fig:litsurvey-bovw}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=0.8\textwidth]{figures/litsurvey/bovw.png}}
-\caption{\label{fig:litsurvey-bovw}Visualisation of the generation of a BoVW.}
+\caption{\label{fig:litsurvey-bovw}Visualisation of the generation of a BoVW used to represent images with histograms counting the occurences of each visual word. Image courtesy of Yang,Jiang, Hauptmann and Ngo (2007).}
 \end{figure}
 
-% Histograms can be used by inputting a collection of visual words and a labelled training set of videos. For each video in the dataset, features are extracted and incremented in the related histogram. Once the training is accomplished, a new histogram can be generated for a query video (in a CBVR system) which will then be compared to the previously generated histograms for each dataset video. Example: H. Wang's implementation of BoW histogram \cite{wang2016actionregonition}. Fisher Vectors are an improvement on BoW \cite{araujo2017i2v}.\\
+With the BoVW now built, the image can be represented by a histogram counting the number of occurrences of each code word in the image, in a similar fashion that the frequency of keywords is counted for a text document. However, a large number of visual words need to be defined to avoid losing information when representing the image with the histogram; if there are too few visual words, then the histogram will be too coarse. With a dictionary of visual words, a classifier can be trained by ingesting multiple images, or video frames, and generating the histogram of occurrences of visual words in each image. Once this step is done, a new training image can be used as input to generate its histogram, which can then be compared to each previously trained image to find the closest match \cite{wang2016actionregonition}.
 
 \subsubsection{Deep Learning}
 
