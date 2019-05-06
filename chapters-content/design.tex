@@ -104,17 +104,18 @@ Recording the query through a mobile device's camera gives rise to multiple chal
 \end{itemize}
 
 These low-quality conditions add difficulty to the on-line retrieval phase and must therefore be filtered out by pre-processing the query video before computing its feature vector. Undesired camera movement due to shaking hands can be fixed by applying video stabilisation (requirement F11), while low-quality user recording can be solved by selecting a ROI\footnote{Region of Interest} (requirement F7). Nonetheless, selecting an ROI can be tricky as it relies on the capture conditions to maximise the matching accuracy. Four different types of query conditions are depicted in Figure \ref{fig:difference-query-video-issues}:
+
+\begin{figure}[h]
+\centerline{\includegraphics[width=0.8\textwidth]{figures/design/difference-query-video-issues.png}}
+\caption{\label{fig:difference-query-video-issues}Different types of video queries, emphasising the contrast between what an idea query and poor quality queries would look like. All of these queries are often coupled with minor camera movement due to shaking hands.}
+\end{figure}
+
 \begin{itemize}
     \item a) Ideal Query: allows for an accurate ROI selection.
     \item b) Down-scaled Query: requires more complex ROI selection as it is harder to detect the edges of the screen automatically. There is also a loss of information as an important section of the frame is excluded.
     \item c) Skewed Query: requires even more complex ROI selection and results in more loss of information.
     \item d) Incomplete Query: Greatly diminishes the system accuracy since part of the recorded video is missing.
 \end{itemize}
-
-\begin{figure}[h]
-\centerline{\includegraphics[width=0.8\textwidth]{figures/design/difference-query-video-issues.png}}
-\caption{\label{fig:difference-query-video-issues}Different types of video queries, emphasising the contrast between what an idea query and poor quality queries would look like. All of these queries are often coupled with minor camera movement due to shaking hands.}
-\end{figure}
 
 The system should never expect ideal queries and always expect down-scaled and skewed queries as input. Ideal queries are rare as they depend on competent users with the knowledge of what defines a good video query. However, incomplete queries as shown in Figure \ref{fig:difference-query-video-issues}d should not be accounted for as it is near-impossible to match such a query to a database video accurately as part of the screen is missing. Therefore, based on this analysis, the assumption that automatically selecting the ROI is a very complex task on its own can be made. Indeed, automatically detecting the edges of different screens to select the video being played as the ROI could grow to be even more intricate than the CBVR system itself. As a result, the ROI should be manually selected by choosing points on the query video to draw a contour around the screen. 
 
@@ -170,6 +171,7 @@ Although the goal of the project is to eventually work with feature-length movie
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\clearpage
 \section{Chosen Solution}
 
 \begin{enumerate}

@@ -7,7 +7,9 @@ This chapter presents an overview of the different steps taken to fully implemen
 \section{Off-line Colour-Based Feature Extraction}
 \label{sec:implementation-offline-colour-based-feature-extraction}
 
-This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the feature vectors used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file. Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual example of inner pipeline of this phase with RGB histograms only. This phase is repeated for greyscale and HSV histograms as well). The function controlling the execution process of this phase can be found in Appendix \ref{sec:code-off_line_colour_based_feature_extraction_phase}.\\
+This section details the different steps that go towards extracting colour features from the database videos to generate histograms and creating the feature vectors used to represent each video. The first step consists in establishing a selection of frames to process, followed by generating histograms for each of those selected frames. Once the histograms are generated, they are averaged into a single histogram before being normalised and stored into a plain text file.\\
+
+Figure \ref{fig:implementation-rgb_average_histogram_pipeline} demonstrates a visual example of inner pipeline of this phase with RGB histograms only. This phase is repeated for greyscale and HSV histograms as well). The function controlling the execution process of this phase can be found in Appendix \ref{sec:code-off_line_colour_based_feature_extraction_phase}.\\
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=1.2\textwidth,center]{figures/implementation/rgb_average_histogram_pipeline.png}}
@@ -149,18 +151,18 @@ For the \textbf{greyscale histograms}, the 256 bins of the $N$ generated histogr
     \sum_{n=0}^{N} \frac{\sum_{i=0}^{255} H_n(i)}{N}
 \end{equation}
 
-The averaged value is then stored into the corresponding $i_{th}$ bin of the new histogram. For example, if $N=10$ (the video had ten pre-selected frames, so ten greyscale histograms were generated for that video), then for each of the 256 bins, the values of the ten histograms at that bin are averaged and the mean is stored in the new histogram.\\
+The averaged value is then stored into the corresponding $i_{th}$ bin of the new histogram. For example, if $N=10$ (the video had ten pre-selected frames, so ten greyscale histograms were generated for that video), then for each of the 256 bins, the values of the ten histograms at that bin are averaged and the mean is stored in the new histogram.
+
+\begin{figure}[h] 
+\centerline{\includegraphics[width=\textwidth]{figures/implementation/normalise-histogram.png}}
+\caption{\label{fig:implementation-normalise-histogram}Normalising RGB and HSV histograms.}
+\end{figure}
 
 Once all the bins have been averaged and added to the new histogram, that averaged histogram is normalised to obtain scale invariance between the histograms of the different videos. Instead of representing the number of pixels that fall into a bin, a normalised histogram represents a relative percentage count of the number of pixels in each bin, as depicted in Figure \ref{fig:implementation-normalise-histogram}. This is a necessary step in cases where the video frames have different sizes (the larger frames to have more pixels than the smaller frames) as the histograms can be more accurately compared when they represent a relative percentage rather than an integer count. The normalisation is achieved through OpenCV's \textit{cv2.normalize()} function:
 
 \begin{lstlisting}[numbers=none]
 histogram = cv2.normalize(histogram, histogram)
 \end{lstlisting}
-
-\begin{figure}[h] 
-\centerline{\includegraphics[width=\textwidth]{figures/implementation/normalise-histogram.png}}
-\caption{\label{fig:implementation-normalise-histogram}Normalising RGB and HSV histograms.}
-\end{figure}
 
 Finally, the averaged and normalised histogram values are stored in a plain text file as float values to maintain the precision, which is implemented using NumPy's \textit{np.savetxt()} function:
 
@@ -201,6 +203,7 @@ With the colour-based features now saved in text files, they can be used multipl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\clearpage
 \section{On-line Retrieval}
 
 This section details the different steps that go towards matching a query video to one of the database videos using the colour-based features extracted in Section \ref{sec:implementation-offline-colour-based-feature-extraction}. The first step consists in processing the recorded query video to get rid of undesired artefacts such as poor framing (e.g. camera not properly positioned) and unwanted camera movements (e.g. shaky camera). Once the query is finished being processed, the same colour-based features previously extracted for all the database videos in the form of greyscale, RGB and HSV histograms are used to compute the similarities between the query video and each database video by measuring the distance between the histograms. The video with the highest score will be the match found by the system, which is displayed to the screen to show the final result. The initial function controlling the execution process of this phase can be found in Appendix \ref{sec:code-on_line_retrieval_phase}.
@@ -259,7 +262,7 @@ The calculations between two 2D histograms are achieved through OpenCV's \textit
 comparison = cv2.compareHist(query_hist, rgb_video_hist, method)
 \end{lstlisting}
 
-For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. Different functions are used between the 2D and 3D histograms as OpenCV's \textit{cv2.compareHist()} function does not work with 3D arrays, whereas SciPy's statistical distances does. The six different methods used are detailed below, where $d(H_1, H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, and $I$ represents the number of bins in the histograms.
+For the 3D HSV histograms, SciPy's statistical distances are used to calculate the distance between the different bins. Different functions are used between the 2D and 3D histograms as OpenCV's \textit{cv2.compareHist()} function does not work with 3D arrays, whereas SciPy's statistical distances does. The six different methods used are detailed below, where $d(H_1, H_2)$ represents the distance between a histogram $H_1$ and a histogram $H_2$, and $I$ represents the number of bins in the histograms.\\
 
 \begin{enumerate}
 
@@ -355,15 +358,16 @@ All of the distance metrics and histogram models are finally combined to produce
 
 Of all the scores calculated for each model and distance metric, the one revealing which database video matches the query the most is used to increment a dictionary. The increment values rely on pre-defined weights assigned to each histogram model, which are detailed in Table \ref{tab:distance-metric-weights}:
 
+\input{tables/distance-metric-weights.tex}
+
+\clearpage
 \begin{itemize}
     \item \underline{Greyscale} histograms are the least descriptive model, with only one channel which cannot represent colours. The lowest weight worth 1 is therefore attributed to these.
     \item \underline{RGB} histograms use three channels and can describe the colours in a frame. They are therefore attributed to a weight of 5.
     \item \underline{HSV} histograms are the most complex histograms employed in the system as they use three channels to describe how human vision perceives colours, plotting the results in 3D histograms. The highest weight worth 10 is therefore attributed to these.
 \end{itemize}
 
-\input{tables/distance-metric-weights.tex}
-
-The dictionary is used at the end of the pipeline to determine which video was matched the most based on the number of occurrences in the dictionary. The number of occurrences is then converted into a probability of the videos in the dictionary to match the query video, which is plotted into a simple histogram using Matplotlib to visualise which video is matched the most, as shown in the left-hand side of Figure \ref{fig:implementation-online-retrieval-results}. The final result is displayed in the form of a figure that includes the first frames of the query video and the matched video, along with the runtime in seconds and the $accuracy = \frac{\# \quad True \quad Positives}{\# \quad Matches \quad Made}$ of the match, which is depicted in the right-hand side of Figure \ref{fig:implementation-online-retrieval-results}.\\
+The dictionary is used at the end of the pipeline to determine which video was matched the most based on the number of occurrences in the dictionary. The number of occurrences is then converted into a probability of the videos in the dictionary to match the query video, which is plotted into a simple histogram using Matplotlib to visualise which video is matched the most, as shown in the left-hand side of Figure \ref{fig:implementation-online-retrieval-results}. The final result is displayed in the form of a figure that includes the first frames of the query video and the matched video, along with the runtime in seconds and the $accuracy = (\# \quad True \quad Positives)/(\# \quad Matches \quad Made)$ of the match, which is depicted in the right-hand side of Figure \ref{fig:implementation-online-retrieval-results}.
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=\textwidth]{figures/implementation/online-retrieval-results.png}}
@@ -392,7 +396,7 @@ This section details the steps that go towards processing the database of videos
     \item Fade to black cut between the autumn video and the jellyfish video.
 \end{itemize}
 
-The shot boundary detection algorithm is implemented using similar techniques described in the two previous phases. RGB histograms are generated for consecutive frames before being compared using distance metrics. The first metric used is the Kullback-Leibler Divergence, followed by the Intersection metric.
+The shot boundary detection algorithm is implemented using similar techniques described in the two previous phases. RGB histograms are generated for consecutive frames before being compared using distance metrics. The first metric used is the Kullback-Leibler Divergence, followed by the Intersection metric.\\
 
 \subsubsection{Kullback-Leibler Divergence}
 
@@ -418,12 +422,12 @@ comparison_b = cv2.compareHist(prev_rgb_hist['b'][0], cur_rgb_hist['b'][0], cv2.
 comparison = (comparison_b + comparison_g + comparison_r) / 3
 \end{lstlisting}
 
-Once the video has been processed, all of the frames with a KL divergence superior to the threshold are marked as shot boundaries. The KL divergence between the consecutive frames from the test video is plotted using Matplotlib, with the results depicted in Figure \ref{fig:shot_boundary_detection_example}.\\
-
 \begin{figure}[h] 
 \centerline{\includegraphics[width=0.70\textwidth]{figures/implementation/shot_boundary_detection_example.png}}
 \caption{\label{fig:shot_boundary_detection_example}Example of the shot boundary detection algorithm on the test video from Figure    \ref{fig:shot_boundary_detection_frames} using the Kullback-Leibler Divergence to compare the RGB histograms between consecutive frames.}
 \end{figure}
+
+Once the video has been processed, all of the frames with a KL divergence superior to the threshold are marked as shot boundaries. The KL divergence between the consecutive frames from the test video is plotted using Matplotlib, with the results depicted in Figure \ref{fig:shot_boundary_detection_example}.\\
 
 This global threshold approach using KL Divergence to process consecutive frames detects hard cuts \textit{(A)} and fading to black cuts \textit{(C \& E)}, but does not detect a dissolve cut \textit{(B)}. It also detects the black frames in a fading to black transition as a new shot \textit{(D)}.
 

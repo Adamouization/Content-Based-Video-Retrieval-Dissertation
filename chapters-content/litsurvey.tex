@@ -81,7 +81,7 @@ Figure \ref{fig:forrest_gump_frames} shows six frames from Forrest Gump's famous
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 2 - VISUAL CONTENT EXTRACTION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Visual Content Extraction for Pattern Matching}
+\section{Visual Content Extraction}
 \label{sec:visual-content-extraction}
 
 Extracting the visual content from a video allows this content to be used to describe videos and compute similarities between them. This visual content is extracted from the aforementioned low-level visual content (see Section \ref{sec:cbvr-methods}) \cite{petkovic2000} and stored in the form features, also referred to as visual descriptors. The term ``features'' is very broad and can be used to describe many different visual aspects in an image or a video, ranging from colours, shapes and textures to points, edges, objects and motion.\\
@@ -90,10 +90,11 @@ These features can be divided into two categories: static features and dynamic f
 
 % ----------------------------------------------------
 
+\clearpage
 \subsection{Static Features}
 \label{sec:litsurvey-static-features}
 
-Methods to extract static features operate on stills, which can correspond to individual video frames, thumbnails or keyframes (see Section \ref{sec:movie-pre-processing}). This means that traditional image techniques can be applied to those stills \cite{hu2011survey}. They are organised in three different categories: colour-based features, texture-based features and shape-based features, which can be visualised in Figure \ref{fig:colour-texture-shape-features}.
+Methods to extract static features operate on stills, which can correspond to individual video frames, thumbnails or keyframes (see Section \ref{sec:movie-pre-processing}). This means that traditional image techniques can be applied to those stills \cite{hu2011survey}. They are organised in three different categories: colour-based features, texture-based features and shape-based features, which can be visualised in Figure \ref{fig:colour-texture-shape-features}.\\t
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/colour-texture-shape-features.png}}
@@ -103,7 +104,7 @@ Methods to extract static features operate on stills, which can correspond to in
 \subsubsection{Colour-based Features}
 \label{sec:color-based-features}
 
-The primary colour-based features model are colour histograms. In general, a histogram consists of counts of some underlying data that is organised into predetermined bins to a statistical representation of the distribution of that data. Figure \ref{fig:histogram-general-example} depicts an example of a histogram where a collection of points is organised into specific pre-defined bins based on their location relative to a vertical grid.
+The primary colour-based features model are colour histograms. In general, a histogram consists of counts of some underlying data that is organised into predetermined bins to a statistical representation of the distribution of that data. Figure \ref{fig:histogram-general-example} depicts an example of a histogram where a collection of points is organised into specific pre-defined bins based on their location relative to a vertical grid.\\
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/histogram_general_example.png}}
@@ -112,7 +113,7 @@ The primary colour-based features model are colour histograms. In general, a his
 
 In the case of a colour histogram, the underlying data that the histogram is representing is the distribution of the colour pixels throughout an image or a video frame. Different kinds of colour histograms exist as they depend on the chosen colour space, which includes greyscale\footnote{Black \& White, single channel}, RGB\footnote{Red Green Blue, three channels}, HSV\footnote{Hue Saturation Value} or HSL\footnote{Hue Saturation Light} colour spaces to name a few. These vary based on the applications of the colour histograms.\\
 
-Typically, for an RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which are then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represent the distribution efficiently. If the range of pixels that defines the bins is too wide (there are less overall bins), then the histogram's distribution would be too coarse-grained, and the general structure of the histogram would be lost, as pointed out by the left-hand side of Figure \ref{fig:histogram-bin-size}. On the other hand, if the bins' range is too narrow (there are more overall bins), then the histogram's distribution would not be represented accurately, and there would be many spiky cells, as betrayed in the right-hand side of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.
+Typically, for an RGB colour histogram, 256 bins are used to accurately represent all the possible values that the pixels can take (ranging from 0 to 255) for each of the three RGB channels, which are then plotted as three individual graphs. Choosing the right range for the histogram's bins is crucial to represent the distribution efficiently. If the range of pixels that defines the bins is too wide (there are less overall bins), then the histogram's distribution would be too coarse-grained, and the general structure of the histogram would be lost, as pointed out by the left-hand side of Figure \ref{fig:histogram-bin-size}. On the other hand, if the bins' range is too narrow (there are more overall bins), then the histogram's distribution would not be represented accurately, and there would be many spiky cells, as betrayed in the right-hand side of Figure \ref{fig:histogram-bin-size} \cite{bradski2008opencv}.\\
 
 \begin{figure}[h]
 \centerline{\includegraphics[width=0.85\textwidth]{figures/litsurvey/histogram_bin_size.png}}
@@ -178,7 +179,7 @@ Motion features are a unique characteristic of videos that are absent from image
     \item \textit{Trajectory-based} motion features are extracted by representing object trajectories in a shot. Despite the long list of algorithms that exist to obtain these features, this section will focus on differentiating sparse and dense techniques with one of the most popular methods: optical flow. Optical flow can be defined as the relative motion between the visual content in a shot and the camera \cite{bradski2008opencv}:
     
     \begin{figure}[h] 
-    \centerline{\includegraphics[width=0.7\textwidth]{figures/litsurvey/optical_flow.png}}
+    \centerline{\includegraphics[width=0.55\textwidth]{figures/litsurvey/optical_flow.png}}
     \caption{\label{fig:optical_flow}Visualisation of sparse and dense optical flow algorithms on different shots.}
     \end{figure}
     
@@ -193,7 +194,7 @@ Motion features are a unique characteristic of videos that are absent from image
 \end{itemize}
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=0.80\textwidth]{figures/litsurvey/dense_optical_flow_representation.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/dense_optical_flow_representation.png}}
 \caption{\label{fig:dense_optical_flow_representation}A 3D and a 2D representation of dense optical flow. Each arrow represents the direction and magnitude of a specific pixel location, which can variate in direction and length.}
 \end{figure}
 
@@ -208,14 +209,14 @@ So far, the simplest model that can be used for pattern matching has been introd
 
 \subsubsection{Bag-of-Visual-Words}
 
-The idea behind the BoVW\footnote{Bag-of-Visual-Words} model originates from the BoW\footnote{Bag-of-Words} model for text document analysis. Indeed, text documents can be represented as a bag of important keywords; excluding uninformative words such as ``the'' or ``it''. The BoW of the document is built by measuring the frequency of each keyword in the document. This BoW then allows the type of document to be predicted, e.g. a document with a high frequency of words such as ``racket'', ``serve'' and ``ball'' is likely to be a document about tennis. The opposite can be applied as well, where the type of the document can predict the frequency of keywords.\\
-
-This concept of BoW can be applied to images in the form of BoVW. Rather than describing actual words, the ``visual words'' correspond to features extracted from the image (the same features mentioned in Section \ref{sec:litsurvey-static-features} and Section \ref{sec:dynamic-features}), which are then clustered using algorithms such as k-means clustering or mean-shift. Once the features are grouped, centroids (the middle of a cluster) can be extracted to represent a visual word \cite{yang2007bovw}, as shown in Figure \ref{fig:litsurvey-bovw}.\\
+The idea behind the BoVW (Bag-of-Visual-Words) model originates from the BoW (Bag-of-Words) model for text document analysis. Indeed, text documents can be represented as a bag of important keywords; excluding uninformative words such as ``the'' or ``it''. The BoW of the document is built by measuring the frequency of each keyword in the document. This BoW then allows the type of document to be predicted, e.g. a document with a high frequency of words such as ``racket'', ``serve'' and ``ball'' is likely to be a document about tennis. The opposite can be applied as well, where the type of the document can predict the frequency of keywords.
 
 \begin{figure}[h] 
-\centerline{\includegraphics[width=0.8\textwidth]{figures/litsurvey/bovw.png}}
+\centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/bovw.png}}
 \caption{\label{fig:litsurvey-bovw}Visualisation of the generation of a BoVW used to represent images with histograms counting the occurences of each visual word. Image courtesy of Yang,Jiang, Hauptmann and Ngo (2007).}
 \end{figure}
+
+This concept of BoW can be applied to images in the form of BoVW. Rather than describing actual words, the ``visual words'' correspond to features extracted from the image (the same features mentioned in Section \ref{sec:litsurvey-static-features} and Section \ref{sec:dynamic-features}), which are then clustered using algorithms such as k-means clustering or mean-shift. Once the features are grouped, centroids (the middle of a cluster) can be extracted to represent a visual word \cite{yang2007bovw}, as shown in Figure \ref{fig:litsurvey-bovw}.\\
 
 With the BoVW now built, the image can be represented by a histogram counting the number of occurrences of each code word in the image, in a similar fashion that the frequency of keywords is counted for a text document. However, a large number of visual words need to be defined to avoid losing information when representing the image with the histogram; if there are too few visual words, then the histogram will be too coarse. With a dictionary of visual words, a classifier can be trained by ingesting multiple images, or video frames, and generating the histogram of occurrences of visual words in each image. Once this step is done, a new training image can be used as input to generate its histogram, which can then be compared to each previously trained image to find the closest match \cite{wang2016actionregonition}.
 
@@ -223,7 +224,7 @@ With the BoVW now built, the image can be represented by a histogram counting th
 
 The conventional models stated earlier are naturally limited by their inability to process raw data. Indeed, raw data (e.g. the pixels in an image) cannot be directly processed by machine learning systems, including the aforementioned ones. Sophisticated feature extractors need to be designed to transform the raw data into suitable feature vector representations. Only then can learning systems such as classifiers ingest the data pattern match it \cite{lecun2015deeplearning}.\\
 
-Deep learning models are much more efficient as they are based on representation learning methods, which allows raw data to be directly used. Representation learning methods enable deep learning systems to automatically discover and learn the features through the use of multiple levels of representation that transform the data as it goes down the layers, starting with the raw data that is transformed into more and more abstract representations. For example, a deep learning system using an image (a matrix of pixels) as input would perhaps detect edge features in the first layer, followed by detecting the arrangement of these edges in the second layer, before combining them to assemble motifs in the third layer and eventually detect objects in deeper layers. All of these layers that learn how to extract features are not influenced by humans, they are learned based on the data \cite{lecun2015deeplearning}.\\
+Deep learning models are much more efficient as they are based on representation learning methods, which allows raw data to be directly used. Representation learning methods enable deep learning systems to automatically discover and learn the features through the use of multiple levels of representation that transform the data as it goes down the layers, starting with the raw data that is transformed into more and more abstract representations. For example, a deep learning system using an image (a matrix of pixels) as input would perhaps detect edge features in the first layer, followed by detecting the arrangement of these edges in the second layer, before combining them to assemble motifs in the third layer and eventually detect objects in deeper layers. All of these layers that learn how to extract features are not influenced by humans, they are learned based on the data \cite{lecun2015deeplearning}.\\~\\
 
 These deep learning models, with the most popular ones being neural networks, have much potential. Due to their nature that requires little manual engineering, they work very efficiently when dealing with large amounts of data, which fits perfectly with content-based retrieval systems.
 
@@ -239,12 +240,14 @@ The database of videos can be pre-processed to optimise the visual content extra
 
 \subsection{Temporal Movie Segmentation}
 
-The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be remarkably similar in another frame from the same shot. Detecting shot boundaries would allow the movie to be segmented and organised by shots, as depicted in Figure \ref{fig:shot_boundary_detection}. These boundaries are defined by the type of transition between two different shots, which can either be defined as a quick cut when the transition is direct, or as gradual when it is a dissolve or a fade in/out transition that runs over multiple frames \cite{yuan2007shotboundary}, as shown in Figure \ref{fig:video_transitions}.
+The frames that make up a shot usually show strong content correlation. This means that features extracted from one frame will be remarkably similar in another frame from the same shot. Detecting shot boundaries would allow the movie to be segmented and organised by shots, as depicted in Figure \ref{fig:shot_boundary_detection}. 
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=0.70\textwidth]{figures/litsurvey/shot_boundary_detection.png}}
 \caption{\label{fig:shot_boundary_detection}Shot boundary detection example of a video scene made up of two shots with a gradual transition between the two shots. Figure courtesy of Michael Gygli available online at: \url{https://medium.com/gifs-ai/ridiculously-fast-shot-boundary-detection-with-fully-convolutional-neural-networks-da9d8c73e86c}}
 \end{figure}
+
+These boundaries are defined by the type of transition between two different shots, which can either be defined as a quick cut when the transition is direct, or as gradual when it is a dissolve or a fade in/out transition that runs over multiple frames \cite{yuan2007shotboundary}, as shown in Figure \ref{fig:video_transitions}.
 
 \begin{figure}[h] 
 \centerline{\includegraphics[width=0.75\textwidth]{figures/litsurvey/video_transitions.png}}
@@ -273,7 +276,7 @@ The second step in video segmentation is to use these extracted features to comp
     g(n,n+k) = \sum _{x,y} | I_n(x,y) - I_{n+k}(x,y) |
 \end{equation}
 
-More advanced distance metrics can be used based on the type of feature that was extracted. For instance, intersection and chi-square distances can be used to compute the distance between the histograms of two frames \cite[p.197]{camara2007shot}. During the 2006 TRECVID conference, \textit{Hoi et al.}, used grey scale histograms for their extracted features and calculated the colour differences between frames using the EMD\footnote{Earth Mover's Distance}. EMD is used to calculate the distance between two probability distributions, which are represented by the two histograms that represent each frame in \cite[p.2]{hoi2006trecvid06}'s case. These similarities can be measured using two techniques: pair-wise similarities and window similarities.\\
+More advanced distance metrics can be used based on the type of feature that was extracted. For instance, intersection and chi-square distances can be used to compute the distance between the histograms of two frames \cite[p.197]{camara2007shot}. During the 2006 TRECVID conference, \textit{Hoi et al.}, used grey scale histograms for their extracted features and calculated the colour differences between frames using the EMD\footnote{Earth Mover's Distance}. EMD is used to calculate the distance between two probability distributions, which are represented by the two histograms that represent each frame in \cite[p.2]{hoi2006trecvid06}'s case. These similarities can be measured using two techniques: pair-wise similarities and window similarities.\\~\\
 
 The first technique rests on using pairs of frames to compute the similarities between them. The similarities between two consecutive frames $I_1$ and $I_2$ are compared, before comparing the pair of frames $I_2$ and $I_3$, and so forth until frames $I_{n-1}$ and $I_n$ are compared. This straightforward technique precisely detects rough changes between the visual content in a shot (e.g. quick cuts between two shots) but is more sensitive to intensity changes caused by noise and disturbances such as camera motion and objects, leading to a high level of wrong detections \cite{janwe2013video}.\\
 
