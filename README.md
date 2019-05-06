@@ -10,6 +10,8 @@ The project was originally inspired by the famous music-matching mobile applicat
 
 Ultimately, a functional system was built by combining multiple methods into one pipeline and tested with a database of 50 short videos along with various videos recorded through mobile phones, resulting in correct matches reaching accuracies of 93\%. To increase the realism of the tests, the recorded queries replicated videos of poor quality with shaking hand motions and inadequate framing to imitate what user-recorded videos would look like, which the system managed to cope with at the cost of some accuracy. The results were then compared to an online experiment conducted to establish ground truth, which required participants to play the role of the video matching system. To complete the pipeline, a feature-length movie was used to test how it could be condensed into one still per shot.
 
+The code for this dissertation can be found online at the following URL: [https://github.com/Adamouization/Content-Based-Video-Retrieval-Code](https://github.com/Adamouization/Content-Based-Video-Retrieval-Code)
+
 ## Contact
 * email: adam@jaamour.com
 * LinkedIn: [www.linkedin.com/in/adamjaamour](https://www.linkedin.com/in/adamjaamour/)
